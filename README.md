@@ -15,6 +15,8 @@ Die Seite bringt nur Reisende (ohne Batterie) und Anbieter (mit Batterie) zusamm
 - **Kontaktdaten nur für angemeldete Mitglieder**, Pin auf Wunsch um 200–600 m versetzt
 - Reines HTML/CSS/JS, kein Build-Schritt. Bibliotheken und Schriften liegen im Repo (`assets/vendor`, `assets/fonts`)
 
+**Live:** https://foilbattery.com (GitHub Pages aus `main`, Domain bei IONOS). Kontakt: mail@foilbattery.com. Betreiber: Ola Vibes S.L.
+
 ## Sofort ausprobieren (Demo-Modus)
 
 Ohne Einstellungen läuft die Seite im Demo-Modus: erfundene Beispiel-Standorte, Login nur simuliert, Eingaben bleiben im Browser, Anträge werden sofort „freigegeben“. Die Admin-Seite gibt es nur im Echtbetrieb.
@@ -28,21 +30,19 @@ Die Karte lädt zuverlässig über `https://` (GitHub Pages). Beim Öffnen per D
 
 ## Echtbetrieb mit Supabase
 
-Supabase liefert Konten, Datenbank, privaten Datei-Speicher und die Mail-Funktion. Die Seite selbst bleibt statisch. Dauert ca. 20 Minuten, kostenlos.
+Supabase liefert Konten, Datenbank, privaten Datei-Speicher und die Mail-Funktion. Die Seite selbst bleibt statisch. Die folgenden Schritte sind für das Live-Projekt erledigt und dienen als Referenz, falls man es neu aufsetzen muss.
 
 ### 1. Projekt und Datenbank
 
-1. Auf [supabase.com](https://supabase.com) ein Projekt anlegen. Region **Frankfurt** (EU).
+1. Auf [supabase.com](https://supabase.com) ein Projekt anlegen. Region in der EU oder UK wählen (das Live-Projekt liegt in London, `eu-west-2`).
 2. **SQL Editor → New query**: Inhalt von [`supabase/schema.sql`](supabase/schema.sql) einfügen und ausführen. Das Skript kann mehrfach laufen.
 3. **Project Settings → API**: `Project URL` und den `anon`- bzw. `publishable`-Key kopieren und in [`assets/js/config.js`](assets/js/config.js) eintragen (`supabaseUrl`, `supabaseAnonKey`). Dieser Key ist für den Browser gedacht und darf im Repo stehen. Die Sicherheit kommt aus den Regeln in `schema.sql`.
 
 ### 2. Anmeldung und Mails an Nutzer
 
-1. **Authentication → URL Configuration**: `Site URL` auf die Adresse der Seite setzen (z. B. `https://lukilink.github.io/foildrive-battery-rental/`) und dieselbe Adresse bei „Redirect URLs“ eintragen. Sonst führen die Links in den Bestätigungs-Mails ins Leere.
+1. **Authentication → URL Configuration**: `Site URL` auf die Adresse der Seite setzen (`https://foilbattery.com`) und dieselbe Adresse bei „Redirect URLs“ eintragen. Sonst führen die Links in den Bestätigungs-Mails ins Leere.
 2. **Authentication → Providers → Email**: „Confirm email“ bleibt **an** (gegen Fake-Konten).
-3. **Authentication → SMTP Settings → Custom SMTP**: Die eingebauten Supabase-Mails sind auf ganz wenige pro Stunde begrenzt, das reicht nicht für Tests mit Freunden. Trag dort dein Gmail-Konto ein: Host `smtp.gmail.com`, Port `465`, Benutzer = Gmail-Adresse, Passwort = **App-Passwort** (siehe unten).
-
-**Gmail-App-Passwort:** Im Google-Konto die Bestätigung in zwei Schritten einschalten, dann unter *Sicherheit → App-Passwörter* eines anlegen (16 Zeichen). Das normale Passwort funktioniert nicht und gehört nie in das Repo.
+3. **Authentication → SMTP Settings → Custom SMTP**: Die eingebauten Supabase-Mails sind auf ganz wenige pro Stunde begrenzt, das reicht nicht für Tests mit Freunden. Live: Postfach `mail@foilbattery.com` bei IONOS, Host `smtp.ionos.es`, Port `465`, Benutzer = Mail-Adresse, Passwort = Postfach-Passwort. Mit Gmail ginge es genauso (Host `smtp.gmail.com`, Passwort = App-Passwort). Passwörter gehören nie ins Repo.
 
 ### 3. Dich selbst als Admin eintragen
 
@@ -51,7 +51,7 @@ Supabase liefert Konten, Datenbank, privaten Datei-Speicher und die Mail-Funktio
 
 ```sql
 insert into public.admins (user_id)
-select id from auth.users where email = 'schulerlukas+batteryrental@gmail.com';
+select id from auth.users where email = 'deine@mail.adresse';
 ```
 
 Danach zeigt `admin.html` die Anträge. Weitere Admins trägst du genauso ein.
@@ -66,31 +66,29 @@ Eine kleine Funktion verschickt die Mail „Neuer Antrag“ an dich und die Mail
 
 | Secret | Wert |
 | --- | --- |
-| `SMTP_USER` | Gmail-Adresse, von der gesendet wird |
-| `SMTP_PASS` | Gmail-App-Passwort (16 Zeichen) |
-| `ADMIN_EMAIL` | Adresse, die die Antrags-Mails bekommt (z. B. `schulerlukas+batteryrental@gmail.com`) |
-| `SITE_URL` | `https://lukilink.github.io/foildrive-battery-rental` (ohne `/` am Ende) |
+| `SMTP_HOST` | Mail-Server, live `smtp.ionos.es` (ohne Angabe: `smtp.gmail.com`) |
+| `SMTP_PORT` | `465` (SSL) oder `587` (STARTTLS) |
+| `SMTP_USER` | Absender-Adresse, live `mail@foilbattery.com` |
+| `SMTP_PASS` | Postfach-Passwort (bei Gmail: App-Passwort) |
+| `ADMIN_EMAIL` | Adresse, die die Antrags-Mails bekommt |
+| `SITE_URL` | `https://foilbattery.com` (ohne `/` am Ende) |
 | `FROM_NAME` | optional, Absendername, z. B. `Foil Assist Battery Rental` |
 
 `SUPABASE_URL` und `SUPABASE_ANON_KEY` stellt Supabase selbst bereit.
 
-> **Wichtig, bitte beim Testen prüfen:** Supabase dokumentiert, dass ausgehende SMTP-Verbindungen (Ports 25, 465, 587) aus Edge Functions blockiert sein können. Es gibt Berichte, dass Gmail über Port 465 trotzdem klappt, zugesichert ist es nicht. Wenn die Mail an dich nicht ankommt: in **Edge Functions → application → Logs** nachsehen. Fällt der Versand aus, bleibt der Antrag trotzdem sichtbar, du findest ihn auf `admin.html` unter „Offen“. Als Ausweg tauscht man `sendMail()` in der Funktion gegen einen Mail-Dienst per HTTPS aus (z. B. Resend, kostenlose Stufe). Dann melde ich mich gern beim Umbau.
+> **Hinweis:** Supabase dokumentiert, dass ausgehende SMTP-Verbindungen aus Edge Functions blockiert sein können. Port 465 funktioniert derzeit. Kommt keine Mail an: **Edge Functions → application → Logs** prüfen. Der Antrag bleibt trotzdem auf `admin.html` unter „Offen“ sichtbar. Ausweg wäre ein Mail-Dienst per HTTPS (z. B. Resend) statt SMTP in `sendMail()`.
 
 Schau in der ersten Zeit regelmäßig auf `admin.html`, damit kein Antrag liegen bleibt.
 
 ### 5. Veröffentlichen
 
-**Settings → Pages → Build and deployment**: Source `Deploy from a branch`, Branch `main`, Ordner `/ (root)`. Die Seite ist danach unter `https://<account>.github.io/<repo>/` erreichbar, die Admin-Seite unter `…/admin.html`.
+**Settings → Pages → Build and deployment**: Source `Deploy from a branch`, Branch `main`, Ordner `/ (root)`. Eigene Domain: Datei `CNAME` im Repo (`foilbattery.com`), bei IONOS vier A-Einträge (`185.199.108.153` bis `185.199.111.153`), vier AAAA-Einträge (`2606:50c0:8000::153` bis `8003::153`) und `www` auf GitHub, in den Pages-Einstellungen „Enforce HTTPS“ an. Die Admin-Seite liegt unter `https://foilbattery.com/admin.html`.
 
-### Test mit Freunden und Kollegen
-
-Wenn die Schritte 1 bis 5 erledigt sind:
+### Ablauf testen
 
 1. Du legst selbst ein Test-Angebot an und prüfst: kommt die Mail bei dir an, funktioniert „Freigeben“, erscheint der Pin?
 2. Freunde registrieren sich (Bestätigungs-Mail anklicken), stellen ein Angebot ein und warten auf deine Freigabe.
 3. Andere Freunde sehen nach dem Login die Kontaktdaten der freigegebenen Angebote.
-
-Die Impressum- und Datenschutz-Seiten sind mit deinen Firmendaten gefüllt. Es fehlen noch die Angaben zum Handelsregister (Registro Mercantil) und die Region des Supabase-Projekts. Die gelben Hinweiskästen danach löschen.
 
 ## Was die Datenbank-Regeln erzwingen
 
@@ -118,12 +116,11 @@ Geschrieben wird nur über Datenbank-Funktionen (`save_my_listing`, `admin_decid
 | „Angebot melden“-Link im Footer | `contactEmail` in `assets/js/config.js` |
 | Texte der Mails | `supabase/functions/application/index.ts` |
 
-## Vor dem öffentlichen Start
+## Betrieb
 
-- [ ] Impressum und Datenschutz prüfen (Handelsregister, Supabase-Region), Hinweiskästen löschen. Das sind **Vorlagen** und keine Rechtsberatung.
-- [ ] Supabase, SMTP und Edge Function einrichten (siehe oben) und `config.js` füllen.
-- [ ] Die OpenStreetMap-Standardkacheln sind für kleine Projekte in Ordnung ([Nutzungsrichtlinie](https://operations.osmfoundation.org/policies/tiles/)). Bei viel Traffic einen eigenen Kachel-Anbieter in `config.js` eintragen.
-- [ ] Ortssuche und Orts-Vorschlag nutzen den öffentlichen Nominatim-Dienst. Er ist auf wenige Anfragen pro Sekunde begrenzt, die Seite fragt nur nach einem Klick auf „Suchen“.
+- Die OpenStreetMap-Standardkacheln sind für kleine Projekte in Ordnung ([Nutzungsrichtlinie](https://operations.osmfoundation.org/policies/tiles/)). Bei viel Traffic einen eigenen Kachel-Anbieter in `config.js` eintragen.
+- Ortssuche und Orts-Vorschlag nutzen den öffentlichen Nominatim-Dienst (wenige Anfragen pro Sekunde). Die Seite fragt nur nach einem Klick auf „Suchen“.
+- Impressum und Datenschutz sind Vorlagen und keine Rechtsberatung.
 
 ## Projektstruktur
 

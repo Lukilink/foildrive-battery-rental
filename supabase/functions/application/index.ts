@@ -7,12 +7,12 @@
 // Ob jemand Admin ist, entscheidet die Datenbank (Funktion admin_decide).
 //
 // Secrets (Supabase → Edge Functions → Secrets):
-//   SMTP_USER   Gmail-Adresse, von der gesendet wird
-//   SMTP_PASS   Gmail-App-Passwort (16 Zeichen, NICHT das normale Passwort)
+//   SMTP_USER   Absender-Adresse / SMTP-Benutzer (z. B. mail@foilbattery.com)
+//   SMTP_PASS   Passwort des Postfachs (bei Gmail: App-Passwort)
 //   ADMIN_EMAIL Adresse, die die Antrags-Mails bekommt
-//   SITE_URL    z. B. https://lukilink.github.io/foildrive-battery-rental
+//   SITE_URL    z. B. https://foilbattery.com
 //   FROM_NAME   optional, Absendername
-//   SMTP_HOST, SMTP_PORT   optional, Standard ist smtp.gmail.com und 465
+//   SMTP_HOST, SMTP_PORT   Mail-Server, z. B. smtp.ionos.es und 465 (ohne Angabe: smtp.gmail.com, 465)
 
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import nodemailer from 'npm:nodemailer@6.9.16';
