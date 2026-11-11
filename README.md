@@ -1,16 +1,17 @@
-# Foil Drive Battery Rental
+# Foil Assist Battery Rental
 
-Community-Karte für Foil Drive Owner: Die Batterien dürfen nicht ins Flugzeug, also leiht man sich im Urlaub eine bei einem Local vor Ort.
-Die Seite bringt nur Reisende (ohne Batterie) und Locals (mit Batterie) zusammen. Kontakt, Preis und Bezahlung laufen außerhalb.
+Community-Karte für Foil-Assist-Fahrer (Foil Drive, Manta, RIIFT, Duotone, Lift, Waydoo und andere): Die Batterien dürfen nicht ins Flugzeug, also leiht man sich im Urlaub eine bei einem Local, einer Foil-Schule oder einem Rental vor Ort.
+Die Seite bringt nur Reisende (ohne Batterie) und Anbieter (mit Batterie) zusammen. Kontakt, Preis und Bezahlung laufen außerhalb.
 
 - **Zweisprachig** (Deutsch / Englisch), Umschalter oben rechts und im Footer. Die Startsprache folgt dem Browser.
 - **Karte** mit allen freigegebenen Standorten (Leaflet + OpenStreetMap), Preis direkt am Pin
-- **Filter** nach Batterie: Max HP, Max Power, Max Sport, Max Sport 396, FM650, FM450, F860
+- **Filter** nach Anbietertyp (Alle / Privat / Schule & Verleih), dann nach **Marke** und danach nach **Modell**
+- **Zwei Anbietertypen**: Privat (dunkelblaue Pins mit Blitz) und Schule / Verleih (violette Pins mit Haus-Symbol). Schulen und Rentals geben Website und Öffnungszeiten an, beides ist öffentlich sichtbar
 - **Reiseziel-Suche** (Ortssuche über Nominatim)
-- **Konto** für Verleiher (E-Mail + Passwort), ein Angebot pro Konto
-- **Angebot**: Batterien, Preis pro Tag und/oder Woche, Kaution, „Ausweis wird vorgezeigt“, Standort, WhatsApp und/oder E-Mail, Hinweise
+- **Konto** für Anbieter (E-Mail + Passwort), ein Angebot pro Konto
+- **Angebot**: Batterien (Marke + Modell, jederzeit auch „Anderes Modell“ / „Andere Marke“ als Freitext), Preis pro Tag und/oder Woche, Kaution, „Ausweis wird vorgezeigt“, Standort, WhatsApp und/oder E-Mail, Hinweise
 - **Freigabe von Hand**: Neue Angebote erscheinen erst, nachdem du sie freigegeben hast. Du bekommst eine Mail und gibst auf `admin.html` frei oder lehnst ab
-- **Verifizierung**: Profil-Link (Instagram oder Facebook) ist Pflicht, eine Rechnung von Foil Drive oder dem Händler ist optional und wird nach der Prüfung gelöscht
+- **Verifizierung**: Privat: Profil-Link (Instagram oder Facebook) ist Pflicht. Schule / Verleih: Website und Öffnungszeiten sind Pflicht, ein Profil ist optional. Eine Rechnung ist für alle optional und wird nach der Prüfung gelöscht
 - **Kontaktdaten nur für angemeldete Mitglieder**, Pin auf Wunsch um 200–600 m versetzt
 - Reines HTML/CSS/JS, kein Build-Schritt. Bibliotheken und Schriften liegen im Repo (`assets/vendor`, `assets/fonts`)
 
@@ -69,7 +70,7 @@ Eine kleine Funktion verschickt die Mail „Neuer Antrag“ an dich und die Mail
 | `SMTP_PASS` | Gmail-App-Passwort (16 Zeichen) |
 | `ADMIN_EMAIL` | Adresse, die die Antrags-Mails bekommt (z. B. `schulerlukas+batteryrental@gmail.com`) |
 | `SITE_URL` | `https://lukilink.github.io/foildrive-battery-rental` (ohne `/` am Ende) |
-| `FROM_NAME` | optional, Absendername, z. B. `Foil Drive Battery Rental` |
+| `FROM_NAME` | optional, Absendername, z. B. `Foil Assist Battery Rental` |
 
 `SUPABASE_URL` und `SUPABASE_ANON_KEY` stellt Supabase selbst bereit.
 
@@ -97,7 +98,7 @@ Die Impressum- und Datenschutz-Seiten sind mit deinen Firmendaten gefüllt. Es f
 | --- | --- |
 | Besucher ohne Login | **freigegebene**, aktive Angebote lesen, ohne WhatsApp, E-Mail, Status und Nachweise |
 | Angemeldete Mitglieder | zusätzlich WhatsApp und E-Mail der freigegebenen Angebote lesen |
-| Verleiher | sein eigenes Angebot anlegen, ändern, pausieren, löschen und den eigenen Status sehen. Den Status auf „freigegeben“ setzen kann nur der Admin |
+| Anbieter | sein eigenes Angebot anlegen, ändern, pausieren, löschen und den eigenen Status sehen. Den Status auf „freigegeben“ setzen kann nur der Admin |
 | Admin | Anträge sehen, Nachweise ansehen, freigeben oder ablehnen |
 
 Geschrieben wird nur über Datenbank-Funktionen (`save_my_listing`, `admin_decide` …), nie direkt in die Tabelle. Das Schema prüft außerdem Modelle, Preise, Kaution, WhatsApp-Format (`+49…`), E-Mail, Währung, Profil-Link (nur https://instagram.com, facebook.com, fb.com, fb.me) und Textlängen. Die Rechnung liegt in einem privaten Speicher (PDF/JPG/PNG, höchstens 5 MB), den nur der Besitzer und der Admin lesen können. Bei Freigabe oder Ablehnung wird sie gelöscht.
@@ -108,7 +109,7 @@ Geschrieben wird nur über Datenbank-Funktionen (`save_my_listing`, `admin_decid
 
 | Was | Wo |
 | --- | --- |
-| Batterie-Modelle | `MODELS` in `assets/js/app.js`, die Liste in `batteries_valid` in `supabase/schema.sql` und `MODEL_NAMES` in der Edge Function |
+| Marken und Batterie-Modelle | nur `assets/js/catalog.js` (siehe „Marken und Modelle ergänzen“) |
 | Währungen | `CURRENCIES` in `assets/js/app.js` und die `currency`-Prüfung in `schema.sql` |
 | Texte (Deutsch/Englisch) | `assets/js/i18n.js`. Eine weitere Sprache ergänzt man als Kopie des `en`-Blocks |
 | Farben, Schrift, Abstände | `:root` in `assets/css/app.css` |
@@ -136,6 +137,7 @@ assets/
   js/
     app.js              Oberfläche und Logik
     i18n.js             Texte Deutsch/Englisch
+    catalog.js          Marken und Batteriemodelle
     admin.js            Admin-Seite
     legal.js            Sprachumschalter für Impressum/Datenschutz
     config.js           Einstellungen (Supabase-Zugang, Karte)
@@ -145,9 +147,18 @@ assets/
   fonts/                Bricolage Grotesque, Instrument Sans (SIL OFL)
 supabase/
   schema.sql            Tabellen, Rechte, Funktionen, Datei-Speicher
-  functions/application/index.ts   Mails an dich und an die Verleiher
+  functions/application/index.ts   Mails an dich und an die Anbieter
 ```
 
 ## Lizenzen der Bestandteile
 
 Leaflet (BSD-2), Leaflet.markercluster (MIT), supabase-js (MIT), Bricolage Grotesque und Instrument Sans (SIL Open Font License). Kartendaten © OpenStreetMap-Mitwirkende (ODbL).
+
+## Marken und Modelle ergänzen
+
+Die Auswahl steht in [`assets/js/catalog.js`](assets/js/catalog.js). Eine neue Marke oder ein neues Modell ist ein Eintrag in der Liste (`id` in Kleinbuchstaben/Ziffern/Bindestrich, `name` wie angezeigt). Die IDs später nicht mehr ändern, sie stecken in gespeicherten Angeboten. Die Datenbank prüft nur das Format der IDs, du musst dort nichts anpassen. Wer sein Modell nicht findet, wählt „Anderes Modell“ bzw. „Andere Marke“ und tippt den Namen ein.
+
+## Update einer älteren Version
+
+Hast du die Datenbank schon mit einer früheren Version von `schema.sql` angelegt, führst du die aktuelle Datei im SQL Editor einfach noch einmal aus. Sie ergänzt die neuen Spalten (Anbietertyp, Website, Öffnungszeiten), setzt bei bestehenden Batterien die Marke „Foil Drive“ und ändert nichts an vorhandenen Daten. Danach die Edge Function `application` mit dem aktuellen Code neu bereitstellen (Mail-Texte).
+

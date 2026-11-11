@@ -30,6 +30,20 @@
     { id: 'demo-sylt', name: 'Sylt', placeLabel: 'Sylt, Deutschland|Sylt, Germany', lat: 54.91, lng: 8.31,
       batteries: [{ model: 'max-sport', priceDay: 40, priceWeek: 220 }, { model: 'max-power', priceDay: 50, priceWeek: 280 }],
       depositAmount: 100, idCheck: false, notes: '' },
+    { id: 'demo-medano-school', name: 'El Médano Foil School', kind: 'pro', website: 'https://example.com',
+      hours: 'Täglich 9–18 Uhr|Daily 9 am – 6 pm',
+      placeLabel: 'El Médano, Teneriffa|El Médano, Tenerife', lat: 28.05, lng: -16.54,
+      batteries: [{ brand: 'manta', model: 'takeoff-evo-endurance', label: 'Manta Foils TakeOff Evo Endurance', priceDay: 60, priceWeek: 330 },
+                  { brand: 'foil-drive', model: 'max-hp', priceDay: 55, priceWeek: null }],
+      depositAmount: 200, idCheck: true,
+      notes: 'Beispieltext: Kurse und Verleih, Material am Strand.|Sample text: lessons and rental, gear at the beach.' },
+    { id: 'demo-garda-rental', name: 'Garda Foil Rental', kind: 'pro', website: 'https://example.com',
+      hours: 'Mai–Okt, 10–19 Uhr|May–Oct, 10 am – 7 pm',
+      placeLabel: 'Riva del Garda, Italien|Riva del Garda, Italy', lat: 45.89, lng: 10.84,
+      batteries: [{ brand: 'duotone', model: 'battery-7a', label: 'Duotone Battery 7A', priceDay: 40, priceWeek: null },
+                  { brand: 'lift', model: 'gen4', label: 'Lift Foils Lift4 Battery', priceDay: 70, priceWeek: 380 },
+                  { brand: 'waydoo', model: 'foilboost', label: 'Waydoo FoilBoost', priceDay: 45, priceWeek: null }],
+      depositAmount: 100, idCheck: false, notes: '' },
     { id: 'demo-split', name: 'Split', placeLabel: 'Split, Kroatien|Split, Croatia', lat: 43.51, lng: 16.44,
       batteries: [{ model: 'f860', priceDay: 70, priceWeek: 400 }, { model: 'fm450', priceDay: 30, priceWeek: null }],
       depositAmount: 250, idCheck: true,
@@ -65,8 +79,9 @@
     function seedListing(s) {
       var en = window.I18N && window.I18N.lang() === 'en';
       return {
-        id: s.id, name: (en ? 'Demo ' : 'Demo ') + s.name, placeLabel: pickLang(s.placeLabel), lat: s.lat, lng: s.lng, approximate: true,
-        batteries: s.batteries.slice(), currency: 'EUR', depositAmount: s.depositAmount, idCheck: s.idCheck,
+        id: s.id, kind: s.kind || 'private', website: s.website || '', openingHours: s.hours ? pickLang(s.hours) : '',
+        name: 'Demo ' + s.name, placeLabel: pickLang(s.placeLabel), lat: s.lat, lng: s.lng, approximate: true,
+        batteries: s.batteries.map(function (b) { return Object.assign({ brand: 'foil-drive' }, b); }), currency: 'EUR', depositAmount: s.depositAmount, idCheck: s.idCheck,
         notes: pickLang(s.notes), active: true, whatsapp: '', email: '', status: 'approved', demo: true
       };
     }

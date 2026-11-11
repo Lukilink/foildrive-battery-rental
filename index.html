@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Foil Drive Battery Rental – Batterien von Ownern leihen</title>
-  <meta name="description" content="Foil Drive Batterien dürfen nicht ins Flugzeug. Auf dieser Karte findest du geprüfte Owner, die ihre Batterie am Urlaubsort verleihen – Max HP, Max Power, Max Sport, FM650, FM450, F860.">
+  <title>Foil Assist Battery Rental – Batterien vor Ort leihen</title>
+  <meta name="description" content="Foil-Assist-Batterien dürfen nicht ins Flugzeug. Auf dieser Karte findest du geprüfte Verleiher, Schulen und Rentals, die ihre Batterie am Urlaubsort verleihen – Foil Drive, Manta, RIIFT, Duotone, Lift, Waydoo und mehr.">
   <meta name="theme-color" content="#0a2540">
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/vendor/leaflet/leaflet.css">
@@ -16,10 +16,10 @@
   <a class="skip" href="#map" data-i18n="skip">Zur Karte springen</a>
 
   <header class="topbar">
-    <a class="brand" href="#top" data-i18n-attr="aria-label:brand.aria" aria-label="Foil Drive Battery Rental, Startseite">
+    <a class="brand" href="#top" data-i18n-attr="aria-label:brand.aria" aria-label="Foil Assist Battery Rental, Startseite">
       <img src="assets/img/favicon.svg" alt="" width="32" height="32">
       <span class="brand-name">Battery Rental</span>
-      <span class="brand-sub" data-i18n="brand.sub">Foil Drive Community</span>
+      <span class="brand-sub" data-i18n="brand.sub">Foil Assist Community</span>
     </a>
     <nav class="nav" data-i18n-attr="aria-label:nav.aria" aria-label="Hauptnavigation">
       <a class="nav-link" href="#so-gehts" data-i18n="nav.how">So funktioniert's</a>
@@ -40,7 +40,7 @@
       <div class="panel-top">
         <div class="intro">
           <h1 data-i18n="intro.h1">Der Akku darf nicht ins Flugzeug. Leih dir einen vor Ort.</h1>
-          <p data-i18n="intro.p">Reisende ohne Batterie finden hier Locals mit Foil Drive. Kontakt, Preis und Bezahlung klärt ihr direkt.</p>
+          <p data-i18n="intro.p">Reisende ohne Batterie finden hier Locals, Schulen und Rentals mit Foil-Assist-Batterien. Kontakt, Preis und Bezahlung klärt ihr direkt.</p>
         </div>
 
         <form class="search" id="search" role="search" autocomplete="off">
@@ -52,7 +52,13 @@
 
         <fieldset class="filters" id="filters">
           <legend data-i18n="filters.legend">Welche Batterie brauchst du?</legend>
-          <div class="chips" id="chips"></div>
+          <div class="kind-seg" id="kind-seg" role="radiogroup" data-i18n-attr="aria-label:filters.kind" aria-label="Anbieter">
+            <label><input type="radio" name="kind-filter" value="" checked><span data-i18n="kind.all">Alle</span></label>
+            <label><input type="radio" name="kind-filter" value="private"><span><i class="dot dot-private"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M13.4 2 4.5 13.6H11L10 22l9.5-12H13z"/></svg></i><span data-i18n="kind.private">Privat</span></span></label>
+            <label><input type="radio" name="kind-filter" value="pro"><span><i class="dot dot-pro"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3 2.5 11H5v9h5.5v-6h3v6H19v-9h2.5z"/></svg></i><span data-i18n="kind.pro">Schule / Verleih</span></span></label>
+          </div>
+          <div class="chips" id="brand-chips" role="group" data-i18n-attr="aria-label:filters.brand" aria-label="Marke"></div>
+          <div class="chips chips-models" id="model-chips" role="group" data-i18n-attr="aria-label:filters.model" aria-label="Modell" hidden></div>
         </fieldset>
       </div>
 
@@ -79,22 +85,22 @@
   <section class="info" id="so-gehts" aria-labelledby="info-title">
     <div class="info-inner">
       <h2 id="info-title" data-i18n="info.title">So funktioniert's</h2>
-      <p class="info-lead" data-i18n="info.lead">Foil-Drive-Batterien dürfen nicht mit ins Flugzeug. Also leihen sich Reisende eine vor Ort – von Locals, die am Spot zu Hause sind. Hier gibt es nur die Karte. Alles Weitere klärt ihr direkt miteinander.</p>
+      <p class="info-lead" data-i18n="info.lead">Foil-Assist-Batterien dürfen nicht mit ins Flugzeug. Also leihen sich Reisende eine vor Ort – bei Locals, Schulen und Rentals am Spot. Hier gibt es nur die Karte. Alles Weitere klärt ihr direkt miteinander.</p>
 
       <div class="flows">
         <div class="flow">
           <h3 data-i18n="flow.travel.h">Du reist</h3>
           <ol class="steps">
-            <li><strong data-i18n="flow.travel.1h">Reiseziel suchen.</strong> <span data-i18n="flow.travel.1p">Filtere nach der Batterie, die du brauchst.</span></li>
+            <li><strong data-i18n="flow.travel.1h">Reiseziel suchen.</strong> <span data-i18n="flow.travel.1p">Filtere nach Marke und Batteriemodell, die du brauchst.</span></li>
             <li><strong data-i18n="flow.travel.2h">Anmelden und Kontakt aufnehmen.</strong> <span data-i18n="flow.travel.2p">Die Kontaktdaten sehen angemeldete Mitglieder. Schreib per WhatsApp oder E-Mail.</span></li>
             <li><strong data-i18n="flow.travel.3h">Preis, Übergabe und Kaution klären.</strong> <span data-i18n="flow.travel.3p">Bezahlung und Deal laufen komplett außerhalb dieser Seite.</span></li>
           </ol>
         </div>
         <div class="flow">
-          <h3 data-i18n="flow.local.h">Du hast eine Batterie</h3>
+          <h3 data-i18n="flow.local.h">Du hast Batterien zu verleihen</h3>
           <ol class="steps">
             <li><strong data-i18n="flow.local.1h">Konto anlegen.</strong> <span data-i18n="flow.local.1p">Kostenlos, E-Mail und Passwort genügen.</span></li>
-            <li><strong data-i18n="flow.local.2h">Antrag stellen.</strong> <span data-i18n="flow.local.2p">Trag Batterien, Standort, Kontakt und Kaution ein und gib dein Instagram- oder Facebook-Profil an. Eine Rechnung hochzuladen ist optional.</span></li>
+            <li><strong data-i18n="flow.local.2h">Antrag stellen.</strong> <span data-i18n="flow.local.2p">Wähle, ob du privat oder als Schule / Rental anbietest. Trag Batterien, Standort, Kontakt und Kaution ein. Privat gibst du dein Instagram- oder Facebook-Profil an, Schulen und Rentals ihre Website und Öffnungszeiten.</span></li>
             <li><strong data-i18n="flow.local.3h">Freigabe abwarten.</strong> <span data-i18n="flow.local.3p">Wir prüfen jeden Antrag kurz. Du bekommst eine Mail, danach erscheint dein Pin. Pausieren oder löschen geht jederzeit.</span></li>
           </ol>
         </div>
@@ -107,8 +113,8 @@
       <h2 id="know-title" data-i18n="know.title">Gut zu wissen</h2>
       <dl class="know-grid">
         <div>
-          <dt data-i18n="know.verified.dt">Geprüfte Verleiher</dt>
-          <dd data-i18n="know.verified.dd">Jeder Verleiher wird vor der Freigabe kurz geprüft: Profil-Link und optional eine Rechnung. Erst danach erscheint der Pin auf der Karte.</dd>
+          <dt data-i18n="know.verified.dt">Geprüfte Anbieter</dt>
+          <dd data-i18n="know.verified.dd">Jeder Anbieter wird vor der Freigabe kurz geprüft: Profil-Link oder Website und optional eine Rechnung. Erst danach erscheint der Pin auf der Karte.</dd>
         </div>
         <div>
           <dt data-i18n="know.deposit.dt">Kaution und Übergabe</dt>
@@ -128,7 +134,7 @@
 
   <footer class="footer">
     <div class="info-inner footer-inner">
-      <p data-i18n="footer.tag">Ein Community-Projekt von Foil Drive Ownern für Foil Drive Owner. Betrieben von Ola Vibes S.L.</p>
+      <p data-i18n="footer.tag">Ein Community-Projekt von Foil-Assist-Fahrern für Foil-Assist-Fahrer. Betrieben von Ola Vibes S.L.</p>
       <ul class="footer-links">
         <li><a href="impressum.html" data-i18n="footer.imprint">Impressum</a></li>
         <li><a href="datenschutz.html" data-i18n="footer.privacy">Datenschutz</a></li>
@@ -137,7 +143,7 @@
         <li><button type="button" class="footer-lang" id="footer-lang" lang="en" data-i18n="footer.lang">English</button></li>
       </ul>
       <p class="footer-dedication" data-i18n="footer.dedication">Idea and inspired by Tom Earl ♥</p>
-      <p class="footer-small" data-i18n="footer.marks">Foil Drive und die Modellnamen sind Marken ihrer jeweiligen Inhaber.</p>
+      <p class="footer-small" data-i18n="footer.marks">Alle Marken- und Modellnamen gehören ihren jeweiligen Inhabern. Diese Seite ist unabhängig und nicht mit den Herstellern verbunden.</p>
     </div>
   </footer>
 
@@ -192,14 +198,31 @@
       <div class="dlg-body">
         <div class="status-box" id="offer-status" role="status" hidden></div>
 
+        <section class="sect" aria-labelledby="s-kind">
+          <h3 id="s-kind" data-i18n="offer.kind.h">Wer verleiht?</h3>
+          <div class="kind-pick" id="kind-pick" role="radiogroup" aria-labelledby="s-kind">
+            <label class="kind-opt">
+              <input type="radio" name="offer-kind" value="private" checked>
+              <span><strong><i class="dot dot-private"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M13.4 2 4.5 13.6H11L10 22l9.5-12H13z"/></svg></i><span data-i18n="offer.kind.private">Privat</span></strong>
+                <small data-i18n="offer.kind.private_hint">Ich verleihe meine eigenen Batterien.</small></span>
+            </label>
+            <label class="kind-opt">
+              <input type="radio" name="offer-kind" value="pro">
+              <span><strong><i class="dot dot-pro"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3 2.5 11H5v9h5.5v-6h3v6H19v-9h2.5z"/></svg></i><span data-i18n="offer.kind.pro">Schule / Verleih</span></strong>
+                <small data-i18n="offer.kind.pro_hint">Ich betreibe eine Foil-Schule oder einen Verleih.</small></span>
+            </label>
+          </div>
+        </section>
+
         <section class="sect" aria-labelledby="s-bat">
           <h3 id="s-bat" data-i18n="offer.bat.h">Welche Batterien verleihst du?</h3>
-          <p class="hint" data-i18n="offer.bat.hint">Preise sind optional. Ohne Preis steht „Anfrage“ auf der Karte.</p>
+          <p class="hint" data-i18n="offer.bat.hint">Wähle Marke und Modell. Preise sind optional, ohne Preis steht „Anfrage“ auf der Karte.</p>
           <div class="field field-inline">
             <label for="f-currency" data-i18n="offer.currency">Währung</label>
             <select class="input" id="f-currency"></select>
           </div>
           <div class="bat-rows" id="bat-rows"></div>
+          <button type="button" class="btn btn-quiet bat-add" id="bat-add" data-i18n="offer.bat.add">Weitere Batterie hinzufügen</button>
           <p class="err" id="err-batteries" hidden></p>
         </section>
 
@@ -264,17 +287,32 @@
           <p class="err" id="err-contact" hidden></p>
         </section>
 
+        <section class="sect" id="sect-pro" aria-labelledby="s-pro" hidden>
+          <h3 id="s-pro" data-i18n="offer.pro.h">Dein Betrieb</h3>
+          <p class="hint" data-i18n="offer.pro.hint">Diese Angaben sehen alle Besucher.</p>
+          <div class="field">
+            <label for="f-website" data-i18n="offer.pro.website">Website</label>
+            <input class="input" id="f-website" type="url" inputmode="url" autocomplete="url" autocapitalize="off" spellcheck="false" placeholder="https://…" maxlength="300" aria-describedby="err-website">
+            <p class="err" id="err-website" hidden></p>
+          </div>
+          <div class="field">
+            <label for="f-hours" data-i18n="offer.pro.hours">Öffnungszeiten</label>
+            <textarea class="input" id="f-hours" rows="2" maxlength="300" data-i18n-attr="placeholder:offer.pro.hours_ph" placeholder="z. B. Mo–Sa 9–18 Uhr, im Winter nach Absprache" aria-describedby="err-hours"></textarea>
+            <p class="err" id="err-hours" hidden></p>
+          </div>
+        </section>
+
         <section class="sect" aria-labelledby="s-proof">
           <h3 id="s-proof" data-i18n="offer.proof.h">Verifizierung</h3>
-          <p class="hint" data-i18n="offer.proof.hint">Damit wir sehen, dass du wirklich einen Foil Drive hast. Nur wir sehen diese Angaben, nie andere Nutzer.</p>
+          <p class="hint" id="proof-hint" data-i18n="offer.proof.hint">Damit wir sehen, dass ihr wirklich Foil-Assist-Batterien habt. Nur wir sehen diese Angaben, nie andere Nutzer.</p>
           <div class="field">
-            <label for="f-proof" data-i18n="offer.proof.url.label">Instagram- oder Facebook-Profil</label>
+            <label for="f-proof"><span data-i18n="offer.proof.url.label">Instagram- oder Facebook-Profil</span> <span class="opt" id="proof-opt" data-i18n="offer.opt" hidden>(optional)</span></label>
             <input class="input" id="f-proof" type="url" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://instagram.com/…" aria-describedby="hint-proof err-proof">
-            <p class="hint" id="hint-proof" data-i18n="offer.proof.url.hint">Am besten ein Profil, auf dem du mit deinem Foil Drive zu sehen bist.</p>
+            <p class="hint" id="hint-proof" data-i18n="offer.proof.url.hint">Am besten ein Profil, auf dem du mit deiner Batterie zu sehen bist.</p>
             <p class="err" id="err-proof" hidden></p>
           </div>
           <div class="field">
-            <label for="f-file"><span data-i18n="offer.proof.file.label">Rechnung von Foil Drive oder deinem Händler</span> <span class="opt" data-i18n="offer.opt">(optional)</span></label>
+            <label for="f-file"><span data-i18n="offer.proof.file.label">Rechnung vom Hersteller oder deinem Händler</span> <span class="opt" data-i18n="offer.opt">(optional)</span></label>
             <input class="input input-file" id="f-file" type="file" accept="application/pdf,image/jpeg,image/png,.pdf,.jpg,.jpeg,.png" aria-describedby="hint-file err-file">
             <p class="hint" id="hint-file" data-i18n="offer.proof.file.hint">PDF, JPG oder PNG, höchstens 5 MB. Dein Name muss darauf stehen. Wir löschen die Datei nach der Prüfung.</p>
             <p class="hint" id="file-current" hidden></p>
@@ -285,7 +323,7 @@
         <section class="sect" aria-labelledby="s-info">
           <h3 id="s-info" data-i18n="offer.info.h">Was sollen Leihende wissen?</h3>
           <div class="field">
-            <label for="f-name" data-i18n="offer.name.label">Name für die Anzeige</label>
+            <label for="f-name" id="lbl-name" data-i18n="offer.name.label">Name für die Anzeige</label>
             <input class="input" id="f-name" type="text" maxlength="60" autocomplete="nickname" data-i18n-attr="placeholder:offer.name.ph" placeholder="z. B. Lukas" aria-describedby="err-name">
             <p class="err" id="err-name" hidden></p>
           </div>
@@ -297,7 +335,7 @@
           <label class="check">
             <input type="checkbox" id="f-active" checked>
             <span><span data-i18n="offer.active.label">Angebot ist sichtbar</span>
-              <small data-i18n="offer.active.hint">Ausschalten, wenn die Batterie gerade nicht verfügbar ist.</small>
+              <small data-i18n="offer.active.hint">Ausschalten, wenn die Batterien gerade nicht verfügbar sind.</small>
             </span>
           </label>
         </section>
@@ -323,6 +361,7 @@
   <script src="assets/vendor/supabase/supabase.js"></script>
   <script src="assets/js/config.js"></script>
   <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/catalog.js"></script>
   <script src="assets/js/store-demo.js"></script>
   <script src="assets/js/store-supabase.js"></script>
   <script src="assets/js/app.js"></script>

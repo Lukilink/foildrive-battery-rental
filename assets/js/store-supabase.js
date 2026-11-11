@@ -9,7 +9,7 @@
   var CURRENCIES = ['EUR', 'CHF', 'GBP', 'USD', 'NOK', 'SEK', 'DKK', 'PLN'];
 
   // Spalten, die auch ein nicht angemeldeter Besucher lesen darf (Kontaktdaten gehören nicht dazu).
-  var PUBLIC_COLUMNS = 'id,display_name,place_label,lat,lng,approximate,batteries,currency,deposit_amount,id_check,notes,active,updated_at';
+  var PUBLIC_COLUMNS = 'id,kind,website,opening_hours,display_name,place_label,lat,lng,approximate,batteries,currency,deposit_amount,id_check,notes,active,updated_at';
   var MEMBER_COLUMNS = PUBLIC_COLUMNS + ',whatsapp,email';
 
   function t(key, params) { return window.I18N ? window.I18N.t(key, params) : key; }
@@ -34,12 +34,18 @@
   function fromRow(r) {
     return {
       id: r.id,
+      kind: r.kind === 'pro' ? 'pro' : 'private',
+      website: r.website || '',
+      openingHours: r.opening_hours || '',
       name: r.display_name,
       placeLabel: r.place_label || '',
       lat: r.lat,
       lng: r.lng,
       approximate: r.approximate !== false,
-      batteries: Array.isArray(r.batteries) ? r.batteries : [],
+      // ältere Einträge ohne Marke waren alle Foil Drive
+      batteries: (Array.isArray(r.batteries) ? r.batteries : []).map(function (b) {
+        return b && !b.brand ? Object.assign({ brand: 'foil-drive' }, b) : b;
+      }),
       currency: CURRENCIES.indexOf(r.currency) > -1 ? r.currency : 'EUR',
       depositAmount: r.deposit_amount == null ? null : Number(r.deposit_amount),
       idCheck: r.id_check === true,
@@ -161,6 +167,9 @@
         return step.then(function (path) {
           newPath = path;
           return sb.rpc('save_my_listing', { p: {
+            kind: data.kind === 'pro' ? 'pro' : 'private',
+            website: data.website || null,
+            opening_hours: data.openingHours || '',
             display_name: data.name,
             place_label: data.placeLabel || '',
             lat: data.lat,

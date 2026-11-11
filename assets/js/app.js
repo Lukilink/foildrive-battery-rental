@@ -1,4 +1,4 @@
-/* Foil Drive Battery Rental – App-Logik */
+/* Foil Assist Battery Rental – App-Logik */
 (function () {
   'use strict';
 
@@ -6,18 +6,10 @@
   var I18N = window.I18N;
   function t(key, params) { return I18N.t(key, params); }
 
-  /* Ändern oder erweitern: auch die Liste in supabase/schema.sql (Funktion batteries_valid) anpassen. */
-  var MODELS = [
-    { id: 'max-hp', name: 'Max HP' },
-    { id: 'max-power', name: 'Max Power' },
-    { id: 'max-sport', name: 'Max Sport' },
-    { id: 'max-sport-396', name: 'Max Sport 396' },
-    { id: 'fm650', name: 'FM650' },
-    { id: 'fm450', name: 'FM450' },
-    { id: 'f860', name: 'F860' }
-  ];
-  var MODEL_NAME = {};
-  MODELS.forEach(function (m) { MODEL_NAME[m.id] = m.name; });
+  /* Marken und Modelle stehen in assets/js/catalog.js */
+  var CAT = window.BATTERY_CATALOG;
+  function bName(b) { return CAT.fullName(b); }
+  var MAX_BAT_ROWS = 20;
   var CURRENCIES = ['EUR', 'CHF', 'GBP', 'USD', 'NOK', 'SEK', 'DKK', 'PLN'];
 
   var NOMINATIM = 'https://nominatim.openstreetmap.org';
@@ -25,6 +17,7 @@
   var MAX_FILE = 5 * 1024 * 1024;
   var FILE_TYPES = ['application/pdf', 'image/jpeg', 'image/png'];
   // Gleiche Regel wie in schema.sql (proof_url)
+  var WEB_RE = /^https:\/\/[^\s\/]+\.[^\s\/]+(\/\S*)?$/i;
   var PROOF_RE = /^https:\/\/([a-z0-9-]+\.)*(instagram\.com|facebook\.com|fb\.com|fb\.me)\/.+/i;
 
   var ICON = {
@@ -35,6 +28,7 @@
     chat: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M4 20l1.5-4.3A8.3 8.3 0 1 1 8.4 18.6z"/></svg>',
     mail: '<svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/></g></svg>',
     list: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01"/></svg>',
+    school: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3 2.5 11H5v9h5.5v-6h3v6H19v-9h2.5z"/></svg>',
     map: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M3 6.5 9 4l6 2.5L21 4v13.5L15 20l-6-2.5L3 20zM9 4v13.5M15 6.5V20"/></svg>'
   };
 
@@ -75,7 +69,7 @@
   function money(value, cur) {
     cur = CURRENCIES.indexOf(cur) > -1 ? cur : 'EUR';
     try {
-      return new Intl.NumberFormat(I18N.locale(), { style: 'currency', currency: cur, minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(value);
+      return new Intl.NumberFormat(I18N.locale(), { style: 'currency', currency: cur, minimumFractionDigits: value % 1 ? 2 : 0, maximumFractionDigits: 2 }).format(value);
     } catch (e) { return value + ' ' + cur; }
   }
   function currencySymbol(cur) {
@@ -124,7 +118,7 @@
     listings: [],
     loaded: false,
     failed: false,
-    filters: {},
+    filters: { kind: '', brands: {}, models: {} },
     selectedId: null,
     mine: null,
     anchor: null,
@@ -139,19 +133,32 @@
     for (var i = 0; i < state.listings.length; i++) if (state.listings[i].id === id) return state.listings[i];
     return null;
   }
-  function activeFilterIds() { return MODELS.filter(function (m) { return state.filters[m.id]; }).map(function (m) { return m.id; }); }
+  function selBrands() { return Object.keys(state.filters.brands).filter(function (k) { return state.filters.brands[k]; }); }
+  function selModels() { return Object.keys(state.filters.models).filter(function (k) { return state.filters.models[k]; }); }
+  function filterActive() { return !!(state.filters.kind || selBrands().length || selModels().length); }
+
+  /* Eine Batterie passt, wenn ihre Marke gewählt ist (und kein Modell dieser Marke gewählt wurde)
+     oder ihr Modell gewählt ist. Ohne Marken-/Modellfilter passt jede Batterie. */
+  function batteryMatches(b) {
+    var brands = selBrands(), models = selModels();
+    if (!brands.length && !models.length) return true;
+    var brand = b.brand || 'foil-drive';
+    if (models.indexOf(brand + '/' + b.model) > -1) return true;
+    if (brands.indexOf(brand) > -1) {
+      return !models.some(function (k) { return k.indexOf(brand + '/') === 0; });
+    }
+    return false;
+  }
   function matchesFilter(l) {
-    var f = activeFilterIds();
-    if (!f.length) return true;
-    return l.batteries.some(function (b) { return f.indexOf(b.model) > -1; });
+    if (state.filters.kind && (l.kind || 'private') !== state.filters.kind) return false;
+    return l.batteries.some(batteryMatches);
   }
   function visibleListings() { return state.listings.filter(matchesFilter); }
 
   /* Günstigster Preis unter den (ggf. gefilterten) Batterien; field = 'priceDay' | 'priceWeek' */
   function lowest(l, field) {
-    var f = activeFilterIds();
     var prices = l.batteries
-      .filter(function (b) { return !f.length || f.indexOf(b.model) > -1; })
+      .filter(batteryMatches)
       .map(function (b) { return b[field]; })
       .filter(isNum);
     return prices.length ? Math.min.apply(null, prices) : null;
@@ -162,11 +169,12 @@
   function pinIcon(l, selected) {
     var p = lowest(l, 'priceDay');
     var label = p == null ? t('request') : t('pin.from', { p: money(p, l.currency) });
+    var pro = l.kind === 'pro';
     return L.divIcon({
       className: 'pin-icon',
       iconSize: [0, 0],
       iconAnchor: [0, 0],
-      html: '<div class="pin' + (selected ? ' is-selected' : '') + '"><span class="pin-bolt">' + ICON.bolt + '</span><span>' + esc(label) + '</span></div>'
+      html: '<div class="pin' + (pro ? ' is-pro' : '') + (selected ? ' is-selected' : '') + '"><span class="pin-bolt">' + (pro ? ICON.school : ICON.bolt) + '</span><span>' + esc(label) + '</span></div>'
     });
   }
 
@@ -236,24 +244,61 @@
 
   /* ---------- Liste ---------- */
 
-  function renderChips() {
-    var box = $('#chips');
-    MODELS.forEach(function (m) {
-      var input = h('input', { type: 'checkbox', value: m.id, onchange: function () {
-        state.filters[m.id] = input.checked;
+  function filterBrands() {
+    return CAT.brands.concat([{ id: CAT.OTHER, name: t('brand.other'), models: [] }]);
+  }
+
+  function chip(label, checked, onchange) {
+    var input = h('input', { type: 'checkbox', checked: checked ? true : null, onchange: function () { onchange(input.checked); } });
+    return h('label', { class: 'chip' }, input, h('span', { text: label }));
+  }
+
+  function renderFilters() {
+    var box = $('#brand-chips');
+    box.innerHTML = '';
+    filterBrands().forEach(function (br) {
+      box.appendChild(chip(br.name, !!state.filters.brands[br.id], function (on) {
+        state.filters.brands[br.id] = on;
+        if (!on) Object.keys(state.filters.models).forEach(function (k) { if (k.indexOf(br.id + '/') === 0) delete state.filters.models[k]; });
+        renderModelChips();
         onFiltersChanged();
-      } });
-      box.appendChild(h('label', { class: 'chip' }, input, h('span', { text: m.name })));
+      }));
+    });
+    renderModelChips();
+  }
+
+  /* Modell-Chips erscheinen erst, wenn mindestens eine Marke gewählt ist. */
+  function renderModelChips() {
+    var box = $('#model-chips');
+    box.innerHTML = '';
+    var brands = CAT.brands.filter(function (b) { return state.filters.brands[b.id]; });
+    box.hidden = !brands.length;
+    var multi = brands.length > 1;
+    brands.forEach(function (br) {
+      br.models.concat([{ id: CAT.OTHER, name: t('model.other') }]).forEach(function (m) {
+        var key = br.id + '/' + m.id;
+        box.appendChild(chip((multi ? br.name + ' ' : '') + m.name, !!state.filters.models[key], function (on) {
+          state.filters.models[key] = on;
+          onFiltersChanged();
+        }));
+      });
+    });
+  }
+
+  function bindFilters() {
+    $$('input[name="kind-filter"]').forEach(function (r) {
+      r.addEventListener('change', function () { if (r.checked) { state.filters.kind = r.value; onFiltersChanged(); } });
     });
     $('#reset-filters').addEventListener('click', function () {
-      state.filters = {};
-      $$('#chips input').forEach(function (i) { i.checked = false; });
+      state.filters = { kind: '', brands: {}, models: {} };
+      $$('input[name="kind-filter"]').forEach(function (r) { r.checked = (r.value === ''); });
+      renderFilters();
       onFiltersChanged();
     });
   }
 
   function onFiltersChanged() {
-    $('#reset-filters').hidden = !activeFilterIds().length;
+    $('#reset-filters').hidden = !filterActive();
     if (state.selectedId && !matchesFilter(byId(state.selectedId) || { batteries: [] })) closeDetail();
     rebuildMarkers();
     renderList();
@@ -319,7 +364,6 @@
       return;
     }
 
-    var f = activeFilterIds();
     shown.slice(0, 150).forEach(function (item) {
       var l = item.l;
       var day = lowest(l, 'priceDay'), week = lowest(l, 'priceWeek');
@@ -332,7 +376,7 @@
       if (state.anchor) place += (place ? ' · ' : '') + fmtKm(item.d);
 
       var tags = h('span', { class: 'tags' }, l.batteries.map(function (bt) {
-        return h('span', { class: 'tag' + (f.indexOf(bt.model) > -1 ? ' is-match' : ''), text: MODEL_NAME[bt.model] || bt.model });
+        return h('span', { class: 'tag' + (filterActive() && batteryMatches(bt) ? ' is-match' : ''), text: bName(bt) });
       }));
 
       var btn = h('button', {
@@ -341,7 +385,7 @@
         onclick: function () { if (isMobile()) setView('map'); selectListing(l.id); }
       },
         h('span', { class: 'row-main' },
-          h('span', { class: 'row-name', text: l.name }),
+          h('span', { class: 'row-name' }, l.name, l.kind === 'pro' ? h('span', { class: 'kind-badge', text: t('kind.pro') }) : null),
           h('span', { class: 'row-place', text: place }),
           tags),
         priceBox);
@@ -435,6 +479,11 @@
     markActiveRow();
   }
 
+  function safeHttps(u) { return typeof u === 'string' && /^https:\/\//i.test(u); }
+  function hostOf(u) {
+    try { return new URL(u).hostname.replace(/^www\./, ''); } catch (e) { return u; }
+  }
+
   function whatsappDigits(num) { return String(num).replace(/\D/g, ''); }
 
   function depositLine(l) {
@@ -450,14 +499,14 @@
     var isMine = state.mine && state.mine.id === l.id;
     var bodyRows = l.batteries.map(function (b) {
       return h('tr', null,
-        h('td', { text: MODEL_NAME[b.model] || b.model }),
+        h('td', { text: bName(b) }),
         h('td', isNum(b.priceDay) ? { text: money(b.priceDay, l.currency) } : { class: 'none', text: '–' }),
         h('td', isNum(b.priceWeek) ? { text: money(b.priceWeek, l.currency) } : { class: 'none', text: '–' }));
     });
     var anyMissing = l.batteries.some(function (b) { return !isNum(b.priceDay) || !isNum(b.priceWeek); });
 
     var contact = h('div', { class: 'contact' });
-    var names = l.batteries.map(function (b) { return MODEL_NAME[b.model] || b.model; }).join(', ');
+    var names = l.batteries.map(bName).join(', ');
     var text = t('msg.text', { name: l.name, bats: names });
     if (isMine) {
       contact.appendChild(h('p', { text: t('contact.mine') }));
@@ -486,7 +535,10 @@
 
     var body = h('div', { class: 'detail-body' },
       h('h2', { id: 'detail-title', tabindex: '-1', text: l.name }),
+      l.kind === 'pro' ? h('p', { class: 'detail-kind' }, h('span', { class: 'kind-badge', text: t('kind.pro') })) : null,
       h('p', { class: 'detail-place', html: ICON.pin }, l.placeLabel || t('detail.no_place')),
+      l.kind === 'pro' && safeHttps(l.website) ? h('p', { class: 'detail-web' },
+        h('a', { href: l.website, target: '_blank', rel: 'noopener noreferrer nofollow', text: hostOf(l.website), 'aria-label': t('detail.website_open') + ': ' + hostOf(l.website) })) : null,
       l.approximate ? h('p', { class: 'note-approx', text: t('detail.approx') }) : null,
       h('table', { class: 'bat-table' },
         h('caption', { class: 'sr-only', text: t('detail.caption') }),
@@ -499,6 +551,8 @@
       h('div', { class: 'deposit' },
         h('p', { class: 'deposit-main', text: depositLine(l) }),
         l.idCheck ? h('p', { class: 'deposit-id', text: t('detail.id_check') }) : null),
+      l.kind === 'pro' && l.openingHours ? h('h3', { text: t('detail.hours_h') }) : null,
+      l.kind === 'pro' && l.openingHours ? h('p', { class: 'notes', text: l.openingHours }) : null,
       l.notes ? h('h3', { text: t('detail.notes_h') }) : null,
       l.notes ? h('p', { class: 'notes', text: l.notes }) : null,
       contact,
@@ -562,6 +616,7 @@
     applyMeta();
     updateAuthUI();
     labelViewToggle();
+    renderFilters();
     updateBatLabels();
     if ($('#dlg-auth').open) setAuthMode(authMode);
     if ($('#dlg-offer').open) refreshOfferTexts();
@@ -643,9 +698,9 @@
   var INPUT_OF = {
     'auth-email': 'auth-email', 'auth-pw': 'auth-pw', 'auth-terms': 'auth-terms',
     name: 'f-name', place: 'f-place', wa: 'f-wa', mail: 'f-mail', notes: 'f-notes',
-    deposit: 'f-deposit', proof: 'f-proof', file: 'f-file'
+    deposit: 'f-deposit', proof: 'f-proof', file: 'f-file', website: 'f-website', hours: 'f-hours'
   };
-  var OFFER_ERR_KEYS = ['name', 'place', 'wa', 'mail', 'notes', 'batteries', 'location', 'contact', 'deposit', 'proof', 'file'];
+  var OFFER_ERR_KEYS = ['name', 'place', 'wa', 'mail', 'notes', 'batteries', 'location', 'contact', 'deposit', 'proof', 'file', 'website', 'hours'];
 
   function setErr(key, msg) {
     var e = $('#err-' + key);
@@ -692,30 +747,131 @@
 
   var pick = { map: null, marker: null, lat: null, lng: null, dirty: false, labelTouched: false, wasApprox: true };
 
+  var batSeq = 0;
+
   function buildOfferForm() {
-    var rows = $('#bat-rows');
-    MODELS.forEach(function (m) {
-      var cb = h('input', { type: 'checkbox', name: 'model', value: m.id, onchange: function () { syncBatRow(m.id); } });
-      var day = h('input', { class: 'input', type: 'text', inputmode: 'decimal', id: 'pd-' + m.id, 'data-model': m.id, 'data-kind': 'day', disabled: true, autocomplete: 'off' });
-      var week = h('input', { class: 'input', type: 'text', inputmode: 'decimal', id: 'pw-' + m.id, 'data-model': m.id, 'data-kind': 'week', disabled: true, autocomplete: 'off' });
-      rows.appendChild(h('div', { class: 'bat is-off', id: 'bat-' + m.id },
-        h('label', { class: 'bat-check' }, cb, m.name),
-        h('div', { class: 'money' }, day, h('span', { 'data-unit': 'day' })),
-        h('div', { class: 'money' }, week, h('span', { 'data-unit': 'week' }))));
-    });
     var sel = $('#f-currency');
     CURRENCIES.forEach(function (c) { sel.appendChild(h('option', { value: c, text: c + ' (' + currencySymbol(c) + ')' })); });
     sel.addEventListener('change', updateUnits);
-    updateBatLabels();
+    $('#bat-add').addEventListener('click', function () { addBatRow(null); });
+    $$('input[name="offer-kind"]').forEach(function (r) {
+      r.addEventListener('change', function () { applyKindUI(); setErr('proof', ''); setErr('website', ''); });
+    });
     updateUnits();
   }
 
-  /* Beschriftungen der Preisfelder (sprachabhängig) */
+  function offerKind() {
+    var r = $('input[name="offer-kind"]:checked');
+    return r ? r.value : 'private';
+  }
+
+  /* Privat oder Schule/Verleih: blendet Betriebs-Angaben ein und passt Beschriftungen an. */
+  function applyKindUI() {
+    var pro = offerKind() === 'pro';
+    $('#sect-pro').hidden = !pro;
+    $('#proof-opt').hidden = !pro;
+    $('#proof-hint').textContent = t(pro ? 'offer.proof.hint_pro' : 'offer.proof.hint');
+    $('#lbl-name').textContent = t(pro ? 'offer.name.label_pro' : 'offer.name.label');
+    $('#f-name').setAttribute('placeholder', t(pro ? 'offer.name.ph_pro' : 'offer.name.ph'));
+  }
+
+  function batRows() { return $$('#bat-rows .bat'); }
+
+  function brandOptions(sel, keep) {
+    sel.innerHTML = '';
+    sel.appendChild(h('option', { value: '', text: t('offer.bat.pick_brand') }));
+    CAT.brands.forEach(function (b) { sel.appendChild(h('option', { value: b.id, text: b.name })); });
+    sel.appendChild(h('option', { value: CAT.OTHER, text: t('brand.other') }));
+    sel.value = keep || '';
+  }
+
+  function modelOptions(sel, brandId, keep) {
+    sel.innerHTML = '';
+    sel.appendChild(h('option', { value: '', text: t('offer.bat.pick_model') }));
+    var br = CAT.brand(brandId);
+    if (br) {
+      br.models.forEach(function (m) { sel.appendChild(h('option', { value: m.id, text: m.name })); });
+      sel.appendChild(h('option', { value: CAT.OTHER, text: t('model.other') }));
+    }
+    sel.value = keep || '';
+  }
+
+  /* Eine Zeile pro Batterie: Marke, Modell (bei "Anderes" ein Namensfeld), Preise, Entfernen. */
+  function addBatRow(item) {
+    if (batRows().length >= MAX_BAT_ROWS) return null;
+    var id = ++batSeq;
+    var brandSel = h('select', { class: 'input', id: 'bb-' + id, 'data-f': 'brand' });
+    var modelSel = h('select', { class: 'input', id: 'bm-' + id, 'data-f': 'model' });
+    var otherInp = h('input', { class: 'input', type: 'text', id: 'bo-' + id, 'data-f': 'other', maxlength: '60', autocomplete: 'off', hidden: true });
+    var day = h('input', { class: 'input', type: 'text', inputmode: 'decimal', id: 'pd-' + id, 'data-f': 'day', autocomplete: 'off' });
+    var week = h('input', { class: 'input', type: 'text', inputmode: 'decimal', id: 'pw-' + id, 'data-f': 'week', autocomplete: 'off' });
+    var rm = h('button', { type: 'button', class: 'btn btn-quiet btn-small bat-rm', 'data-f': 'remove', text: t('offer.bat.remove') });
+    var pickBox = h('div', { class: 'bat-pick' }, brandSel, modelSel);
+    var row = h('div', { class: 'bat' },
+      pickBox,
+      otherInp,
+      h('div', { class: 'bat-prices' },
+        h('div', { class: 'money' }, day, h('span', { 'data-unit': 'day' })),
+        h('div', { class: 'money' }, week, h('span', { 'data-unit': 'week' })),
+        rm));
+
+    function sync() {
+      var brand = brandSel.value;
+      var isOtherBrand = brand === CAT.OTHER;
+      var needName = isOtherBrand || modelSel.value === CAT.OTHER;
+      modelSel.hidden = isOtherBrand;
+      pickBox.classList.toggle('is-single', isOtherBrand);
+      modelSel.disabled = !brand || isOtherBrand;
+      otherInp.hidden = !needName;
+      otherInp.setAttribute('placeholder', isOtherBrand ? t('offer.bat.other_ph') : t('offer.bat.other_name'));
+      otherInp.setAttribute('aria-label', isOtherBrand ? t('offer.bat.other_name_brand') : t('offer.bat.other_name'));
+    }
+    brandSel.addEventListener('change', function () { modelOptions(modelSel, brandSel.value, ''); sync(); });
+    modelSel.addEventListener('change', sync);
+    rm.addEventListener('click', function () {
+      row.remove();
+      if (!batRows().length) addBatRow(null);
+      $('#bat-add').disabled = batRows().length >= MAX_BAT_ROWS;
+      setErr('batteries', '');
+    });
+
+    brandOptions(brandSel, item ? item.brand : '');
+    modelOptions(modelSel, item ? item.brand : '', item && item.brand !== CAT.OTHER ? item.model : '');
+    if (item && item.name) otherInp.value = item.name;
+    if (item) {
+      day.value = fmtNum(item.priceDay);
+      week.value = fmtNum(item.priceWeek);
+    }
+    sync();
+    $('#bat-rows').appendChild(row);
+    labelBatRow(row);
+    updateUnits();
+    $('#bat-add').disabled = batRows().length >= MAX_BAT_ROWS;
+    return row;
+  }
+
+  function labelBatRow(row) {
+    var f = function (n) { return row.querySelector('[data-f="' + n + '"]'); };
+    f('brand').setAttribute('aria-label', t('offer.bat.brand'));
+    f('model').setAttribute('aria-label', t('offer.bat.model'));
+    f('day').setAttribute('aria-label', t('offer.aria.day', { m: t('offer.bat.model') }));
+    f('week').setAttribute('aria-label', t('offer.aria.week', { m: t('offer.bat.model') }));
+    f('day').setAttribute('placeholder', t('offer.ph.day'));
+    f('week').setAttribute('placeholder', t('offer.ph.week'));
+    f('remove').textContent = t('offer.bat.remove');
+  }
+
+  /* Beschriftungen (sprachabhängig) neu setzen, Auswahl bleibt erhalten */
   function updateBatLabels() {
-    $$('#bat-rows input[data-model]').forEach(function (inp) {
-      var day = inp.getAttribute('data-kind') === 'day';
-      inp.setAttribute('aria-label', t(day ? 'offer.aria.day' : 'offer.aria.week', { m: MODEL_NAME[inp.getAttribute('data-model')] }));
-      inp.setAttribute('placeholder', t(day ? 'offer.ph.day' : 'offer.ph.week'));
+    batRows().forEach(function (row) {
+      var f = function (n) { return row.querySelector('[data-f="' + n + '"]'); };
+      var brand = f('brand').value, model = f('model').value;
+      brandOptions(f('brand'), brand);
+      modelOptions(f('model'), brand, model);
+      var isOtherBrand = brand === CAT.OTHER;
+      f('other').setAttribute('placeholder', isOtherBrand ? t('offer.bat.other_ph') : t('offer.bat.other_name'));
+      f('other').setAttribute('aria-label', isOtherBrand ? t('offer.bat.other_name_brand') : t('offer.bat.other_name'));
+      labelBatRow(row);
     });
     updateUnits();
   }
@@ -727,13 +883,6 @@
       s.textContent = t(s.getAttribute('data-unit') === 'day' ? 'offer.unit.day' : 'offer.unit.week', { c: sym });
     });
     $('#deposit-unit').textContent = sym;
-  }
-
-  function syncBatRow(id) {
-    var on = $('#bat-' + id + ' input[type=checkbox]').checked;
-    $('#bat-' + id).classList.toggle('is-off', !on);
-    $('#pd-' + id).disabled = !on;
-    $('#pw-' + id).disabled = !on;
   }
 
   function fmtNum(n) {
@@ -780,6 +929,7 @@
     var fc = $('#file-current');
     fc.hidden = !cur;
     fc.textContent = cur ? t('offer.proof.file.current', { name: fileLabel(cur) }) : '';
+    applyKindUI();
     updateUnits();
   }
 
@@ -787,13 +937,13 @@
     $('#f-name').value = l ? l.name : '';
     $('#f-currency').value = l ? l.currency : 'EUR';
     updateUnits();
-    MODELS.forEach(function (m) {
-      var b = l && l.batteries.filter(function (x) { return x.model === m.id; })[0];
-      $('#bat-' + m.id + ' input[type=checkbox]').checked = !!b;
-      $('#pd-' + m.id).value = b ? fmtNum(b.priceDay) : '';
-      $('#pw-' + m.id).value = b ? fmtNum(b.priceWeek) : '';
-      syncBatRow(m.id);
-    });
+    var kindRadio = $('input[name="offer-kind"][value="' + (l && l.kind === 'pro' ? 'pro' : 'private') + '"]');
+    kindRadio.checked = true;
+    $('#f-website').value = l ? l.website || '' : '';
+    $('#f-hours').value = l ? l.openingHours || '' : '';
+    $('#bat-rows').innerHTML = '';
+    if (l && l.batteries.length) l.batteries.forEach(function (b) { addBatRow(b.brand ? b : Object.assign({ brand: 'foil-drive' }, b)); });
+    else addBatRow(null);
     $('#f-deposit').value = l ? fmtNum(l.depositAmount) : '';
     $('#f-idcheck').checked = l ? l.idCheck : false;
     $('#f-place').value = l ? l.placeLabel : '';
@@ -947,17 +1097,39 @@
     var first = null;
     function fail(key, msg, focusEl) { errors[key] = msg; if (!first) first = focusEl; }
 
+    var kind = offerKind();
+    var pro = kind === 'pro';
+
     // Reihenfolge wie im Formular, damit der erste Fehler oben fokussiert wird
     var batteries = [];
-    var priceError = null;
-    MODELS.forEach(function (m) {
-      if (!$('#bat-' + m.id + ' input[type=checkbox]').checked) return;
-      var d = parsePrice($('#pd-' + m.id).value), w = parsePrice($('#pw-' + m.id).value);
-      if (d.error || w.error) { priceError = priceError || { id: m.id, name: m.name }; return; }
-      batteries.push({ model: m.id, priceDay: d.value, priceWeek: w.value });
+    var seen = {};
+    var batErr = null;
+    function batFail(msg, el) { if (!batErr) batErr = { msg: msg, el: el }; }
+    batRows().forEach(function (row) {
+      var f = function (n) { return row.querySelector('[data-f="' + n + '"]'); };
+      var brand = f('brand').value;
+      var model = brand === CAT.OTHER ? CAT.OTHER : f('model').value;
+      var other = f('other').value.trim();
+      var dRaw = f('day').value, wRaw = f('week').value;
+      if (!brand && !model && !other && !dRaw.trim() && !wRaw.trim()) return;   // leere Zeile ignorieren
+      if (!brand || !model) { batFail(t('offer.err.bat_pick'), !brand ? f('brand') : f('model')); return; }
+      var needName = brand === CAT.OTHER || model === CAT.OTHER;
+      if (needName && (other.length < 2 || other.length > 60)) { batFail(t('offer.err.bat_other'), f('other')); return; }
+      var label = CAT.labelFor(brand, model, other);
+      var d = parsePrice(dRaw), w = parsePrice(wRaw);
+      if (d.error || w.error) { batFail(t('offer.err.bat_price', { m: label }), d.error ? f('day') : f('week')); return; }
+      var dupKey = needName ? brand + '/' + model + '/' + other.toLowerCase() : brand + '/' + model;
+      if (seen[dupKey]) { batFail(t('offer.err.bat_dup', { m: label }), f('brand')); return; }
+      seen[dupKey] = true;
+      var item = { brand: brand, model: model };
+      if (needName) item.name = other;
+      item.label = label;
+      item.priceDay = d.value;
+      item.priceWeek = w.value;
+      batteries.push(item);
     });
-    if (priceError) fail('batteries', t('offer.err.bat_price', { m: priceError.name }), $('#pd-' + priceError.id));
-    else if (!batteries.length) fail('batteries', t('offer.err.bat_none'), $('#bat-' + MODELS[0].id + ' input[type=checkbox]'));
+    if (batErr) fail('batteries', batErr.msg, batErr.el);
+    else if (!batteries.length) fail('batteries', t('offer.err.bat_none'), batRows()[0].querySelector('[data-f="brand"]'));
 
     var dep = parseDeposit($('#f-deposit').value);
     if (dep.error) fail('deposit', t('offer.err.dep'), $('#f-deposit'));
@@ -973,8 +1145,20 @@
     if (mail && !validEmail(mail)) fail('mail', t('offer.err.mail'), $('#f-mail'));
     if (!wa.error && !wa.value && !mail) fail('contact', t('offer.err.contact'), $('#f-wa'));
 
+    var website = '', hours = '';
+    if (pro) {
+      website = normalizeProofUrl($('#f-website').value);
+      if (!WEB_RE.test(website) || website.length > 300) fail('website', t('offer.err.website'), $('#f-website'));
+      hours = $('#f-hours').value.trim();
+      if (hours.length < 2 || hours.length > 300) fail('hours', t('offer.err.hours'), $('#f-hours'));
+    }
+
+    // Privat: Instagram/Facebook ist Pflicht. Schule/Verleih: Website genügt, ein Profil ist optional.
     var proof = normalizeProofUrl($('#f-proof').value);
-    if (!PROOF_RE.test(proof) || proof.length > 300) fail('proof', t('offer.err.proof'), $('#f-proof'));
+    if (pro) {
+      if (!$('#f-proof').value.trim()) proof = website;
+      else if (!WEB_RE.test(proof) || proof.length > 300) fail('proof', t('offer.err.proof_pro'), $('#f-proof'));
+    } else if (!PROOF_RE.test(proof) || proof.length > 300) fail('proof', t('offer.err.proof'), $('#f-proof'));
 
     var file = $('#f-file').files && $('#f-file').files[0] || null;
     if (file) {
@@ -999,6 +1183,7 @@
     return {
       file: file,
       data: {
+        kind: kind, website: website, openingHours: hours,
         name: name, placeLabel: place, lat: lat, lng: lng, approximate: approx,
         batteries: batteries, currency: $('#f-currency').value,
         depositAmount: dep.value, idCheck: $('#f-idcheck').checked,
@@ -1103,10 +1288,11 @@
     $('#btn-pick-locate').addEventListener('click', pickLocate);
     $('#f-search').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); pickSearch(); } });
     $('#f-place').addEventListener('input', function () { pick.labelTouched = true; });
+    bindFilters();
 
     // Fehlermeldungen verschwinden, sobald man das Feld anfasst
     [['f-name', 'name'], ['f-place', 'place'], ['f-wa', 'wa'], ['f-mail', 'mail'], ['f-notes', 'notes'],
-     ['f-deposit', 'deposit'], ['f-proof', 'proof'], ['f-file', 'file']].forEach(function (p) {
+     ['f-deposit', 'deposit'], ['f-proof', 'proof'], ['f-file', 'file'], ['f-website', 'website'], ['f-hours', 'hours']].forEach(function (p) {
       var ev = p[0] === 'f-file' ? 'change' : 'input';
       $('#' + p[0]).addEventListener(ev, function () {
         setErr(p[1], '');
@@ -1143,7 +1329,7 @@
 
     if (CFG.contactEmail) {
       $('#report-li').hidden = false;
-      $('#report-link').href = 'mailto:' + CFG.contactEmail + '?subject=' + encodeURIComponent('Foil Drive Battery Rental: report a listing');
+      $('#report-link').href = 'mailto:' + CFG.contactEmail + '?subject=' + encodeURIComponent('Foil Assist Battery Rental: report a listing');
     }
 
     I18N.onChange(onLangChange);
@@ -1161,7 +1347,7 @@
 
     I18N.apply(document);
     applyMeta();
-    renderChips();
+    renderFilters();
     buildOfferForm();
     initMap();
     bindEvents();

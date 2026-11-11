@@ -1,12 +1,8 @@
-/* Admin-Seite: Verleiher-Anträge prüfen, freigeben oder ablehnen. Nur Deutsch. */
+/* Admin-Seite: Anträge von Verleihern, Schulen und Rentals prüfen, freigeben oder ablehnen. Nur Deutsch. */
 (function () {
   'use strict';
 
   var CFG = window.BATTERY_RENTAL_CONFIG || {};
-  var MODEL_NAME = {
-    'max-hp': 'Max HP', 'max-power': 'Max Power', 'max-sport': 'Max Sport', 'max-sport-396': 'Max Sport 396',
-    'fm650': 'FM650', 'fm450': 'FM450', 'f860': 'F860'
-  };
   var STATUS_LABEL = { pending: 'Offen', approved: 'Freigegeben', rejected: 'Abgelehnt' };
 
   function $(s) { return document.querySelector(s); }
@@ -50,12 +46,16 @@
     return [h('dt', { text: label }), h('dd', null, content)];
   }
 
+  function batteryName(b) {
+    return (window.BATTERY_CATALOG && window.BATTERY_CATALOG.fullName(b)) || b.label || b.model;
+  }
+
   function batteryText(a) {
     return (a.batteries || []).map(function (b) {
       var p = [];
       if (typeof b.priceDay === 'number') p.push(money(b.priceDay, a.currency) + '/Tag');
       if (typeof b.priceWeek === 'number') p.push(money(b.priceWeek, a.currency) + '/Woche');
-      return (MODEL_NAME[b.model] || b.model) + (p.length ? ' (' + p.join(', ') + ')' : '');
+      return (batteryName(b)) + (p.length ? ' (' + p.join(', ') + ')' : '');
     }).join(', ');
   }
 
@@ -125,12 +125,15 @@
         h('span', { class: 'badge badge-' + a.status, text: STATUS_LABEL[a.status] || a.status })),
       h('p', { class: 'muted', text: 'Eingereicht ' + date(a.created_at) + (a.reviewed_at ? ' · geprüft ' + date(a.reviewed_at) : '') + (a.active ? '' : ' · pausiert') }),
       h('dl', { class: 'app-dl' },
+        row('Art', a.kind === 'pro' ? 'Schule / Verleih' : 'Privat'),
         row('Konto', a.applicant_email),
         row('Ort', [a.place_label || '–', ' ', h('a', { href: osm, target: '_blank', rel: 'noopener noreferrer', text: '(Karte)' })]),
         row('Batterien', batteryText(a)),
         row('Kaution', depositText(a)),
         row('WhatsApp', a.whatsapp || '–'),
         row('E-Mail', a.email || '–'),
+        a.kind === 'pro' ? row('Website', safeHttps(a.website) ? h('a', { href: a.website, target: '_blank', rel: 'noopener noreferrer nofollow', text: a.website }) : (a.website || '–')) : null,
+        a.kind === 'pro' ? row('Öffnungszeiten', a.opening_hours || '–') : null,
         row('Profil', proofLink),
         row('Rechnung', fileCell),
         a.notes ? row('Hinweise', a.notes) : null,

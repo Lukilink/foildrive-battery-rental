@@ -1,4 +1,4 @@
-// Edge Function "application": verschickt die Mails rund um Verleiher-Anträge.
+// Edge Function "application": verschickt die Mails rund um Anträge von Verleihern, Schulen und Rentals.
 //
 //   { action: "submitted" }                      vom Verleiher nach dem Speichern  → Mail an dich (Admin)
 //   { action: "decide", id, decision, reason? }  von dir auf der Admin-Seite        → Mail an den Verleiher
@@ -21,11 +21,6 @@ const cors = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
-};
-
-const MODEL_NAMES: Record<string, string> = {
-  'max-hp': 'Max HP', 'max-power': 'Max Power', 'max-sport': 'Max Sport', 'max-sport-396': 'Max Sport 396',
-  'fm650': 'FM650', 'fm450': 'FM450', 'f860': 'F860',
 };
 
 type Lang = 'de' | 'en';
@@ -53,23 +48,27 @@ async function sendMail(mail: Mail): Promise<void> {
     auth: { user, pass },
     tls: { rejectUnauthorized: Deno.env.get('SMTP_INSECURE_TEST') !== '1' },
   });
-  const fromName = oneLine(Deno.env.get('FROM_NAME') ?? 'Foil Drive Battery Rental');
+  const fromName = oneLine(Deno.env.get('FROM_NAME') ?? 'Foil Assist Battery Rental');
   await transport.sendMail({ from: `"${fromName}" <${user}>`, to: mail.to, subject: mail.subject, text: mail.text });
 }
 
 function adminMail(d: Record<string, any>): Mail {
   const site = (Deno.env.get('SITE_URL') ?? '').replace(/\/$/, '');
+  // Jede Batterie bringt ihren Anzeigenamen mit (label), ältere Einträge nur das Modell
   const batteries = (Array.isArray(d.batteries) ? d.batteries : [])
-    .map((b: any) => MODEL_NAMES[b.model] ?? b.model).join(', ');
+    .map((b: any) => oneLine(b.label ?? b.name ?? `${b.brand ?? ''} ${b.model ?? ''}`)).join(', ');
+  const pro = d.kind === 'pro';
   const lines = [
-    'Neuer Verleiher-Antrag wartet auf deine Prüfung.',
+    'Neuer Antrag wartet auf deine Prüfung.',
     '',
+    `Art:         ${pro ? 'Schule / Verleih' : 'Privat'}`,
     `Name:        ${oneLine(d.name)}`,
     `Ort:         ${oneLine(d.place)}`,
     `Batterien:   ${batteries}`,
     `Konto-Mail:  ${oneLine(d.applicant_email)}`,
     `WhatsApp:    ${oneLine(d.whatsapp) || '-'}`,
     `E-Mail:      ${oneLine(d.email) || '-'}`,
+    ...(pro ? [`Website:     ${oneLine(d.website) || '-'}`, `Öffnungszeiten: ${oneLine(d.opening_hours) || '-'}`] : []),
     `Profil:      ${oneLine(d.proof_url)}`,
     `Rechnung:    ${d.has_file ? 'ja, hochgeladen (in der Admin-Seite ansehen)' : 'nein'}`,
     '',
@@ -77,7 +76,7 @@ function adminMail(d: Record<string, any>): Mail {
   ];
   return {
     to: Deno.env.get('ADMIN_EMAIL') ?? '',
-    subject: `Neuer Verleiher-Antrag: ${oneLine(d.name)} (${oneLine(d.place) || 'ohne Ort'})`,
+    subject: `Neuer ${pro ? 'Schul-/Verleih-Antrag' : 'Verleiher-Antrag'}: ${oneLine(d.name)} (${oneLine(d.place) || 'ohne Ort'})`,
     text: lines.join('\n'),
   };
 }
@@ -94,16 +93,16 @@ function decisionMail(d: Record<string, any>): Mail {
       to: d.applicant_email,
       subject: approved ? 'Dein Angebot ist freigegeben' : 'Dein Angebot wurde nicht freigegeben',
       text: approved
-        ? `Hallo ${name},\n\ndein Angebot wurde geprüft und ist jetzt auf der Karte sichtbar:\n${site}/\n\nViel Spaß beim Verleihen!\nFoil Drive Battery Rental`
-        : `Hallo ${name},\n\nleider konnten wir dein Angebot noch nicht freigeben.${reason ? `\n\nGrund: ${reason}` : ''}\n\nDu kannst dein Angebot jederzeit anpassen (z. B. einen besseren Profil-Link oder eine Rechnung hinzufügen) und neu absenden:\n${site}/\n\nFoil Drive Battery Rental`,
+        ? `Hallo ${name},\n\ndein Angebot wurde geprüft und ist jetzt auf der Karte sichtbar:\n${site}/\n\nViel Spaß beim Verleihen!\nFoil Assist Battery Rental`
+        : `Hallo ${name},\n\nleider konnten wir dein Angebot noch nicht freigeben.${reason ? `\n\nGrund: ${reason}` : ''}\n\nDu kannst dein Angebot jederzeit anpassen (z. B. einen besseren Profil-Link oder eine Rechnung hinzufügen) und neu absenden:\n${site}/\n\nFoil Assist Battery Rental`,
     };
   }
   return {
     to: d.applicant_email,
     subject: approved ? 'Your listing is approved' : 'Your listing was not approved',
     text: approved
-      ? `Hi ${name},\n\nyour listing has been reviewed and is now visible on the map:\n${site}/\n\nEnjoy lending!\nFoil Drive Battery Rental`
-      : `Hi ${name},\n\nunfortunately we could not approve your listing yet.${reason ? `\n\nReason: ${reason}` : ''}\n\nYou can edit your listing at any time (for example add a clearer profile link or an invoice) and submit it again:\n${site}/\n\nFoil Drive Battery Rental`,
+      ? `Hi ${name},\n\nyour listing has been reviewed and is now visible on the map:\n${site}/\n\nEnjoy lending!\nFoil Assist Battery Rental`
+      : `Hi ${name},\n\nunfortunately we could not approve your listing yet.${reason ? `\n\nReason: ${reason}` : ''}\n\nYou can edit your listing at any time (for example add a clearer profile link or an invoice) and submit it again:\n${site}/\n\nFoil Assist Battery Rental`,
   };
 }
 

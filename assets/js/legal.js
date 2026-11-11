@@ -4,8 +4,8 @@
   var I18N = window.I18N;
   var btn = document.getElementById('legal-lang');
   var TITLES = {
-    impressum: { de: 'Impressum – Foil Drive Battery Rental', en: 'Legal notice – Foil Drive Battery Rental' },
-    datenschutz: { de: 'Datenschutz – Foil Drive Battery Rental', en: 'Privacy – Foil Drive Battery Rental' }
+    impressum: { de: 'Impressum – Foil Assist Battery Rental', en: 'Legal notice – Foil Assist Battery Rental' },
+    datenschutz: { de: 'Datenschutz – Foil Assist Battery Rental', en: 'Privacy – Foil Assist Battery Rental' }
   };
   var page = /datenschutz/.test(location.pathname) ? 'datenschutz' : 'impressum';
 
