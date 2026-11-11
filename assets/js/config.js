@@ -14,7 +14,7 @@ window.BATTERY_RENTAL_CONFIG = {
   supabaseAnonKey: 'sb_publishable_R8Mjj4mRd5N_-gLghtcmdg_LtS8bk0i',  // 'anon' oder 'publishable' Key aus Project Settings → API
 
   // Optional: Adresse für "Angebot melden" im Footer (leer = Link wird nicht angezeigt)
-  contactEmail: '',
+  contactEmail: 'schulerlukas+batteryrental@gmail.com',
 
   // Kartenkacheln. OpenStreetMap-Standard ist für kleine Community-Projekte okay
   // (https://operations.osmfoundation.org/policies/tiles/). Bei viel Traffic bitte
