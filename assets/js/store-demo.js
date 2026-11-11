@@ -41,7 +41,7 @@
       hours: 'Mai–Okt, 10–19 Uhr|May–Oct, 10 am – 7 pm',
       placeLabel: 'Riva del Garda, Italien|Riva del Garda, Italy', lat: 45.89, lng: 10.84,
       batteries: [{ brand: 'duotone', model: 'battery-7a', label: 'Duotone Battery 7A', priceDay: 40, priceWeek: null },
-                  { brand: 'lift', model: 'gen4', label: 'Lift Foils Lift4 Battery', priceDay: 70, priceWeek: 380 },
+                  { brand: 'flite', model: 'flitecell-sport', label: 'Flite Flitecell Sport', priceDay: 70, priceWeek: 380 },
                   { brand: 'waydoo', model: 'foilboost', label: 'Waydoo FoilBoost', priceDay: 45, priceWeek: null }],
       depositAmount: 100, idCheck: false, notes: '' },
     { id: 'demo-split', name: 'Split', placeLabel: 'Split, Kroatien|Split, Croatia', lat: 43.51, lng: 16.44,

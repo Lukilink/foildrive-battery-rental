@@ -36,10 +36,10 @@
       { id: 'battery-7a', name: 'Battery 7A' }
     ] },
     { id: 'flow-customs', name: 'Flow Customs', models: [] },
-    { id: 'lift', name: 'Lift Foils', models: [
-      { id: 'light', name: 'Light (Lift3 F)' },
-      { id: 'full-range', name: 'Full Range (Lift2/3)' },
-      { id: 'gen4', name: 'Lift4 Battery' }
+    { id: 'flite', name: 'Flite', models: [
+      { id: 'flitecell-nano', name: 'Flitecell Nano' },
+      { id: 'flitecell-sport', name: 'Flitecell Sport' },
+      { id: 'flitecell-explore', name: 'Flitecell Explore' }
     ] },
     { id: 'waydoo', name: 'Waydoo', models: [
       { id: 'foilboost', name: 'FoilBoost' },

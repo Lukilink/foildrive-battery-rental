@@ -21,7 +21,7 @@
   /* ======================= Deutsch ======================= */
   DICT.de = {
     'meta.title': 'Foil Assist Battery Rental – Batterien vor Ort leihen',
-    'meta.desc': 'Foil-Assist-Batterien dürfen nicht ins Flugzeug. Auf dieser Karte findest du geprüfte Verleiher, Schulen und Rentals, die ihre Batterie am Urlaubsort verleihen – Foil Drive, Manta, RIIFT, Duotone, Lift, Waydoo und mehr.',
+    'meta.desc': 'Foil-Assist-Batterien dürfen nicht ins Flugzeug. Auf dieser Karte findest du geprüfte Verleiher, Schulen und Rentals, die ihre Batterie am Urlaubsort verleihen – Foil Drive, Manta, RIIFT, Duotone, Flite, Waydoo und mehr.',
     'skip': 'Zur Karte springen',
 
     'brand.aria': 'Foil Assist Battery Rental, Startseite',
@@ -308,7 +308,7 @@
   /* ======================= English ======================= */
   DICT.en = {
     'meta.title': 'Foil Assist Battery Rental – borrow a battery on site',
-    'meta.desc': 'Foil assist batteries can\'t go on a plane. Find verified owners, schools and rentals on this map who lend a battery at your holiday spot – Foil Drive, Manta, RIIFT, Duotone, Lift, Waydoo and more.',
+    'meta.desc': 'Foil assist batteries can\'t go on a plane. Find verified owners, schools and rentals on this map who lend a battery at your holiday spot – Foil Drive, Manta, RIIFT, Duotone, Flite, Waydoo and more.',
     'skip': 'Skip to map',
 
     'brand.aria': 'Foil Assist Battery Rental, home',

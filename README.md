@@ -1,6 +1,6 @@
 # Foil Assist Battery Rental
 
-Community-Karte für Foil-Assist-Fahrer (Foil Drive, Manta, RIIFT, Duotone, Lift, Waydoo und andere): Die Batterien dürfen nicht ins Flugzeug, also leiht man sich im Urlaub eine bei einem Local, einer Foil-Schule oder einem Rental vor Ort.
+Community-Karte für Foil-Assist-Fahrer (Foil Drive, Manta, RIIFT, Duotone, Flite, Waydoo und andere): Die Batterien dürfen nicht ins Flugzeug, also leiht man sich im Urlaub eine bei einem Local, einer Foil-Schule oder einem Rental vor Ort.
 Die Seite bringt nur Reisende (ohne Batterie) und Anbieter (mit Batterie) zusammen. Kontakt, Preis und Bezahlung laufen außerhalb.
 
 - **Zweisprachig** (Deutsch / Englisch), Umschalter oben rechts und im Footer. Die Startsprache folgt dem Browser.
