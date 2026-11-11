@@ -50,7 +50,7 @@ Supabase liefert Konten, Datenbank, privaten Datei-Speicher und die Mail-Funktio
 
 ```sql
 insert into public.admins (user_id)
-select id from auth.users where email = 'schulerlukas@gmail.com';
+select id from auth.users where email = 'schulerlukas+batteryrental@gmail.com';
 ```
 
 Danach zeigt `admin.html` die Anträge. Weitere Admins trägst du genauso ein.
@@ -67,7 +67,7 @@ Eine kleine Funktion verschickt die Mail „Neuer Antrag“ an dich und die Mail
 | --- | --- |
 | `SMTP_USER` | Gmail-Adresse, von der gesendet wird |
 | `SMTP_PASS` | Gmail-App-Passwort (16 Zeichen) |
-| `ADMIN_EMAIL` | Adresse, die die Antrags-Mails bekommt (z. B. `schulerlukas@gmail.com`) |
+| `ADMIN_EMAIL` | Adresse, die die Antrags-Mails bekommt (z. B. `schulerlukas+batteryrental@gmail.com`) |
 | `SITE_URL` | `https://lukilink.github.io/foildrive-battery-rental` (ohne `/` am Ende) |
 | `FROM_NAME` | optional, Absendername, z. B. `Foil Drive Battery Rental` |
 
