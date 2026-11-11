@@ -18,7 +18,7 @@ window.BATTERY_RENTAL_CONFIG = {
 
   /* Partner-Programm: true = Partner-Badge, größerer Pin und Partner zuerst in der Liste.
      Vor dem Einschalten muss supabase/schema.sql (Version 4) in Supabase gelaufen sein. */
-  partnerProgram: false,
+  partnerProgram: true,
 
   // Kartenkacheln. OpenStreetMap-Standard ist für kleine Community-Projekte okay
   // (https://operations.osmfoundation.org/policies/tiles/). Bei viel Traffic bitte
