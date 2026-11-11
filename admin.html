@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin – Foil Drive Battery Rental</title>
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/fonts.css">
+  <link rel="stylesheet" href="assets/css/app.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html" aria-label="Zur Karte">
+      <img src="assets/img/favicon.svg" alt="" width="32" height="32">
+      <span class="brand-name">Battery Rental</span>
+      <span class="brand-sub">Admin</span>
+    </a>
+    <nav class="nav">
+      <span class="who" id="who" hidden></span>
+      <button type="button" class="btn btn-ghost" id="btn-logout" hidden>Abmelden</button>
+      <a class="btn btn-ghost" href="index.html">Zur Karte</a>
+    </nav>
+  </header>
+
+  <main class="admin">
+    <h1>Anträge prüfen</h1>
+    <p class="msg" id="state-msg" role="status" hidden></p>
+
+    <!-- Anmeldung (nur wenn nicht schon auf der Hauptseite angemeldet) -->
+    <form class="admin-login" id="login-form" novalidate hidden>
+      <div class="field">
+        <label for="a-email">E-Mail</label>
+        <input class="input" id="a-email" type="email" autocomplete="email">
+      </div>
+      <div class="field">
+        <label for="a-pw">Passwort</label>
+        <input class="input" id="a-pw" type="password" autocomplete="current-password">
+      </div>
+      <p class="err" id="a-err" hidden></p>
+      <button type="submit" class="btn btn-primary" id="a-submit">Anmelden</button>
+    </form>
+
+    <section id="panel" hidden>
+      <div class="seg admin-tabs" role="radiogroup" aria-label="Status">
+        <label><input type="radio" name="status" value="pending" checked><span>Offen <b id="n-pending"></b></span></label>
+        <label><input type="radio" name="status" value="approved"><span>Freigegeben</span></label>
+        <label><input type="radio" name="status" value="rejected"><span>Abgelehnt</span></label>
+      </div>
+      <p class="msg" id="result-msg" role="status" hidden></p>
+      <div id="apps" class="apps"></div>
+    </section>
+  </main>
+
+  <script src="assets/vendor/supabase/supabase.js"></script>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/store-supabase.js"></script>
+  <script src="assets/js/admin.js"></script>
+</body>
+</html>

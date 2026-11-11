@@ -1,0 +1,587 @@
+/*
+ * Sprachen: Deutsch und Englisch.
+ * Statische Texte stehen im HTML mit data-i18n="schlüssel" (Text), data-i18n-html="schlüssel"
+ * (Text mit einfachem, eigenem Markup) oder data-i18n-attr="attribut:schlüssel;…".
+ * Dynamische Texte holt app.js mit I18N.t('schlüssel', {platzhalter: wert}).
+ *
+ * Reihenfolge der Sprachwahl: ?lang=de|en in der Adresse → gespeicherte Wahl → Browser-Sprache
+ * (Deutsch für de*, sonst Englisch).
+ *
+ * Weitere Sprache ergänzen: unten einen Block unter DICT hinzufügen (Kopie von "en" übersetzen)
+ * und den Code in SUPPORTED aufnehmen.
+ */
+(function () {
+  'use strict';
+
+  var SUPPORTED = ['de', 'en'];
+  var STORE_KEY = 'fdbr.lang';
+
+  var DICT = {};
+
+  /* ======================= Deutsch ======================= */
+  DICT.de = {
+    'meta.title': 'Foil Drive Battery Rental – Batterien von Ownern leihen',
+    'meta.desc': 'Foil Drive Batterien dürfen nicht ins Flugzeug. Auf dieser Karte findest du geprüfte Owner, die ihre Batterie am Urlaubsort verleihen – Max HP, Max Power, Max Sport, FM650, FM450, F860.',
+    'skip': 'Zur Karte springen',
+
+    'brand.aria': 'Foil Drive Battery Rental, Startseite',
+    'brand.sub': 'Foil Drive Community',
+    'nav.aria': 'Hauptnavigation',
+    'nav.how': "So funktioniert's",
+    'nav.offer': 'Batterie anbieten',
+    'nav.offer_s': 'Anbieten',
+    'nav.mine': 'Mein Angebot',
+    'nav.mine_s': 'Angebot',
+    'nav.login': 'Anmelden',
+    'nav.logout': 'Abmelden',
+    'nav.lang_to': 'EN',
+    'nav.lang_aria': 'Switch to English',
+
+    'demo.banner': '<strong>Demo-Modus.</strong> Die Standorte sind erfunden und deine Eingaben bleiben nur in diesem Browser. Für den echten Betrieb trägst du Supabase in <code>assets/js/config.js</code> ein.',
+    'demo.hide': 'Ausblenden',
+
+    'panel.aria': 'Suche und Ergebnisse',
+    'intro.h1': 'Der Akku darf nicht ins Flugzeug. Leih dir einen vor Ort.',
+    'intro.p': 'Reisende ohne Batterie finden hier Locals mit Foil Drive. Kontakt, Preis und Bezahlung klärt ihr direkt.',
+    'search.label': 'Reiseziel suchen',
+    'search.ph': 'Reiseziel suchen, z. B. Tarifa',
+    'search.btn': 'Suchen',
+    'search.empty': 'Gib ein Reiseziel ein, z. B. Tarifa oder Gardasee.',
+    'search.notfound': 'Ort nicht gefunden. Versuch es mit Stadt und Land.',
+    'search.error': 'Die Ortssuche ist gerade nicht erreichbar. Versuch es gleich noch einmal oder zieh die Karte selbst.',
+    'filters.legend': 'Welche Batterie brauchst du?',
+    'filters.reset': 'Filter zurücksetzen',
+
+    'list.loading': 'Lade Standorte …',
+    'list.none_title': 'Noch keine Standorte',
+    'list.none_p': 'Hier ist noch niemand eingetragen. Sei der Erste und biete deine Batterie an.',
+    'list.nomatch_title': 'Keine Treffer',
+    'list.nomatch_p': 'Für diese Batterien ist noch kein Standort eingetragen. Nimm einen Filter heraus oder schau später noch einmal vorbei.',
+    'list.empty_view': 'In diesem Kartenausschnitt gibt es keinen Standort. Zoom heraus oder such ein anderes Reiseziel.',
+    'list.error_title': 'Standorte nicht geladen',
+    'list.error': 'Die Standorte konnten nicht geladen werden. Prüfe deine Verbindung und versuch es noch einmal.',
+    'list.retry': 'Erneut laden',
+    'list.db_error': 'Die Verbindung zur Datenbank hat nicht geklappt. Prüfe die Einstellungen in config.js und lade die Seite neu.',
+    'count.in_view_one': '{n} von {m} Standort im Kartenausschnitt',
+    'count.in_view_other': '{n} von {m} Standorten im Kartenausschnitt',
+    'count.all_one': '{m} Standort',
+    'count.all_other': '{m} Standorte',
+    'per_day': 'pro Tag',
+    'per_week': 'pro Woche',
+    'request': 'Anfrage',
+    'pin.from': 'ab {p}',
+
+    'map.aria': 'Karte mit Verleih-Standorten',
+    'map.label': 'Karte',
+    'map.locate': 'Zu meinem Standort springen',
+    'map.locate_title': 'Mein Standort',
+    'view.list': 'Liste anzeigen',
+    'view.map': 'Karte anzeigen',
+    'geo.unsupported': 'Dein Browser kann den Standort nicht bestimmen.',
+    'geo.denied': 'Standort nicht verfügbar. Erlaube den Zugriff im Browser oder such einen Ort.',
+
+    'detail.close': 'Schließen',
+    'detail.no_place': 'Ort nicht angegeben',
+    'detail.approx': 'Der Pin zeigt nur die ungefähre Gegend. Den genauen Treffpunkt klärt ihr im Chat.',
+    'detail.caption': 'Batterien und Preise',
+    'detail.th_bat': 'Batterie',
+    'detail.th_day': 'pro Tag',
+    'detail.th_week': 'pro Woche',
+    'detail.price_hint': '– heißt: Preis auf Anfrage.',
+    'detail.deposit_h': 'Kaution',
+    'detail.deposit_amount': 'Kaution: {amount}',
+    'detail.deposit_none': 'Keine Kaution',
+    'detail.deposit_ask': 'Kaution: nach Absprache',
+    'detail.id_check': 'Ausweis wird vorgezeigt',
+    'detail.notes_h': 'Hinweise vom Verleiher',
+    'detail.deal': 'Preis, Übergabe und Bezahlung klärt ihr direkt. Diese Seite vermittelt nur den Kontakt.',
+    'contact.mine': 'Das ist dein Angebot.',
+    'contact.edit': 'Angebot bearbeiten',
+    'contact.demo': 'Das ist ein Beispiel-Eintrag ohne Kontaktdaten.',
+    'contact.login_p': 'Die Kontaktdaten sehen nur angemeldete Mitglieder. Das hält Spam fern und schützt die Verleiher.',
+    'contact.login_btn': 'Anmelden oder registrieren',
+    'contact.wa': 'Per WhatsApp schreiben',
+    'contact.mail': 'Per E-Mail schreiben',
+    'contact.none': 'Hier sind keine Kontaktdaten hinterlegt.',
+    'msg.text': 'Hallo {name}, ich habe dein Angebot auf der Foil Drive Battery Rental Karte gesehen ({bats}). Ist deine Batterie bei meinem Aufenthalt frei? Ich bin vom [Datum] bis [Datum] vor Ort.',
+    'msg.subject': 'Anfrage: Foil Drive Batterie leihen',
+    'login.hint_contact': 'Melde dich an, um die Kontaktdaten zu sehen.',
+
+    'info.title': "So funktioniert's",
+    'info.lead': 'Foil-Drive-Batterien dürfen nicht mit ins Flugzeug. Also leihen sich Reisende eine vor Ort – von Locals, die am Spot zu Hause sind. Hier gibt es nur die Karte. Alles Weitere klärt ihr direkt miteinander.',
+    'flow.travel.h': 'Du reist',
+    'flow.travel.1h': 'Reiseziel suchen.',
+    'flow.travel.1p': 'Filtere nach der Batterie, die du brauchst.',
+    'flow.travel.2h': 'Anmelden und Kontakt aufnehmen.',
+    'flow.travel.2p': 'Die Kontaktdaten sehen angemeldete Mitglieder. Schreib per WhatsApp oder E-Mail.',
+    'flow.travel.3h': 'Preis, Übergabe und Kaution klären.',
+    'flow.travel.3p': 'Bezahlung und Deal laufen komplett außerhalb dieser Seite.',
+    'flow.local.h': 'Du hast eine Batterie',
+    'flow.local.1h': 'Konto anlegen.',
+    'flow.local.1p': 'Kostenlos, E-Mail und Passwort genügen.',
+    'flow.local.2h': 'Antrag stellen.',
+    'flow.local.2p': 'Trag Batterien, Standort, Kontakt und Kaution ein und gib dein Instagram- oder Facebook-Profil an. Eine Rechnung hochzuladen ist optional.',
+    'flow.local.3h': 'Freigabe abwarten.',
+    'flow.local.3p': 'Wir prüfen jeden Antrag kurz. Du bekommst eine Mail, danach erscheint dein Pin. Pausieren oder löschen geht jederzeit.',
+    'know.title': 'Gut zu wissen',
+    'know.verified.dt': 'Geprüfte Verleiher',
+    'know.verified.dd': 'Jeder Verleiher wird vor der Freigabe kurz geprüft: Profil-Link und optional eine Rechnung. Erst danach erscheint der Pin auf der Karte.',
+    'know.deposit.dt': 'Kaution und Übergabe',
+    'know.deposit.dd': 'Jeder Verleiher gibt seine Kaution an und ob er einen Ausweis sehen möchte. Vereinbart trotzdem vorher Abholort und Rückgabezeit und macht bei der Übergabe Fotos vom Zustand.',
+    'know.liability.dt': 'Haftung',
+    'know.liability.dd': 'Diese Seite vermittelt nur Kontakte. Verleih und Haftung laufen allein zwischen Verleiher und Leihendem. Klärt vorher, ob eure Versicherung greift.',
+    'know.privacy.dt': 'Datenschutz',
+    'know.privacy.dd': 'Der Pin erscheint auf Wunsch nur ungefähr. Kontaktdaten sehen nur angemeldete Mitglieder, Nachweise nur wir und nur zur Prüfung.',
+
+    'footer.tag': 'Ein Community-Projekt von Foil Drive Ownern für Foil Drive Owner. Betrieben von Ola Vibes S.L.',
+    'footer.imprint': 'Impressum',
+    'footer.privacy': 'Datenschutz',
+    'footer.source': 'Quellcode',
+    'footer.report': 'Angebot melden',
+    'footer.lang': 'English',
+    'footer.marks': 'Foil Drive und die Modellnamen sind Marken ihrer jeweiligen Inhaber.',
+
+    'auth.close': 'Schließen',
+    'auth.seg_aria': 'Anmelden oder registrieren',
+    'auth.title.login': 'Anmelden',
+    'auth.title.signup': 'Konto anlegen',
+    'auth.title.recover': 'Neues Passwort',
+    'auth.title.forgot': 'Passwort zurücksetzen',
+    'auth.tab.login': 'Anmelden',
+    'auth.tab.signup': 'Registrieren',
+    'auth.email': 'E-Mail',
+    'auth.pw': 'Passwort',
+    'auth.pw_new': 'Neues Passwort',
+    'auth.pw_hint': 'Mindestens 8 Zeichen.',
+    'auth.forgot': 'Passwort vergessen?',
+    'auth.terms': 'Ich habe verstanden: Diese Seite vermittelt nur den Kontakt. Verleih, Bezahlung und Haftung laufen allein zwischen den Nutzern, Ola Vibes S.L. ist nicht beteiligt. Es gilt die <a href="datenschutz.html" target="_blank" rel="noopener">Datenschutzerklärung</a>.',
+    'auth.submit.login': 'Anmelden',
+    'auth.submit.signup': 'Konto anlegen',
+    'auth.submit.recover': 'Passwort speichern',
+    'auth.submit.forgot': 'Link zum Zurücksetzen senden',
+    'auth.busy': 'Einen Moment …',
+    'auth.err.email': 'Gib eine gültige E-Mail-Adresse ein.',
+    'auth.err.pw_login': 'Gib dein Passwort ein.',
+    'auth.err.pw_short': 'Das Passwort braucht mindestens 8 Zeichen.',
+    'auth.err.terms': 'Bitte bestätige den Hinweis, um ein Konto anzulegen.',
+    'auth.ok.login': 'Angemeldet.',
+    'auth.ok.signup': 'Konto angelegt. Willkommen!',
+    'auth.confirm_sent': 'Fast geschafft: Wir haben dir eine E-Mail geschickt. Klick auf den Link darin, dann bist du dabei. Schau auch im Spam-Ordner nach.',
+    'auth.reset_sent': 'Wenn es zu dieser Adresse ein Konto gibt, kommt gleich eine E-Mail mit einem Link zum Zurücksetzen.',
+    'auth.pw_changed': 'Passwort geändert.',
+    'auth.logout_ok': 'Abgemeldet.',
+    'auth.intro.offer': 'Lege ein kostenloses Konto an, um deine Batterien anzubieten. Hast du schon eins, wechsle auf „Anmelden“.',
+
+    'offer.title.new': 'Batterie anbieten',
+    'offer.title.edit': 'Dein Angebot',
+    'offer.status.pending': 'Dein Antrag wird geprüft. Du bekommst eine E-Mail, sobald er freigegeben ist. Dein Pin erscheint erst danach auf der Karte.',
+    'offer.status.approved': 'Freigegeben. Dein Angebot ist auf der Karte sichtbar.',
+    'offer.status.approved_paused': 'Freigegeben, aber pausiert. Dein Angebot ist nicht auf der Karte zu sehen.',
+    'offer.status.rejected': 'Dein Antrag wurde nicht freigegeben.',
+    'offer.status.reason': 'Grund: {reason}',
+    'offer.status.rejected_hint': 'Passe dein Angebot an und sende es neu.',
+    'offer.bat.h': 'Welche Batterien verleihst du?',
+    'offer.bat.hint': 'Preise sind optional. Ohne Preis steht „Anfrage“ auf der Karte.',
+    'offer.currency': 'Währung',
+    'offer.ph.day': 'Tag',
+    'offer.ph.week': 'Woche',
+    'offer.unit.day': '{c} / Tag',
+    'offer.unit.week': '{c} / Woche',
+    'offer.aria.day': '{m}: Preis pro Tag',
+    'offer.aria.week': '{m}: Preis pro Woche',
+    'offer.err.bat_none': 'Wähle mindestens eine Batterie aus.',
+    'offer.err.bat_price': '{m}: Gib den Preis als Zahl ein, z. B. 45 oder 45,50.',
+    'offer.dep.h': 'Kaution',
+    'offer.dep.hint': 'Leer lassen = nach Absprache. 0 = keine Kaution.',
+    'offer.dep.amount': 'Höhe der Kaution',
+    'offer.dep.id': 'Ausweis wird vorgezeigt',
+    'offer.dep.id_hint': 'Der Leihende zeigt bei der Übergabe seinen Ausweis. Du behältst ihn nicht ein.',
+    'offer.err.dep': 'Gib die Kaution als Zahl zwischen 0 und 99999 ein.',
+    'offer.loc.h': 'Wo steht sie?',
+    'offer.loc.hint': 'Suche einen Ort oder tippe auf die Karte. Setz den Pin nicht auf deine Haustür, die Gegend reicht.',
+    'offer.loc.search_label': 'Ort oder Adresse suchen',
+    'offer.loc.search_btn': 'Suchen',
+    'offer.loc.locate': 'Mein Standort',
+    'offer.loc.map_aria': 'Karte zum Setzen des Pins',
+    'offer.loc.empty': 'Gib einen Ort oder eine Adresse ein.',
+    'offer.loc.notfound': 'Ort nicht gefunden. Versuch es mit Stadt und Land oder tippe direkt auf die Karte.',
+    'offer.loc.search_fail': 'Die Ortssuche ist gerade nicht erreichbar. Tippe direkt auf die Karte, um den Pin zu setzen.',
+    'offer.err.loc': 'Setze deinen Pin: Ort suchen oder auf die Karte tippen.',
+    'offer.pin_label': 'Dein Pin',
+    'offer.pin_title': 'Dein Pin, ziehbar',
+    'offer.place.label': 'Anzeigename des Ortes',
+    'offer.place.ph': 'z. B. Tarifa, Spanien',
+    'offer.err.place': 'Der Ortsname darf höchstens 120 Zeichen haben.',
+    'offer.approx.label': 'Ungefähren Standort anzeigen',
+    'offer.approx.hint': 'Der Pin wird beim Speichern zufällig um 200 bis 600 m versetzt. Den genauen Treffpunkt nennst du erst im Chat.',
+    'offer.contact.h': 'Wie erreicht man dich?',
+    'offer.contact.hint': 'Mindestens eins von beidem. Nur angemeldete Mitglieder sehen deine Kontaktdaten.',
+    'offer.wa.label': 'WhatsApp-Nummer',
+    'offer.err.wa': 'Bitte mit Ländervorwahl eingeben, z. B. +49 170 1234567.',
+    'offer.mail.label': 'E-Mail',
+    'offer.err.mail': 'Das ist keine gültige E-Mail-Adresse.',
+    'offer.err.contact': 'Gib mindestens WhatsApp oder E-Mail an, sonst kann dich niemand erreichen.',
+    'offer.proof.h': 'Verifizierung',
+    'offer.proof.hint': 'Damit wir sehen, dass du wirklich einen Foil Drive hast. Nur wir sehen diese Angaben, nie andere Nutzer.',
+    'offer.proof.url.label': 'Instagram- oder Facebook-Profil',
+    'offer.proof.url.hint': 'Am besten ein Profil, auf dem du mit deinem Foil Drive zu sehen bist.',
+    'offer.err.proof': 'Gib einen Link zu deinem Instagram- oder Facebook-Profil an, beginnend mit https://.',
+    'offer.proof.file.label': 'Rechnung von Foil Drive oder deinem Händler',
+    'offer.opt': '(optional)',
+    'offer.proof.file.hint': 'PDF, JPG oder PNG, höchstens 5 MB. Dein Name muss darauf stehen. Wir löschen die Datei nach der Prüfung.',
+    'offer.proof.file.current': 'Hochgeladen: {name}',
+    'offer.err.file_type': 'Bitte eine PDF-, JPG- oder PNG-Datei wählen.',
+    'offer.err.file_size': 'Die Datei ist größer als 5 MB.',
+    'offer.err.upload': 'Die Rechnung konnte nicht hochgeladen werden. Versuch es noch einmal oder lass sie weg.',
+    'offer.info.h': 'Was sollen Leihende wissen?',
+    'offer.name.label': 'Name für die Anzeige',
+    'offer.name.ph': 'z. B. Lukas',
+    'offer.err.name': 'Gib einen Namen mit 2 bis 60 Zeichen ein.',
+    'offer.notes.label': 'Hinweise',
+    'offer.notes.ph': 'Abholung oder Lieferung, Zeiten, Ladegerät, Sprachen …',
+    'offer.err.notes': 'Die Hinweise dürfen höchstens 600 Zeichen haben.',
+    'offer.active.label': 'Angebot ist sichtbar',
+    'offer.active.hint': 'Ausschalten, wenn die Batterie gerade nicht verfügbar ist.',
+    'offer.delete': 'Angebot löschen',
+    'offer.delete_confirm': 'Wirklich löschen? Nochmal klicken',
+    'offer.cancel': 'Abbrechen',
+    'offer.save.new': 'Antrag senden',
+    'offer.save.edit': 'Speichern',
+    'offer.saving': 'Speichert …',
+    'offer.err.save': 'Das Angebot konnte nicht gespeichert werden.',
+    'toast.sent': 'Antrag gesendet. Du bekommst eine E-Mail, sobald er geprüft ist.',
+    'toast.saved': 'Angebot gespeichert.',
+    'toast.saved_paused': 'Angebot gespeichert, aber pausiert: Es ist nicht auf der Karte zu sehen.',
+    'toast.resubmitted': 'Angebot erneut gesendet. Es wird geprüft.',
+    'toast.deleted': 'Angebot gelöscht.',
+
+    'err.invalid_login': 'E-Mail oder Passwort stimmt nicht.',
+    'err.email_unconfirmed': 'Bitte bestätige zuerst deine E-Mail-Adresse. Den Link findest du in der Mail, die wir dir geschickt haben.',
+    'err.already_registered': 'Zu dieser E-Mail gibt es schon ein Konto. Melde dich stattdessen an.',
+    'err.weak_password': 'Das Passwort ist zu kurz oder zu einfach. Nimm mindestens 8 Zeichen.',
+    'err.rate_limit': 'Zu viele Versuche in kurzer Zeit. Warte ein paar Minuten und versuch es noch einmal.',
+    'err.network': 'Keine Verbindung zum Server. Prüfe dein Internet und versuch es noch einmal.',
+    'err.rls': 'Das Angebot konnte nicht gespeichert werden. Prüfe deine Eingaben und melde dich ggf. neu an.',
+    'err.generic': 'Das hat nicht geklappt ({m}).',
+    'err.not_authenticated': 'Bitte melde dich zuerst an.'
+  };
+
+  /* ======================= English ======================= */
+  DICT.en = {
+    'meta.title': 'Foil Drive Battery Rental – borrow a battery from local owners',
+    'meta.desc': "Foil Drive batteries can't go on a plane. Find verified owners on this map who lend their battery at your holiday spot – Max HP, Max Power, Max Sport, FM650, FM450, F860.",
+    'skip': 'Skip to map',
+
+    'brand.aria': 'Foil Drive Battery Rental, home',
+    'brand.sub': 'Foil Drive Community',
+    'nav.aria': 'Main navigation',
+    'nav.how': 'How it works',
+    'nav.offer': 'Offer a battery',
+    'nav.offer_s': 'Offer',
+    'nav.mine': 'My listing',
+    'nav.mine_s': 'Listing',
+    'nav.login': 'Log in',
+    'nav.logout': 'Log out',
+    'nav.lang_to': 'DE',
+    'nav.lang_aria': 'Auf Deutsch wechseln',
+
+    'demo.banner': '<strong>Demo mode.</strong> The locations are made up and your entries stay in this browser only. For live use, add Supabase to <code>assets/js/config.js</code>.',
+    'demo.hide': 'Hide',
+
+    'panel.aria': 'Search and results',
+    'intro.h1': "Batteries can't fly. Borrow one when you get there.",
+    'intro.p': 'Travellers without a battery find locals with a Foil Drive here. You arrange contact, price and payment directly.',
+    'search.label': 'Search destination',
+    'search.ph': 'Search destination, e.g. Tarifa',
+    'search.btn': 'Search',
+    'search.empty': 'Enter a destination, e.g. Tarifa or Lake Garda.',
+    'search.notfound': 'Place not found. Try city and country.',
+    'search.error': 'Place search is unavailable right now. Try again in a moment or move the map yourself.',
+    'filters.legend': 'Which battery do you need?',
+    'filters.reset': 'Reset filters',
+
+    'list.loading': 'Loading locations …',
+    'list.none_title': 'No locations yet',
+    'list.none_p': 'Nobody is listed here yet. Be the first and offer your battery.',
+    'list.nomatch_title': 'No matches',
+    'list.nomatch_p': 'No location has these batteries yet. Remove a filter or check back later.',
+    'list.empty_view': 'There is no location in this map area. Zoom out or search another destination.',
+    'list.error_title': 'Locations not loaded',
+    'list.error': 'Locations could not be loaded. Check your connection and try again.',
+    'list.retry': 'Reload',
+    'list.db_error': 'Could not connect to the database. Check the settings in config.js and reload the page.',
+    'count.in_view_one': '{n} of {m} location in this map area',
+    'count.in_view_other': '{n} of {m} locations in this map area',
+    'count.all_one': '{m} location',
+    'count.all_other': '{m} locations',
+    'per_day': 'per day',
+    'per_week': 'per week',
+    'request': 'On request',
+    'pin.from': 'from {p}',
+
+    'map.aria': 'Map of rental locations',
+    'map.label': 'Map',
+    'map.locate': 'Jump to my location',
+    'map.locate_title': 'My location',
+    'view.list': 'Show list',
+    'view.map': 'Show map',
+    'geo.unsupported': 'Your browser cannot determine your location.',
+    'geo.denied': 'Location unavailable. Allow access in your browser or search for a place.',
+
+    'detail.close': 'Close',
+    'detail.no_place': 'Place not specified',
+    'detail.approx': 'The pin only shows the rough area. You agree the exact meeting point in chat.',
+    'detail.caption': 'Batteries and prices',
+    'detail.th_bat': 'Battery',
+    'detail.th_day': 'per day',
+    'detail.th_week': 'per week',
+    'detail.price_hint': '– means: price on request.',
+    'detail.deposit_h': 'Deposit',
+    'detail.deposit_amount': 'Deposit: {amount}',
+    'detail.deposit_none': 'No deposit',
+    'detail.deposit_ask': 'Deposit: by arrangement',
+    'detail.id_check': 'ID is shown at handover',
+    'detail.notes_h': 'Notes from the lender',
+    'detail.deal': 'You agree price, handover and payment directly. This site only connects you.',
+    'contact.mine': 'This is your listing.',
+    'contact.edit': 'Edit listing',
+    'contact.demo': 'This is a sample entry without contact details.',
+    'contact.login_p': 'Only logged-in members can see contact details. This keeps spam away and protects the lenders.',
+    'contact.login_btn': 'Log in or sign up',
+    'contact.wa': 'Message on WhatsApp',
+    'contact.mail': 'Send an email',
+    'contact.none': 'No contact details on file.',
+    'msg.text': 'Hi {name}, I found your listing on the Foil Drive Battery Rental map ({bats}). Is your battery free while I am there? I will be around from [date] to [date].',
+    'msg.subject': 'Request: borrowing a Foil Drive battery',
+    'login.hint_contact': 'Log in to see the contact details.',
+
+    'info.title': 'How it works',
+    'info.lead': 'Foil Drive batteries are not allowed on planes. So travellers borrow one on site, from locals who live at the spot. This site is only the map. Everything else you arrange directly.',
+    'flow.travel.h': 'You are travelling',
+    'flow.travel.1h': 'Find your destination.',
+    'flow.travel.1p': 'Filter by the battery you need.',
+    'flow.travel.2h': 'Log in and get in touch.',
+    'flow.travel.2p': 'Logged-in members see the contact details. Write via WhatsApp or email.',
+    'flow.travel.3h': 'Agree price, handover and deposit.',
+    'flow.travel.3p': 'Payment and the deal happen entirely outside this site.',
+    'flow.local.h': 'You own a battery',
+    'flow.local.1h': 'Create an account.',
+    'flow.local.1p': 'Free. Email and password are enough.',
+    'flow.local.2h': 'Submit your listing.',
+    'flow.local.2p': 'Enter batteries, location, contact and deposit, and add your Instagram or Facebook profile. Uploading an invoice is optional.',
+    'flow.local.3h': 'Wait for approval.',
+    'flow.local.3p': 'We review every listing briefly. You get an email, then your pin appears. You can pause or delete it any time.',
+    'know.title': 'Good to know',
+    'know.verified.dt': 'Verified lenders',
+    'know.verified.dd': 'Every lender is reviewed before approval: profile link and optionally an invoice. Only then does the pin appear on the map.',
+    'know.deposit.dt': 'Deposit and handover',
+    'know.deposit.dd': 'Each lender states a deposit and whether they want to see an ID. Still agree on the pick-up place and return time beforehand and take photos of the condition at handover.',
+    'know.liability.dt': 'Liability',
+    'know.liability.dd': 'This site only connects contacts. Lending and liability are solely between lender and borrower. Check beforehand whether your insurance applies.',
+    'know.privacy.dt': 'Privacy',
+    'know.privacy.dd': 'The pin can be shown roughly only. Contact details are visible to logged-in members only, and proofs only to us, only for the review.',
+
+    'footer.tag': 'A community project by Foil Drive owners for Foil Drive owners. Operated by Ola Vibes S.L.',
+    'footer.imprint': 'Legal notice',
+    'footer.privacy': 'Privacy',
+    'footer.source': 'Source code',
+    'footer.report': 'Report a listing',
+    'footer.lang': 'Deutsch',
+    'footer.marks': 'Foil Drive and the model names are trademarks of their respective owners.',
+
+    'auth.close': 'Close',
+    'auth.seg_aria': 'Log in or sign up',
+    'auth.title.login': 'Log in',
+    'auth.title.signup': 'Create account',
+    'auth.title.recover': 'New password',
+    'auth.title.forgot': 'Reset password',
+    'auth.tab.login': 'Log in',
+    'auth.tab.signup': 'Sign up',
+    'auth.email': 'Email',
+    'auth.pw': 'Password',
+    'auth.pw_new': 'New password',
+    'auth.pw_hint': 'At least 8 characters.',
+    'auth.forgot': 'Forgot password?',
+    'auth.terms': 'I understand: this site only connects contacts. Lending, payment and liability are solely between users, Ola Vibes S.L. is not involved. The <a href="datenschutz.html" target="_blank" rel="noopener">privacy policy</a> applies.',
+    'auth.submit.login': 'Log in',
+    'auth.submit.signup': 'Create account',
+    'auth.submit.recover': 'Save password',
+    'auth.submit.forgot': 'Send reset link',
+    'auth.busy': 'One moment …',
+    'auth.err.email': 'Enter a valid email address.',
+    'auth.err.pw_login': 'Enter your password.',
+    'auth.err.pw_short': 'The password needs at least 8 characters.',
+    'auth.err.terms': 'Please confirm the notice to create an account.',
+    'auth.ok.login': 'Logged in.',
+    'auth.ok.signup': 'Account created. Welcome!',
+    'auth.confirm_sent': 'Almost done: we sent you an email. Click the link in it and you are in. Check your spam folder too.',
+    'auth.reset_sent': 'If an account exists for this address, an email with a reset link is on its way.',
+    'auth.pw_changed': 'Password changed.',
+    'auth.logout_ok': 'Logged out.',
+    'auth.intro.offer': 'Create a free account to offer your batteries. Already have one? Switch to "Log in".',
+
+    'offer.title.new': 'Offer a battery',
+    'offer.title.edit': 'Your listing',
+    'offer.status.pending': 'Your application is being reviewed. You get an email as soon as it is approved. Your pin only appears on the map after that.',
+    'offer.status.approved': 'Approved. Your listing is visible on the map.',
+    'offer.status.approved_paused': 'Approved, but paused. Your listing is not shown on the map.',
+    'offer.status.rejected': 'Your application was not approved.',
+    'offer.status.reason': 'Reason: {reason}',
+    'offer.status.rejected_hint': 'Adjust your listing and submit it again.',
+    'offer.bat.h': 'Which batteries do you lend?',
+    'offer.bat.hint': 'Prices are optional. Without a price the map shows "On request".',
+    'offer.currency': 'Currency',
+    'offer.ph.day': 'Day',
+    'offer.ph.week': 'Week',
+    'offer.unit.day': '{c} / day',
+    'offer.unit.week': '{c} / week',
+    'offer.aria.day': '{m}: price per day',
+    'offer.aria.week': '{m}: price per week',
+    'offer.err.bat_none': 'Select at least one battery.',
+    'offer.err.bat_price': '{m}: Enter the price as a number, e.g. 45 or 45.50.',
+    'offer.dep.h': 'Deposit',
+    'offer.dep.hint': 'Leave empty = by arrangement. 0 = no deposit.',
+    'offer.dep.amount': 'Deposit amount',
+    'offer.dep.id': 'ID is shown at handover',
+    'offer.dep.id_hint': 'The borrower shows their ID at handover. You do not keep it.',
+    'offer.err.dep': 'Enter the deposit as a number between 0 and 99999.',
+    'offer.loc.h': 'Where is it?',
+    'offer.loc.hint': 'Search for a place or tap the map. Do not put the pin on your front door, the area is enough.',
+    'offer.loc.search_label': 'Search place or address',
+    'offer.loc.search_btn': 'Search',
+    'offer.loc.locate': 'My location',
+    'offer.loc.map_aria': 'Map for placing the pin',
+    'offer.loc.empty': 'Enter a place or address.',
+    'offer.loc.notfound': 'Place not found. Try city and country or tap the map directly.',
+    'offer.loc.search_fail': 'Place search is unavailable right now. Tap the map to place the pin.',
+    'offer.err.loc': 'Place your pin: search a place or tap the map.',
+    'offer.pin_label': 'Your pin',
+    'offer.pin_title': 'Your pin, draggable',
+    'offer.place.label': 'Display name of the place',
+    'offer.place.ph': 'e.g. Tarifa, Spain',
+    'offer.err.place': 'The place name can have at most 120 characters.',
+    'offer.approx.label': 'Show approximate location',
+    'offer.approx.hint': 'On saving, the pin is moved randomly by 200 to 600 m. You share the exact meeting point in chat.',
+    'offer.contact.h': 'How can people reach you?',
+    'offer.contact.hint': 'At least one of the two. Only logged-in members see your contact details.',
+    'offer.wa.label': 'WhatsApp number',
+    'offer.err.wa': 'Enter it with country code, e.g. +49 170 1234567.',
+    'offer.mail.label': 'Email',
+    'offer.err.mail': 'That is not a valid email address.',
+    'offer.err.contact': 'Enter at least WhatsApp or email, otherwise nobody can reach you.',
+    'offer.proof.h': 'Verification',
+    'offer.proof.hint': 'So we can see that you really own a Foil Drive. Only we see this, never other users.',
+    'offer.proof.url.label': 'Instagram or Facebook profile',
+    'offer.proof.url.hint': 'Ideally a profile where you can be seen with your Foil Drive.',
+    'offer.err.proof': 'Enter a link to your Instagram or Facebook profile, starting with https://.',
+    'offer.proof.file.label': 'Invoice from Foil Drive or your dealer',
+    'offer.opt': '(optional)',
+    'offer.proof.file.hint': 'PDF, JPG or PNG, max. 5 MB. Your name must be on it. We delete the file after the review.',
+    'offer.proof.file.current': 'Uploaded: {name}',
+    'offer.err.file_type': 'Please choose a PDF, JPG or PNG file.',
+    'offer.err.file_size': 'The file is larger than 5 MB.',
+    'offer.err.upload': 'The invoice could not be uploaded. Try again or leave it out.',
+    'offer.info.h': 'What should borrowers know?',
+    'offer.name.label': 'Display name',
+    'offer.name.ph': 'e.g. Lukas',
+    'offer.err.name': 'Enter a name with 2 to 60 characters.',
+    'offer.notes.label': 'Notes',
+    'offer.notes.ph': 'Pick-up or delivery, times, charger, languages …',
+    'offer.err.notes': 'The notes can have at most 600 characters.',
+    'offer.active.label': 'Listing is visible',
+    'offer.active.hint': 'Switch off when the battery is not available right now.',
+    'offer.delete': 'Delete listing',
+    'offer.delete_confirm': 'Really delete? Click again',
+    'offer.cancel': 'Cancel',
+    'offer.save.new': 'Submit application',
+    'offer.save.edit': 'Save',
+    'offer.saving': 'Saving …',
+    'offer.err.save': 'The listing could not be saved.',
+    'toast.sent': 'Application sent. You get an email as soon as it has been reviewed.',
+    'toast.saved': 'Listing saved.',
+    'toast.saved_paused': 'Listing saved but paused: it is not shown on the map.',
+    'toast.resubmitted': 'Listing sent again. It will be reviewed.',
+    'toast.deleted': 'Listing deleted.',
+
+    'err.invalid_login': 'Email or password is wrong.',
+    'err.email_unconfirmed': 'Please confirm your email address first. You find the link in the email we sent you.',
+    'err.already_registered': 'There is already an account for this email. Log in instead.',
+    'err.weak_password': 'The password is too short or too weak. Use at least 8 characters.',
+    'err.rate_limit': 'Too many attempts in a short time. Wait a few minutes and try again.',
+    'err.network': 'No connection to the server. Check your internet and try again.',
+    'err.rls': 'The listing could not be saved. Check your entries and log in again if needed.',
+    'err.generic': 'That did not work ({m}).',
+    'err.not_authenticated': 'Please log in first.'
+  };
+
+  /* ======================= Mechanik ======================= */
+
+  var listeners = [];
+  var lang = detect();
+
+  function detect() {
+    var fromUrl = null;
+    try { fromUrl = new URLSearchParams(window.location.search).get('lang'); } catch (e) { /* ignorieren */ }
+    if (fromUrl && SUPPORTED.indexOf(fromUrl) > -1) return fromUrl;
+    try {
+      var saved = window.localStorage.getItem(STORE_KEY);
+      if (saved && SUPPORTED.indexOf(saved) > -1) return saved;
+    } catch (e) { /* Speicher gesperrt */ }
+    var nav = (navigator.languages && navigator.languages[0]) || navigator.language || 'en';
+    return String(nav).toLowerCase().indexOf('de') === 0 ? 'de' : 'en';
+  }
+
+  function t(key, params) {
+    var s = (DICT[lang] && DICT[lang][key]);
+    if (s == null) s = DICT.en[key];
+    if (s == null) return key;
+    if (params) {
+      s = s.replace(/\{(\w+)\}/g, function (m, k) { return params[k] != null ? params[k] : m; });
+    }
+    return s;
+  }
+
+  /* Plural: t2('count.all', 3, {m: 3}) → 'count.all_other' */
+  function t2(base, n, params) {
+    return t(base + (n === 1 ? '_one' : '_other'), params);
+  }
+
+  function apply(root) {
+    root = root || document;
+    var i, el, nodes;
+    nodes = root.querySelectorAll('[data-i18n]');
+    for (i = 0; i < nodes.length; i++) { el = nodes[i]; el.textContent = t(el.getAttribute('data-i18n')); }
+    nodes = root.querySelectorAll('[data-i18n-html]');
+    for (i = 0; i < nodes.length; i++) { el = nodes[i]; el.innerHTML = t(el.getAttribute('data-i18n-html')); }
+    nodes = root.querySelectorAll('[data-i18n-attr]');
+    for (i = 0; i < nodes.length; i++) {
+      el = nodes[i];
+      el.getAttribute('data-i18n-attr').split(';').forEach(function (pair) {
+        var p = pair.split(':');
+        if (p.length === 2) el.setAttribute(p[0].trim(), t(p[1].trim()));
+      });
+    }
+  }
+
+  function setLang(l) {
+    if (SUPPORTED.indexOf(l) < 0 || l === lang) return;
+    lang = l;
+    try { window.localStorage.setItem(STORE_KEY, l); } catch (e) { /* ignorieren */ }
+    document.documentElement.lang = l;
+    apply(document);
+    listeners.forEach(function (fn) { fn(l); });
+  }
+
+  window.I18N = {
+    t: t,
+    t2: t2,
+    apply: apply,
+    setLang: setLang,
+    lang: function () { return lang; },
+    other: function () { return lang === 'de' ? 'en' : 'de'; },
+    locale: function () { return lang === 'de' ? 'de-DE' : 'en-GB'; },
+    onChange: function (fn) { listeners.push(fn); }
+  };
+
+  document.documentElement.lang = lang;
+})();

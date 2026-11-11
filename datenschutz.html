@@ -11,43 +11,111 @@
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="index.html" aria-label="Zurück zur Karte">
+    <a class="brand" href="index.html" aria-label="Zurück zur Karte / Back to the map">
       <img src="assets/img/favicon.svg" alt="" width="32" height="32">
       <span class="brand-name">Battery Rental</span>
     </a>
-    <nav class="nav"><a class="nav-link" href="index.html">Zur Karte</a></nav>
+    <nav class="nav">
+      <button type="button" class="btn btn-ghost btn-lang" id="legal-lang" aria-label="Switch language"><span>EN</span></button>
+      <a class="nav-link" href="index.html"><span class="l-de">Zur Karte</span><span class="l-en">Back to the map</span></a>
+    </nav>
   </header>
 
   <main class="legal">
-    <h1>Datenschutz</h1>
+    <!-- ===================== Deutsch ===================== -->
+    <div class="l-de">
+      <h1>Datenschutz</h1>
 
-    <p class="todo"><strong>Vorlage, bitte prüfen und ausfüllen.</strong> Der Text beschreibt, wie die Seite technisch arbeitet. Passe ihn an, sobald du etwas änderst (z. B. anderer Hosting-Anbieter oder anderer Kartenanbieter) und lass ihn bei Bedarf rechtlich prüfen. Das ist keine Rechtsberatung.</p>
+      <p class="todo"><strong>Bitte vor dem Start prüfen.</strong> Der Text beschreibt, wie die Seite technisch arbeitet. Passe ihn an, sobald du etwas änderst (z. B. anderen Hosting-, Mail- oder Kartenanbieter), und lass ihn bei Bedarf rechtlich prüfen. Das ist keine Rechtsberatung. Lösche diesen Kasten danach.</p>
 
-    <h2>Verantwortlicher</h2>
-    <p>[Name und Anschrift wie im <a href="impressum.html">Impressum</a>], E-Mail: [E-Mail-Adresse]</p>
+      <h2>Verantwortlicher</h2>
+      <p>Ola Vibes S.L., CIF B25889304, Calle El Hierro 9, 38612 El Médano, Spanien. E-Mail: <a href="mailto:schulerlukas@gmail.com">schulerlukas@gmail.com</a> (siehe auch <a href="impressum.html">Impressum</a>).</p>
 
-    <h2>Besuch der Seite</h2>
-    <p>Die Seite wird über GitHub Pages ausgeliefert. Dabei verarbeitet GitHub technisch notwendige Verbindungsdaten wie deine IP-Adresse (Server-Logs). Schriften und Karten-Bibliotheken liegen auf dieser Seite selbst, es werden keine Google-Fonts geladen.</p>
+      <h2>Besuch der Seite</h2>
+      <p>Die Seite wird über GitHub Pages ausgeliefert. Dabei verarbeitet GitHub technisch notwendige Verbindungsdaten wie deine IP-Adresse (Server-Logs). Schriften und Karten-Bibliotheken liegen auf dieser Seite selbst, es werden keine Google-Fonts geladen. Deine gewählte Sprache speichert dein Browser lokal.</p>
 
-    <h2>Karte und Ortssuche</h2>
-    <p>Die Kartenkacheln lädt dein Browser von OpenStreetMap (OpenStreetMap Foundation, Vereinigtes Königreich). Dabei erhält der Anbieter deine IP-Adresse und den sichtbaren Kartenausschnitt. Wenn du einen Ort suchst oder beim Anlegen eines Angebots den Pin setzt, sendet dein Browser den Suchtext bzw. die Koordinaten an den Dienst Nominatim der OpenStreetMap Foundation. Deinen Gerätestandort fragen wir nur ab, wenn du auf „Mein Standort“ tippst. Er wird nicht gespeichert.</p>
+      <h2>Karte und Ortssuche</h2>
+      <p>Die Kartenkacheln lädt dein Browser von OpenStreetMap (OpenStreetMap Foundation, Vereinigtes Königreich). Dabei erhält der Anbieter deine IP-Adresse und den sichtbaren Kartenausschnitt. Wenn du einen Ort suchst oder beim Anlegen eines Angebots den Pin setzt, sendet dein Browser den Suchtext bzw. die Koordinaten an den Dienst Nominatim der OpenStreetMap Foundation. Deinen Gerätestandort fragen wir nur ab, wenn du auf „Mein Standort“ tippst. Er wird nicht gespeichert.</p>
 
-    <h2>Konto</h2>
-    <p>Für ein Konto speichern wir deine E-Mail-Adresse und ein verschlüsselt gespeichertes Passwort. Konten und Angebote werden bei Supabase gespeichert ([Region des Supabase-Projekts, z. B. Frankfurt, EU]). Die Anmeldung merkt sich dein Browser im lokalen Speicher, damit du angemeldet bleibst. Zusätzliche Cookies zu Werbe- oder Analysezwecken setzen wir nicht.</p>
+      <h2>Konto</h2>
+      <p>Für ein Konto speichern wir deine E-Mail-Adresse, ein verschlüsselt gespeichertes Passwort und den Zeitpunkt, zu dem du den Hinweis zur Registrierung bestätigt hast. Konten und Angebote werden bei Supabase gespeichert (Region: [Region des Supabase-Projekts, z. B. Frankfurt, EU]). Die Anmeldung merkt sich dein Browser im lokalen Speicher, damit du angemeldet bleibst. Zusätzliche Cookies zu Werbe- oder Analysezwecken setzen wir nicht. Mails zur Bestätigung deiner Adresse und zum Zurücksetzen des Passworts verschickt Supabase im Auftrag der Seite.</p>
 
-    <h2>Dein Angebot</h2>
-    <p>Wenn du ein Angebot einstellst, speichern wir: Anzeigename, Ortsname, den Pin (auf Wunsch zufällig um 200 bis 600 m versetzt), die Batterien mit Preisen, Hinweise sowie deine Kontaktdaten (WhatsApp-Nummer und/oder E-Mail).</p>
-    <ul>
-      <li>Name, Ort, Pin, Batterien, Preise und Hinweise sind für alle Besucher sichtbar.</li>
-      <li>WhatsApp-Nummer und E-Mail sind nur für angemeldete Mitglieder sichtbar.</li>
-    </ul>
-    <p>Rechtsgrundlage ist die Vertragsanbahnung bzw. deine Einwilligung (Art. 6 Abs. 1 lit. b und a DSGVO). Du kannst dein Angebot jederzeit pausieren, ändern oder löschen. Beim Löschen werden die Daten des Angebots entfernt.</p>
+      <h2>Dein Angebot</h2>
+      <p>Wenn du ein Angebot einstellst, speichern wir: Anzeigename, Ortsname, den Pin (auf Wunsch zufällig um 200 bis 600 m versetzt), die Batterien mit Preisen, Kaution und ob ein Ausweis vorgezeigt wird, Hinweise, deine Kontaktdaten (WhatsApp-Nummer und/oder E-Mail) und die Sprache, in der wir dir Mails schicken.</p>
+      <ul>
+        <li>Name, Ort, Pin, Batterien, Preise, Kaution und Hinweise sind nach der Freigabe für alle Besucher sichtbar.</li>
+        <li>WhatsApp-Nummer und E-Mail sind nur für angemeldete Mitglieder sichtbar.</li>
+        <li>Die Angabe „Ausweis wird vorgezeigt“ ist nur ein Hinweis an Leihende. Wir erheben, speichern oder kontrollieren keine Ausweise. Wer einen Ausweis sieht, verarbeitet diese Daten selbst und in eigener Verantwortung.</li>
+      </ul>
+      <p>Rechtsgrundlage ist die Vertragsanbahnung bzw. deine Einwilligung (Art. 6 Abs. 1 lit. b und a DSGVO). Du kannst dein Angebot jederzeit pausieren, ändern oder löschen. Beim Löschen werden die Daten des Angebots entfernt.</p>
 
-    <h2>Kontakt zwischen Mitgliedern</h2>
-    <p>Schreibst du über die Buttons „Per WhatsApp schreiben“ oder „Per E-Mail schreiben“, öffnet dein Gerät WhatsApp bzw. dein Mailprogramm. Ab da gelten die Datenschutzbestimmungen des jeweiligen Dienstes. Preis, Übergabe und Bezahlung laufen komplett außerhalb dieser Seite.</p>
+      <h2>Prüfung neuer Verleiher</h2>
+      <p>Neue Angebote werden vor der Veröffentlichung von uns von Hand geprüft. Dafür verlangen wir den Link zu deinem Instagram- oder Facebook-Profil und nehmen optional eine Rechnung von Foil Drive oder deinem Händler entgegen. Wir schauen uns dein öffentliches Profil an, um zu sehen, ob du einen Foil Drive besitzt. Mit dem Antrag benachrichtigt die Seite uns per E-Mail und übermittelt dabei die Angaben aus deinem Antrag.</p>
+      <ul>
+        <li>Die Rechnung wird in einem privaten Speicher abgelegt, den nur du und wir sehen. Wir löschen sie, sobald wir über deinen Antrag entschieden haben.</li>
+        <li>Der Profil-Link wird nur zur Prüfung gespeichert und ist für andere Nutzer nie sichtbar. Er wird gelöscht, wenn du dein Angebot löschst.</li>
+        <li>Nach unserer Entscheidung bekommst du eine E-Mail mit dem Ergebnis, bei einer Ablehnung mit Begründung.</li>
+      </ul>
+      <p>Rechtsgrundlage ist unser berechtigtes Interesse, Missbrauch und Fake-Angebote zu verhindern, und die Vertragsanbahnung (Art. 6 Abs. 1 lit. f und b DSGVO).</p>
 
-    <h2>Deine Rechte</h2>
-    <p>Du hast das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch. Außerdem kannst du dich bei einer Datenschutzaufsichtsbehörde beschweren. Schreib uns dafür an die E-Mail-Adresse oben. Möchtest du dein Konto komplett löschen lassen, melde dich ebenfalls dort.</p>
+      <h2>E-Mail-Versand</h2>
+      <p>Die Benachrichtigungen über Anträge und Entscheidungen verschicken wir über ein Google-Mail-Konto (Google Ireland Ltd.) per SMTP. Dabei verarbeitet der Anbieter die Empfängeradresse und den Mailinhalt.</p>
+
+      <h2>Kontakt zwischen Mitgliedern</h2>
+      <p>Schreibst du über die Buttons „Per WhatsApp schreiben“ oder „Per E-Mail schreiben“, öffnet dein Gerät WhatsApp bzw. dein Mailprogramm. Ab da gelten die Datenschutzbestimmungen des jeweiligen Dienstes. Preis, Übergabe und Bezahlung laufen komplett außerhalb dieser Seite.</p>
+
+      <h2>Deine Rechte</h2>
+      <p>Du hast das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch. Schreib uns dafür an die E-Mail-Adresse oben. Möchtest du dein Konto komplett löschen lassen, melde dich ebenfalls dort. Außerdem kannst du dich bei einer Datenschutzaufsichtsbehörde beschweren, in Spanien bei der Agencia Española de Protección de Datos (aepd.es).</p>
+    </div>
+
+    <!-- ===================== English ===================== -->
+    <div class="l-en">
+      <h1>Privacy</h1>
+
+      <p class="todo"><strong>Please check before launch.</strong> This text describes how the site works technically. Adjust it whenever you change something (for example the hosting, mail or map provider) and have it checked legally if needed. This is not legal advice. Delete this box afterwards.</p>
+
+      <h2>Controller</h2>
+      <p>Ola Vibes S.L., CIF B25889304, Calle El Hierro 9, 38612 El Médano, Spain. Email: <a href="mailto:schulerlukas@gmail.com">schulerlukas@gmail.com</a> (see also the <a href="impressum.html">legal notice</a>).</p>
+
+      <h2>Visiting the site</h2>
+      <p>The site is served by GitHub Pages. GitHub processes technically necessary connection data such as your IP address (server logs). Fonts and map libraries are hosted on this site itself, no Google Fonts are loaded. Your browser stores your chosen language locally.</p>
+
+      <h2>Map and place search</h2>
+      <p>Your browser loads the map tiles from OpenStreetMap (OpenStreetMap Foundation, United Kingdom). The provider receives your IP address and the visible map area. When you search for a place or set the pin while creating a listing, your browser sends the search text or the coordinates to the Nominatim service of the OpenStreetMap Foundation. We only ask for your device location when you tap "My location". It is not stored.</p>
+
+      <h2>Account</h2>
+      <p>For an account we store your email address, a hashed password and the time at which you confirmed the notice when signing up. Accounts and listings are stored at Supabase (region: [region of the Supabase project, e.g. Frankfurt, EU]). Your browser keeps the login in local storage so you stay logged in. We do not set additional cookies for advertising or analytics. Supabase sends the emails for confirming your address and resetting your password on behalf of the site.</p>
+
+      <h2>Your listing</h2>
+      <p>When you create a listing we store: display name, place name, the pin (randomly moved by 200 to 600 m if you wish), the batteries with prices, the deposit and whether an ID is shown, notes, your contact details (WhatsApp number and/or email) and the language in which we email you.</p>
+      <ul>
+        <li>Name, place, pin, batteries, prices, deposit and notes are visible to all visitors once approved.</li>
+        <li>WhatsApp number and email are visible to logged-in members only.</li>
+        <li>"ID is shown at handover" is only a note for borrowers. We do not collect, store or check IDs. Whoever sees an ID processes that data on their own responsibility.</li>
+      </ul>
+      <p>The legal basis is pre-contractual measures or your consent (Art. 6(1)(b) and (a) GDPR). You can pause, change or delete your listing at any time. When you delete it, the listing data is removed.</p>
+
+      <h2>Reviewing new lenders</h2>
+      <p>We review new listings by hand before they are published. For this we require the link to your Instagram or Facebook profile and optionally accept an invoice from Foil Drive or your dealer. We look at your public profile to see whether you own a Foil Drive. When you submit an application, the site notifies us by email and includes the details from your application.</p>
+      <ul>
+        <li>The invoice is stored in a private storage that only you and we can see. We delete it as soon as we have decided on your application.</li>
+        <li>The profile link is stored only for the review and is never visible to other users. It is deleted when you delete your listing.</li>
+        <li>After our decision you receive an email with the result, with a reason if the application is declined.</li>
+      </ul>
+      <p>The legal basis is our legitimate interest in preventing abuse and fake listings, and pre-contractual measures (Art. 6(1)(f) and (b) GDPR).</p>
+
+      <h2>Sending emails</h2>
+      <p>We send the notifications about applications and decisions through a Google Mail account (Google Ireland Ltd.) via SMTP. The provider processes the recipient address and the content of the email.</p>
+
+      <h2>Contact between members</h2>
+      <p>If you use the "Message on WhatsApp" or "Send an email" buttons, your device opens WhatsApp or your mail app. From there the privacy terms of that service apply. Price, handover and payment happen entirely outside this site.</p>
+
+      <h2>Your rights</h2>
+      <p>You have the right of access, rectification, erasure, restriction of processing, data portability and objection. Write to the email address above. If you want your account deleted completely, contact us there as well. You can also lodge a complaint with a data protection authority, in Spain the Agencia Española de Protección de Datos (aepd.es).</p>
+    </div>
   </main>
+
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/legal.js"></script>
 </body>
 </html>

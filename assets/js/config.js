@@ -20,7 +20,7 @@ window.BATTERY_RENTAL_CONFIG = {
   // (https://operations.osmfoundation.org/policies/tiles/). Bei viel Traffic bitte
   // auf einen eigenen Kachel-Anbieter wechseln (MapTiler, Stadia, Thunderforest …).
   tileUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-  tileAttribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>-Mitwirkende',
+  tileAttribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors',
 
   // Startansicht der Karte, bevor Standorte geladen sind
   defaultCenter: [43.5, 8],

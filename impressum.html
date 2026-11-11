@@ -11,35 +11,63 @@
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="index.html" aria-label="Zurück zur Karte">
+    <a class="brand" href="index.html" aria-label="Zurück zur Karte / Back to the map">
       <img src="assets/img/favicon.svg" alt="" width="32" height="32">
       <span class="brand-name">Battery Rental</span>
     </a>
-    <nav class="nav"><a class="nav-link" href="index.html">Zur Karte</a></nav>
+    <nav class="nav">
+      <button type="button" class="btn btn-ghost btn-lang" id="legal-lang" aria-label="Switch language"><span>EN</span></button>
+      <a class="nav-link" href="index.html"><span class="l-de">Zur Karte</span><span class="l-en">Back to the map</span></a>
+    </nav>
   </header>
 
   <main class="legal">
-    <h1>Impressum</h1>
+    <!-- ===================== Deutsch ===================== -->
+    <div class="l-de">
+      <h1>Impressum</h1>
 
-    <p class="todo"><strong>Vorlage, bitte ausfüllen.</strong> Ersetze alle Platzhalter in eckigen Klammern durch deine Angaben, bevor die Seite öffentlich genutzt wird. Welche Angaben Pflicht sind, hängt von deiner Situation ab (privat oder geschäftlich). Das ist keine Rechtsberatung.</p>
+      <p class="todo"><strong>Bitte vor dem Start prüfen.</strong> Für eine spanische S.L. verlangt das Gesetz 34/2002 (LSSI-CE, Art. 10) auch die Angaben zur Eintragung im Handelsregister (Registro Mercantil). Trage sie unten ein und lösche dann diesen Kasten. Das ist keine Rechtsberatung.</p>
 
-    <h2>Angaben gemäß § 5 DDG</h2>
-    <p>[Vor- und Nachname]<br>
-      [Straße und Hausnummer]<br>
-      [PLZ und Ort]<br>
-      [Land]</p>
+      <h2>Anbieter</h2>
+      <dl>
+        <dt>Firma</dt><dd>Ola Vibes S.L.</dd>
+        <dt>Steuernummer (CIF)</dt><dd>B25889304</dd>
+        <dt>Anschrift</dt><dd>Calle El Hierro 9<br>38612 El Médano<br>Spanien</dd>
+        <dt>E-Mail</dt><dd><a href="mailto:schulerlukas@gmail.com">schulerlukas@gmail.com</a></dd>
+        <dt>Handelsregister</dt><dd>[Registro Mercantil, Tomo, Folio, Hoja – bitte ergänzen]</dd>
+      </dl>
 
-    <h2>Kontakt</h2>
-    <p>E-Mail: [E-Mail-Adresse]</p>
+      <h2>Haftung für Inhalte der Nutzer</h2>
+      <p>Die Angebote auf dieser Karte stammen von den Mitgliedern selbst. Diese Seite vermittelt ausschließlich Kontakte. Ein Verleih, die Bezahlung, eine Kaution und die Haftung für die Batterien kommen allein zwischen Verleiher und Leihendem zustande. Ola Vibes S.L. ist an diesen Vereinbarungen nicht beteiligt. Auf Hinweis auf rechtswidrige Inhalte entfernen wir die betroffenen Angebote umgehend.</p>
 
-    <h2>Verantwortlich für den Inhalt</h2>
-    <p>[Vor- und Nachname, Anschrift wie oben]</p>
+      <h2>Marken</h2>
+      <p>Foil Drive und die Modellnamen sind Marken ihrer jeweiligen Inhaber. Diese Seite ist ein unabhängiges Community-Projekt und steht in keiner Verbindung zum Hersteller.</p>
+    </div>
 
-    <h2>Haftung für Inhalte der Nutzer</h2>
-    <p>Die Angebote auf dieser Karte stammen von den Mitgliedern selbst. Diese Seite vermittelt ausschließlich Kontakte. Ein Verleih, die Bezahlung und die Haftung für die Batterien kommen allein zwischen Verleiher und Leihendem zustande. Auf Hinweis auf rechtswidrige Inhalte entfernen wir die betroffenen Angebote umgehend.</p>
+    <!-- ===================== English ===================== -->
+    <div class="l-en">
+      <h1>Legal notice</h1>
 
-    <h2>Marken</h2>
-    <p>Foil Drive und die Modellnamen sind Marken ihrer jeweiligen Inhaber.</p>
+      <p class="todo"><strong>Please check before launch.</strong> For a Spanish S.L., Spanish law 34/2002 (LSSI-CE, art. 10) also requires the commercial register details (Registro Mercantil). Add them below and then delete this box. This is not legal advice.</p>
+
+      <h2>Provider</h2>
+      <dl>
+        <dt>Company</dt><dd>Ola Vibes S.L.</dd>
+        <dt>Tax ID (CIF)</dt><dd>B25889304</dd>
+        <dt>Address</dt><dd>Calle El Hierro 9<br>38612 El Médano<br>Spain</dd>
+        <dt>Email</dt><dd><a href="mailto:schulerlukas@gmail.com">schulerlukas@gmail.com</a></dd>
+        <dt>Commercial register</dt><dd>[Registro Mercantil, Tomo, Folio, Hoja – please add]</dd>
+      </dl>
+
+      <h2>Liability for user content</h2>
+      <p>The listings on this map come from the members themselves. This site only connects contacts. Lending, payment, any deposit and liability for the batteries are solely agreed between lender and borrower. Ola Vibes S.L. is not a party to these agreements. If we are notified of unlawful content, we remove the affected listings promptly.</p>
+
+      <h2>Trademarks</h2>
+      <p>Foil Drive and the model names are trademarks of their respective owners. This site is an independent community project and is not affiliated with the manufacturer.</p>
+    </div>
   </main>
+
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/legal.js"></script>
 </body>
 </html>

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Foil Drive Battery Rental – Batterien von Ownern leihen</title>
-  <meta name="description" content="Foil Drive Batterien dürfen nicht ins Flugzeug. Auf dieser Karte findest du Owner, die ihre Batterie am Urlaubsort verleihen – Max HP, Max Power, Max Sport, FM650, FM450, F860.">
+  <meta name="description" content="Foil Drive Batterien dürfen nicht ins Flugzeug. Auf dieser Karte findest du geprüfte Owner, die ihre Batterie am Urlaubsort verleihen – Max HP, Max Power, Max Sport, FM650, FM450, F860.">
   <meta name="theme-color" content="#0a2540">
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/vendor/leaflet/leaflet.css">
@@ -13,44 +13,45 @@
   <link rel="stylesheet" href="assets/css/app.css">
 </head>
 <body>
-  <a class="skip" href="#map">Zur Karte springen</a>
+  <a class="skip" href="#map" data-i18n="skip">Zur Karte springen</a>
 
   <header class="topbar">
-    <a class="brand" href="#top" aria-label="Foil Drive Battery Rental, Startseite">
+    <a class="brand" href="#top" data-i18n-attr="aria-label:brand.aria" aria-label="Foil Drive Battery Rental, Startseite">
       <img src="assets/img/favicon.svg" alt="" width="32" height="32">
       <span class="brand-name">Battery Rental</span>
-      <span class="brand-sub">Foil Drive Community</span>
+      <span class="brand-sub" data-i18n="brand.sub">Foil Drive Community</span>
     </a>
-    <nav class="nav" aria-label="Hauptnavigation">
-      <a class="nav-link" href="#so-gehts">So funktioniert's</a>
+    <nav class="nav" data-i18n-attr="aria-label:nav.aria" aria-label="Hauptnavigation">
+      <a class="nav-link" href="#so-gehts" data-i18n="nav.how">So funktioniert's</a>
       <span class="who" id="who" hidden></span>
-      <button type="button" class="btn btn-accent" id="btn-offer"><span class="long">Batterie anbieten</span><span class="short">Anbieten</span></button>
-      <button type="button" class="btn btn-ghost" id="btn-account">Anmelden</button>
+      <button type="button" class="btn btn-ghost btn-lang" id="btn-lang" lang="en" data-i18n-attr="aria-label:nav.lang_aria" aria-label="Switch to English"><span data-i18n="nav.lang_to">EN</span></button>
+      <button type="button" class="btn btn-accent" id="btn-offer"><span class="long" data-i18n="nav.offer">Batterie anbieten</span><span class="short" data-i18n="nav.offer_s">Anbieten</span></button>
+      <button type="button" class="btn btn-ghost" id="btn-account" data-i18n="nav.login">Anmelden</button>
     </nav>
   </header>
 
   <div class="demo-banner" id="demo-banner" hidden>
-    <p><strong>Demo-Modus.</strong> Die Standorte sind erfunden und deine Eingaben bleiben nur in diesem Browser. Für den echten Betrieb trägst du Supabase in <code>assets/js/config.js</code> ein.</p>
-    <button type="button" class="link-btn" id="demo-close">Ausblenden</button>
+    <p data-i18n-html="demo.banner"><strong>Demo-Modus.</strong> Die Standorte sind erfunden und deine Eingaben bleiben nur in diesem Browser. Für den echten Betrieb trägst du Supabase in <code>assets/js/config.js</code> ein.</p>
+    <button type="button" class="link-btn" id="demo-close" data-i18n="demo.hide">Ausblenden</button>
   </div>
 
   <main class="shell" id="top" data-view="map">
-    <aside class="panel" id="panel" aria-label="Suche und Ergebnisse">
+    <aside class="panel" id="panel" data-i18n-attr="aria-label:panel.aria" aria-label="Suche und Ergebnisse">
       <div class="panel-top">
         <div class="intro">
-          <h1>Der Akku darf nicht ins Flugzeug. Leih dir einen vor Ort.</h1>
-          <p>Foil Drive Owner verleihen ihre Batterien an andere Owner. Kontakt, Preis und Bezahlung klärt ihr direkt.</p>
+          <h1 data-i18n="intro.h1">Der Akku darf nicht ins Flugzeug. Leih dir einen vor Ort.</h1>
+          <p data-i18n="intro.p">Reisende ohne Batterie finden hier Locals mit Foil Drive. Kontakt, Preis und Bezahlung klärt ihr direkt.</p>
         </div>
 
         <form class="search" id="search" role="search" autocomplete="off">
-          <label class="sr-only" for="q">Reiseziel suchen</label>
-          <input class="input" id="q" name="q" type="search" placeholder="Reiseziel suchen, z. B. Tarifa" enterkeyhint="search">
-          <button class="btn btn-primary" id="search-btn" type="submit">Suchen</button>
+          <label class="sr-only" for="q" data-i18n="search.label">Reiseziel suchen</label>
+          <input class="input" id="q" name="q" type="search" data-i18n-attr="placeholder:search.ph" placeholder="Reiseziel suchen, z. B. Tarifa" enterkeyhint="search">
+          <button class="btn btn-primary" id="search-btn" type="submit" data-i18n="search.btn">Suchen</button>
         </form>
         <p class="search-msg" id="search-msg" role="status" hidden></p>
 
         <fieldset class="filters" id="filters">
-          <legend>Welche Batterie brauchst du?</legend>
+          <legend data-i18n="filters.legend">Welche Batterie brauchst du?</legend>
           <div class="chips" id="chips"></div>
         </fieldset>
       </div>
@@ -58,16 +59,16 @@
       <div class="list-wrap" id="list-wrap">
         <div class="results-head">
           <p id="count" role="status">Lade Standorte …</p>
-          <button type="button" class="link-btn" id="reset-filters" hidden>Filter zurücksetzen</button>
+          <button type="button" class="link-btn" id="reset-filters" data-i18n="filters.reset" hidden>Filter zurücksetzen</button>
         </div>
         <div class="list-status" id="list-status" hidden></div>
         <ol class="list" id="list"></ol>
       </div>
     </aside>
 
-    <section class="mapwrap" aria-label="Karte mit Verleih-Standorten">
-      <div id="map" role="application" aria-label="Karte"></div>
-      <button type="button" class="map-btn" id="locate" aria-label="Zu meinem Standort springen" title="Mein Standort"></button>
+    <section class="mapwrap" data-i18n-attr="aria-label:map.aria" aria-label="Karte mit Verleih-Standorten">
+      <div id="map" role="application" data-i18n-attr="aria-label:map.label" aria-label="Karte"></div>
+      <button type="button" class="map-btn" id="locate" data-i18n-attr="aria-label:map.locate;title:map.locate_title" aria-label="Zu meinem Standort springen" title="Mein Standort"></button>
     </section>
 
     <button type="button" class="view-toggle" id="view-toggle"></button>
@@ -77,24 +78,24 @@
 
   <section class="info" id="so-gehts" aria-labelledby="info-title">
     <div class="info-inner">
-      <h2 id="info-title">So funktioniert's</h2>
-      <p class="info-lead">Foil-Drive-Batterien dürfen nicht mit ins Flugzeug. Also leihen sich Reisende eine vor Ort – von Ownern, die am Spot zu Hause sind. Hier gibt es nur die Karte. Alles Weitere klärt ihr direkt miteinander.</p>
+      <h2 id="info-title" data-i18n="info.title">So funktioniert's</h2>
+      <p class="info-lead" data-i18n="info.lead">Foil-Drive-Batterien dürfen nicht mit ins Flugzeug. Also leihen sich Reisende eine vor Ort – von Locals, die am Spot zu Hause sind. Hier gibt es nur die Karte. Alles Weitere klärt ihr direkt miteinander.</p>
 
       <div class="flows">
         <div class="flow">
-          <h3>Du reist</h3>
+          <h3 data-i18n="flow.travel.h">Du reist</h3>
           <ol class="steps">
-            <li><strong>Reiseziel suchen.</strong> Filtere nach der Batterie, die zu deinem Motor passt.</li>
-            <li><strong>Anmelden und Kontakt aufnehmen.</strong> Die Kontaktdaten sehen angemeldete Mitglieder. Schreib per WhatsApp oder E-Mail.</li>
-            <li><strong>Preis, Übergabe und Kaution klären.</strong> Bezahlung und Deal laufen komplett außerhalb dieser Seite.</li>
+            <li><strong data-i18n="flow.travel.1h">Reiseziel suchen.</strong> <span data-i18n="flow.travel.1p">Filtere nach der Batterie, die du brauchst.</span></li>
+            <li><strong data-i18n="flow.travel.2h">Anmelden und Kontakt aufnehmen.</strong> <span data-i18n="flow.travel.2p">Die Kontaktdaten sehen angemeldete Mitglieder. Schreib per WhatsApp oder E-Mail.</span></li>
+            <li><strong data-i18n="flow.travel.3h">Preis, Übergabe und Kaution klären.</strong> <span data-i18n="flow.travel.3p">Bezahlung und Deal laufen komplett außerhalb dieser Seite.</span></li>
           </ol>
         </div>
         <div class="flow">
-          <h3>Du besitzt eine Batterie</h3>
+          <h3 data-i18n="flow.local.h">Du hast eine Batterie</h3>
           <ol class="steps">
-            <li><strong>Kostenloses Konto anlegen.</strong> E-Mail und Passwort genügen.</li>
-            <li><strong>Batterien, Standort und Kontakt eintragen.</strong> Preise pro Tag oder Woche sind optional. Dein Pin wird auf Wunsch nur ungefähr angezeigt.</li>
-            <li><strong>Anfragen beantworten.</strong> Du entscheidest, an wen du verleihst. Das Angebot pausieren oder löschen geht jederzeit.</li>
+            <li><strong data-i18n="flow.local.1h">Konto anlegen.</strong> <span data-i18n="flow.local.1p">Kostenlos, E-Mail und Passwort genügen.</span></li>
+            <li><strong data-i18n="flow.local.2h">Antrag stellen.</strong> <span data-i18n="flow.local.2p">Trag Batterien, Standort, Kontakt und Kaution ein und gib dein Instagram- oder Facebook-Profil an. Eine Rechnung hochzuladen ist optional.</span></li>
+            <li><strong data-i18n="flow.local.3h">Freigabe abwarten.</strong> <span data-i18n="flow.local.3p">Wir prüfen jeden Antrag kurz. Du bekommst eine Mail, danach erscheint dein Pin. Pausieren oder löschen geht jederzeit.</span></li>
           </ol>
         </div>
       </div>
@@ -103,23 +104,23 @@
 
   <section class="know" aria-labelledby="know-title">
     <div class="info-inner">
-      <h2 id="know-title">Gut zu wissen</h2>
+      <h2 id="know-title" data-i18n="know.title">Gut zu wissen</h2>
       <dl class="know-grid">
         <div>
-          <dt>Passt die Batterie zu deinem Setup?</dt>
-          <dd>Frag vorab nach Modell und Stecker und prüfe, ob sie zu deinem Motor und Controller passt. Kläre auch, ob ein Ladegerät dabei ist.</dd>
+          <dt data-i18n="know.verified.dt">Geprüfte Verleiher</dt>
+          <dd data-i18n="know.verified.dd">Jeder Verleiher wird vor der Freigabe kurz geprüft: Profil-Link und optional eine Rechnung. Erst danach erscheint der Pin auf der Karte.</dd>
         </div>
         <div>
-          <dt>Kaution und Übergabe</dt>
-          <dd>Vereinbart vorher Kaution, Abholort und Rückgabezeit. Macht bei der Übergabe Fotos vom Zustand.</dd>
+          <dt data-i18n="know.deposit.dt">Kaution und Übergabe</dt>
+          <dd data-i18n="know.deposit.dd">Jeder Verleiher gibt seine Kaution an und ob er einen Ausweis sehen möchte. Vereinbart trotzdem vorher Abholort und Rückgabezeit und macht bei der Übergabe Fotos vom Zustand.</dd>
         </div>
         <div>
-          <dt>Haftung</dt>
-          <dd>Diese Seite vermittelt nur Kontakte. Verleih und Haftung laufen allein zwischen Verleiher und Leihendem. Klärt vorher, ob eure Versicherung greift.</dd>
+          <dt data-i18n="know.liability.dt">Haftung</dt>
+          <dd data-i18n="know.liability.dd">Diese Seite vermittelt nur Kontakte. Verleih und Haftung laufen allein zwischen Verleiher und Leihendem. Klärt vorher, ob eure Versicherung greift.</dd>
         </div>
         <div>
-          <dt>Datenschutz</dt>
-          <dd>Der Pin erscheint auf Wunsch nur ungefähr. Kontaktdaten sehen nur angemeldete Mitglieder. Die genaue Adresse gibst du erst im Chat weiter.</dd>
+          <dt data-i18n="know.privacy.dt">Datenschutz</dt>
+          <dd data-i18n="know.privacy.dd">Der Pin erscheint auf Wunsch nur ungefähr. Kontaktdaten sehen nur angemeldete Mitglieder, Nachweise nur wir und nur zur Prüfung.</dd>
         </div>
       </dl>
     </div>
@@ -127,14 +128,15 @@
 
   <footer class="footer">
     <div class="info-inner footer-inner">
-      <p>Ein Community-Projekt von Foil Drive Ownern für Foil Drive Owner.</p>
+      <p data-i18n="footer.tag">Ein Community-Projekt von Foil Drive Ownern für Foil Drive Owner. Betrieben von Ola Vibes S.L.</p>
       <ul class="footer-links">
-        <li><a href="impressum.html">Impressum</a></li>
-        <li><a href="datenschutz.html">Datenschutz</a></li>
-        <li><a href="https://github.com/Lukilink/foildrive-battery-rental" target="_blank" rel="noopener">Quellcode</a></li>
-        <li id="report-li" hidden><a id="report-link" href="#">Angebot melden</a></li>
+        <li><a href="impressum.html" data-i18n="footer.imprint">Impressum</a></li>
+        <li><a href="datenschutz.html" data-i18n="footer.privacy">Datenschutz</a></li>
+        <li><a href="https://github.com/Lukilink/foildrive-battery-rental" target="_blank" rel="noopener" data-i18n="footer.source">Quellcode</a></li>
+        <li id="report-li" hidden><a id="report-link" href="#" data-i18n="footer.report">Angebot melden</a></li>
+        <li><button type="button" class="footer-lang" id="footer-lang" lang="en" data-i18n="footer.lang">English</button></li>
       </ul>
-      <p class="footer-small">Foil Drive und die Modellnamen sind Marken ihrer jeweiligen Inhaber.</p>
+      <p class="footer-small" data-i18n="footer.marks">Foil Drive und die Modellnamen sind Marken ihrer jeweiligen Inhaber.</p>
     </div>
   </footer>
 
@@ -143,27 +145,34 @@
     <form class="dlg" id="auth-form" novalidate>
       <div class="dlg-head">
         <h2 id="auth-title">Anmelden</h2>
-        <button type="button" class="icon-btn" data-close aria-label="Schließen"></button>
+        <button type="button" class="icon-btn" data-close data-i18n-attr="aria-label:auth.close" aria-label="Schließen"></button>
       </div>
       <div class="dlg-body">
         <p class="muted" id="auth-intro" hidden></p>
-        <div class="seg" id="auth-seg" role="radiogroup" aria-label="Anmelden oder registrieren">
-          <label><input type="radio" name="auth-mode" value="login" checked><span>Anmelden</span></label>
-          <label><input type="radio" name="auth-mode" value="signup"><span>Registrieren</span></label>
+        <div class="seg" id="auth-seg" role="radiogroup" data-i18n-attr="aria-label:auth.seg_aria" aria-label="Anmelden oder registrieren">
+          <label><input type="radio" name="auth-mode" value="login" checked><span data-i18n="auth.tab.login">Anmelden</span></label>
+          <label><input type="radio" name="auth-mode" value="signup"><span data-i18n="auth.tab.signup">Registrieren</span></label>
         </div>
         <div class="field" id="fld-email">
-          <label for="auth-email">E-Mail</label>
+          <label for="auth-email" data-i18n="auth.email">E-Mail</label>
           <input class="input" id="auth-email" type="email" autocomplete="email" inputmode="email" aria-describedby="err-auth-email">
           <p class="err" id="err-auth-email" hidden></p>
         </div>
         <div class="field" id="fld-pw">
-          <label for="auth-pw" id="auth-pw-label">Passwort</label>
+          <label for="auth-pw" id="auth-pw-label" data-i18n="auth.pw">Passwort</label>
           <input class="input" id="auth-pw" type="password" autocomplete="current-password" aria-describedby="hint-auth-pw err-auth-pw">
-          <p class="hint" id="hint-auth-pw">Mindestens 8 Zeichen.</p>
+          <p class="hint" id="hint-auth-pw" data-i18n="auth.pw_hint">Mindestens 8 Zeichen.</p>
           <p class="err" id="err-auth-pw" hidden></p>
         </div>
+        <div class="terms" id="fld-terms" hidden>
+          <label class="check check-plain">
+            <input type="checkbox" id="auth-terms" aria-describedby="err-auth-terms">
+            <span data-i18n-html="auth.terms">Ich habe verstanden: Diese Seite vermittelt nur den Kontakt. Verleih, Bezahlung und Haftung laufen allein zwischen den Nutzern, Ola Vibes S.L. ist nicht beteiligt. Es gilt die <a href="datenschutz.html" target="_blank" rel="noopener">Datenschutzerklärung</a>.</span>
+          </label>
+          <p class="err" id="err-auth-terms" hidden></p>
+        </div>
         <p class="msg" id="auth-msg" role="status" hidden></p>
-        <button type="button" class="link-btn" id="auth-forgot">Passwort vergessen?</button>
+        <button type="button" class="link-btn" id="auth-forgot" data-i18n="auth.forgot">Passwort vergessen?</button>
       </div>
       <div class="dlg-foot">
         <button type="submit" class="btn btn-primary" id="auth-submit">Anmelden</button>
@@ -176,79 +185,118 @@
     <form class="dlg" id="offer-form" novalidate>
       <div class="dlg-head">
         <h2 id="offer-title">Dein Angebot</h2>
-        <button type="button" class="icon-btn" data-close aria-label="Schließen"></button>
+        <button type="button" class="icon-btn" data-close data-i18n-attr="aria-label:auth.close" aria-label="Schließen"></button>
       </div>
 
       <div class="dlg-body">
+        <div class="status-box" id="offer-status" role="status" hidden></div>
+
         <section class="sect" aria-labelledby="s-bat">
-          <h3 id="s-bat">Welche Batterien verleihst du?</h3>
-          <p class="hint">Preise sind optional. Ohne Preis steht „Anfrage“ auf der Karte.</p>
+          <h3 id="s-bat" data-i18n="offer.bat.h">Welche Batterien verleihst du?</h3>
+          <p class="hint" data-i18n="offer.bat.hint">Preise sind optional. Ohne Preis steht „Anfrage“ auf der Karte.</p>
           <div class="field field-inline">
-            <label for="f-currency">Währung</label>
+            <label for="f-currency" data-i18n="offer.currency">Währung</label>
             <select class="input" id="f-currency"></select>
           </div>
           <div class="bat-rows" id="bat-rows"></div>
           <p class="err" id="err-batteries" hidden></p>
         </section>
 
+        <section class="sect" aria-labelledby="s-dep">
+          <h3 id="s-dep" data-i18n="offer.dep.h">Kaution</h3>
+          <p class="hint" data-i18n="offer.dep.hint">Leer lassen = nach Absprache. 0 = keine Kaution.</p>
+          <div class="field field-inline">
+            <label for="f-deposit" data-i18n="offer.dep.amount">Höhe der Kaution</label>
+            <div class="money money-wide">
+              <input class="input" id="f-deposit" type="text" inputmode="decimal" autocomplete="off" aria-describedby="err-deposit">
+              <span id="deposit-unit"></span>
+            </div>
+          </div>
+          <p class="err" id="err-deposit" hidden></p>
+          <label class="check">
+            <input type="checkbox" id="f-idcheck">
+            <span><span data-i18n="offer.dep.id">Ausweis wird vorgezeigt</span>
+              <small data-i18n="offer.dep.id_hint">Der Leihende zeigt bei der Übergabe seinen Ausweis. Du behältst ihn nicht ein.</small>
+            </span>
+          </label>
+        </section>
+
         <section class="sect" aria-labelledby="s-loc">
-          <h3 id="s-loc">Wo steht sie?</h3>
-          <p class="hint">Suche einen Ort oder tippe auf die Karte. Setz den Pin nicht auf deine Haustür, die Gegend reicht.</p>
+          <h3 id="s-loc" data-i18n="offer.loc.h">Wo steht sie?</h3>
+          <p class="hint" data-i18n="offer.loc.hint">Suche einen Ort oder tippe auf die Karte. Setz den Pin nicht auf deine Haustür, die Gegend reicht.</p>
           <div class="pick-search">
-            <label class="sr-only" for="f-search">Ort oder Adresse suchen</label>
-            <input class="input" id="f-search" type="search" placeholder="Ort oder Adresse suchen" autocomplete="off">
-            <button type="button" class="btn btn-quiet" id="btn-pick-search">Suchen</button>
-            <button type="button" class="btn btn-quiet" id="btn-pick-locate">Mein Standort</button>
+            <label class="sr-only" for="f-search" data-i18n="offer.loc.search_label">Ort oder Adresse suchen</label>
+            <input class="input" id="f-search" type="search" data-i18n-attr="placeholder:offer.loc.search_label" placeholder="Ort oder Adresse suchen" autocomplete="off">
+            <button type="button" class="btn btn-quiet" id="btn-pick-search" data-i18n="offer.loc.search_btn">Suchen</button>
+            <button type="button" class="btn btn-quiet" id="btn-pick-locate" data-i18n="offer.loc.locate">Mein Standort</button>
           </div>
           <p class="hint" id="pick-msg" role="status" hidden></p>
-          <div id="pick-map" aria-label="Karte zum Setzen des Pins"></div>
+          <div id="pick-map" data-i18n-attr="aria-label:offer.loc.map_aria" aria-label="Karte zum Setzen des Pins"></div>
           <p class="err" id="err-location" hidden></p>
 
           <div class="field">
-            <label for="f-place">Anzeigename des Ortes</label>
-            <input class="input" id="f-place" type="text" maxlength="120" placeholder="z. B. Tarifa, Spanien" aria-describedby="err-place">
+            <label for="f-place" data-i18n="offer.place.label">Anzeigename des Ortes</label>
+            <input class="input" id="f-place" type="text" maxlength="120" data-i18n-attr="placeholder:offer.place.ph" placeholder="z. B. Tarifa, Spanien" aria-describedby="err-place">
             <p class="err" id="err-place" hidden></p>
           </div>
           <label class="check">
             <input type="checkbox" id="f-approx" checked>
-            <span>Ungefähren Standort anzeigen
-              <small>Der Pin wird beim Speichern zufällig um 200 bis 600 m versetzt. Den genauen Treffpunkt nennst du erst im Chat.</small>
+            <span><span data-i18n="offer.approx.label">Ungefähren Standort anzeigen</span>
+              <small data-i18n="offer.approx.hint">Der Pin wird beim Speichern zufällig um 200 bis 600 m versetzt. Den genauen Treffpunkt nennst du erst im Chat.</small>
             </span>
           </label>
         </section>
 
         <section class="sect" aria-labelledby="s-contact">
-          <h3 id="s-contact">Wie erreicht man dich?</h3>
-          <p class="hint">Mindestens eins von beidem. Nur angemeldete Mitglieder sehen deine Kontaktdaten.</p>
+          <h3 id="s-contact" data-i18n="offer.contact.h">Wie erreicht man dich?</h3>
+          <p class="hint" data-i18n="offer.contact.hint">Mindestens eins von beidem. Nur angemeldete Mitglieder sehen deine Kontaktdaten.</p>
           <div class="field">
-            <label for="f-wa">WhatsApp-Nummer</label>
+            <label for="f-wa" data-i18n="offer.wa.label">WhatsApp-Nummer</label>
             <input class="input" id="f-wa" type="tel" autocomplete="tel" placeholder="+49 170 1234567" aria-describedby="err-wa">
             <p class="err" id="err-wa" hidden></p>
           </div>
           <div class="field">
-            <label for="f-mail">E-Mail</label>
+            <label for="f-mail" data-i18n="offer.mail.label">E-Mail</label>
             <input class="input" id="f-mail" type="email" autocomplete="email" inputmode="email" aria-describedby="err-mail">
             <p class="err" id="err-mail" hidden></p>
           </div>
           <p class="err" id="err-contact" hidden></p>
         </section>
 
-        <section class="sect" aria-labelledby="s-info">
-          <h3 id="s-info">Was sollen Leihende wissen?</h3>
+        <section class="sect" aria-labelledby="s-proof">
+          <h3 id="s-proof" data-i18n="offer.proof.h">Verifizierung</h3>
+          <p class="hint" data-i18n="offer.proof.hint">Damit wir sehen, dass du wirklich einen Foil Drive hast. Nur wir sehen diese Angaben, nie andere Nutzer.</p>
           <div class="field">
-            <label for="f-name">Name für die Anzeige</label>
-            <input class="input" id="f-name" type="text" maxlength="60" autocomplete="nickname" placeholder="z. B. Lukas" aria-describedby="err-name">
+            <label for="f-proof" data-i18n="offer.proof.url.label">Instagram- oder Facebook-Profil</label>
+            <input class="input" id="f-proof" type="url" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://instagram.com/…" aria-describedby="hint-proof err-proof">
+            <p class="hint" id="hint-proof" data-i18n="offer.proof.url.hint">Am besten ein Profil, auf dem du mit deinem Foil Drive zu sehen bist.</p>
+            <p class="err" id="err-proof" hidden></p>
+          </div>
+          <div class="field">
+            <label for="f-file"><span data-i18n="offer.proof.file.label">Rechnung von Foil Drive oder deinem Händler</span> <span class="opt" data-i18n="offer.opt">(optional)</span></label>
+            <input class="input input-file" id="f-file" type="file" accept="application/pdf,image/jpeg,image/png,.pdf,.jpg,.jpeg,.png" aria-describedby="hint-file err-file">
+            <p class="hint" id="hint-file" data-i18n="offer.proof.file.hint">PDF, JPG oder PNG, höchstens 5 MB. Dein Name muss darauf stehen. Wir löschen die Datei nach der Prüfung.</p>
+            <p class="hint" id="file-current" hidden></p>
+            <p class="err" id="err-file" hidden></p>
+          </div>
+        </section>
+
+        <section class="sect" aria-labelledby="s-info">
+          <h3 id="s-info" data-i18n="offer.info.h">Was sollen Leihende wissen?</h3>
+          <div class="field">
+            <label for="f-name" data-i18n="offer.name.label">Name für die Anzeige</label>
+            <input class="input" id="f-name" type="text" maxlength="60" autocomplete="nickname" data-i18n-attr="placeholder:offer.name.ph" placeholder="z. B. Lukas" aria-describedby="err-name">
             <p class="err" id="err-name" hidden></p>
           </div>
           <div class="field">
-            <label for="f-notes">Hinweise <span class="opt">(optional)</span></label>
-            <textarea class="input" id="f-notes" rows="4" maxlength="600" placeholder="Abholung oder Lieferung, Kaution, Ladegerät, Zeiten, Sprachen …" aria-describedby="err-notes"></textarea>
+            <label for="f-notes"><span data-i18n="offer.notes.label">Hinweise</span> <span class="opt" data-i18n="offer.opt">(optional)</span></label>
+            <textarea class="input" id="f-notes" rows="4" maxlength="600" data-i18n-attr="placeholder:offer.notes.ph" placeholder="Abholung oder Lieferung, Zeiten, Ladegerät, Sprachen …" aria-describedby="err-notes"></textarea>
             <p class="err" id="err-notes" hidden></p>
           </div>
           <label class="check">
             <input type="checkbox" id="f-active" checked>
-            <span>Angebot ist sichtbar
-              <small>Ausschalten, wenn die Batterie gerade nicht verfügbar ist.</small>
+            <span><span data-i18n="offer.active.label">Angebot ist sichtbar</span>
+              <small data-i18n="offer.active.hint">Ausschalten, wenn die Batterie gerade nicht verfügbar ist.</small>
             </span>
           </label>
         </section>
@@ -257,22 +305,23 @@
       </div>
 
       <div class="dlg-foot">
-        <button type="button" class="btn btn-danger" id="offer-delete" hidden>Angebot löschen</button>
+        <button type="button" class="btn btn-danger" id="offer-delete" data-i18n="offer.delete" hidden>Angebot löschen</button>
         <span class="spacer"></span>
-        <button type="button" class="btn btn-quiet" data-close>Abbrechen</button>
-        <button type="submit" class="btn btn-primary" id="offer-save">Angebot speichern</button>
+        <button type="button" class="btn btn-quiet" data-close data-i18n="offer.cancel">Abbrechen</button>
+        <button type="submit" class="btn btn-primary" id="offer-save">Antrag senden</button>
       </div>
     </form>
   </dialog>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <noscript><p class="noscript">Diese Seite braucht JavaScript, um die Karte anzuzeigen.</p></noscript>
+  <noscript><p class="noscript">Diese Seite braucht JavaScript, um die Karte anzuzeigen. / This site needs JavaScript to show the map.</p></noscript>
 
   <script src="assets/vendor/leaflet/leaflet.js"></script>
   <script src="assets/vendor/markercluster/leaflet.markercluster.js"></script>
   <script src="assets/vendor/supabase/supabase.js"></script>
   <script src="assets/js/config.js"></script>
+  <script src="assets/js/i18n.js"></script>
   <script src="assets/js/store-demo.js"></script>
   <script src="assets/js/store-supabase.js"></script>
   <script src="assets/js/app.js"></script>
