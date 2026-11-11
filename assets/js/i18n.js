@@ -139,6 +139,7 @@
     'footer.source': 'Quellcode',
     'footer.report': 'Angebot melden',
     'footer.lang': 'English',
+    'footer.dedication': 'Idea and inspired by Tom Earl ♥',
     'footer.marks': 'Foil Drive und die Modellnamen sind Marken ihrer jeweiligen Inhaber.',
 
     'auth.close': 'Schließen',
@@ -387,6 +388,7 @@
     'footer.source': 'Source code',
     'footer.report': 'Report a listing',
     'footer.lang': 'Deutsch',
+    'footer.dedication': 'Idea and inspired by Tom Earl ♥',
     'footer.marks': 'Foil Drive and the model names are trademarks of their respective owners.',
 
     'auth.close': 'Close',

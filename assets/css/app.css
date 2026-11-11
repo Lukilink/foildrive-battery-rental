@@ -416,6 +416,7 @@ dialog:not([open]) { display: none; }
 .footer :focus-visible { outline-color: #fff; }
 .footer-inner { padding-top: 36px; padding-bottom: 40px; display: grid; gap: 14px; }
 .footer-links { display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 0; padding: 0; list-style: none; }
+.footer-dedication { font-weight: 600; color: #fff; }
 .footer-small { font-size: .85rem; color: #8fb0c2; }
 .footer-lang {
   background: none; border: 0; padding: 0; color: #fff; font: inherit;
