@@ -1,318 +1,25 @@
 /*
- * Sprachen: Deutsch und Englisch.
+ * Texte der Seite (nur Englisch).
  * Statische Texte stehen im HTML mit data-i18n="schlüssel" (Text), data-i18n-html="schlüssel"
  * (Text mit einfachem, eigenem Markup) oder data-i18n-attr="attribut:schlüssel;…".
  * Dynamische Texte holt app.js mit I18N.t('schlüssel', {platzhalter: wert}).
  *
- * Reihenfolge der Sprachwahl: ?lang=de|en in der Adresse → gespeicherte Wahl → Browser-Sprache
- * (Deutsch für de*, sonst Englisch).
- *
- * Weitere Sprache ergänzen: unten einen Block unter DICT hinzufügen (Kopie von "en" übersetzen)
- * und den Code in SUPPORTED aufnehmen.
+ * Die Seite ist bewusst nur Englisch. Die Mechanik (DICT, t(), apply()) bleibt, damit man
+ * später eine Sprache ergänzen könnte.
  */
 (function () {
   'use strict';
 
-  var SUPPORTED = ['de', 'en'];
-  var STORE_KEY = 'fdbr.lang';
 
   var DICT = {};
 
-  /* ======================= Deutsch ======================= */
-  DICT.de = {
-    'meta.title': 'Foil Assist Battery Rental – Batterien vor Ort leihen',
-    'meta.desc': 'Foil-Assist-Batterien dürfen nicht ins Flugzeug. Auf dieser Karte findest du geprüfte Verleiher, Schulen und Rentals, die ihre Batterie am Urlaubsort verleihen – Foil Drive, Manta, RIIFT, Duotone, Flite, Waydoo und mehr.',
-    'skip': 'Zur Karte springen',
-
-    'brand.aria': 'Foil Assist Battery Rental, Startseite',
-    'brand.sub': 'Foil Assist Community',
-    'nav.aria': 'Hauptnavigation',
-    'nav.how': "So funktioniert's",
-    'nav.offer': 'Batterie anbieten',
-    'nav.offer_s': 'Anbieten',
-    'nav.mine': 'Mein Angebot',
-    'nav.mine_s': 'Angebot',
-    'nav.login': 'Anmelden',
-    'nav.logout': 'Abmelden',
-    'nav.lang_to': 'EN',
-    'nav.lang_aria': 'Switch to English',
-
-    'demo.banner': '<strong>Demo-Modus.</strong> Die Standorte sind erfunden und deine Eingaben bleiben nur in diesem Browser. Für den echten Betrieb trägst du Supabase in <code>assets/js/config.js</code> ein.',
-    'demo.hide': 'Ausblenden',
-
-    'panel.aria': 'Suche und Ergebnisse',
-    'intro.h1': 'Der Akku darf nicht ins Flugzeug. Leih dir einen vor Ort.',
-    'intro.p': 'Reisende ohne Batterie finden hier Locals, Schulen und Rentals mit Foil-Assist-Batterien. Kontakt, Preis und Bezahlung klärt ihr direkt.',
-    'search.label': 'Reiseziel suchen',
-    'search.ph': 'Reiseziel suchen, z. B. Tarifa',
-    'search.btn': 'Suchen',
-    'search.empty': 'Gib ein Reiseziel ein, z. B. Tarifa oder Gardasee.',
-    'search.notfound': 'Ort nicht gefunden. Versuch es mit Stadt und Land.',
-    'search.error': 'Die Ortssuche ist gerade nicht erreichbar. Versuch es gleich noch einmal oder zieh die Karte selbst.',
-    'filters.legend': 'Welche Batterie brauchst du?',
-    'filters.kind': 'Anbieter',
-    'kind.all': 'Alle',
-    'kind.private': 'Privat',
-    'kind.pro': 'Schule / Verleih',
-    'filters.brand': 'Marke',
-    'filters.model': 'Modell',
-    'model.other': 'Anderes Modell',
-    'brand.other': 'Andere Marke',
-    'filters.reset': 'Filter zurücksetzen',
-
-    'list.loading': 'Lade Standorte …',
-    'list.none_title': 'Noch keine Standorte',
-    'list.none_p': 'Hier ist noch niemand eingetragen. Sei der Erste und biete deine Batterie an.',
-    'list.nomatch_title': 'Keine Treffer',
-    'list.nomatch_p': 'Für diese Auswahl ist noch kein Standort eingetragen. Nimm einen Filter heraus oder schau später noch einmal vorbei.',
-    'list.empty_view': 'In diesem Kartenausschnitt gibt es keinen Standort. Zoom heraus oder such ein anderes Reiseziel.',
-    'list.error_title': 'Standorte nicht geladen',
-    'list.error': 'Die Standorte konnten nicht geladen werden. Prüfe deine Verbindung und versuch es noch einmal.',
-    'list.retry': 'Erneut laden',
-    'list.db_error': 'Die Verbindung zur Datenbank hat nicht geklappt. Prüfe die Einstellungen in config.js und lade die Seite neu.',
-    'count.in_view_one': '{n} von {m} Standort im Kartenausschnitt',
-    'count.in_view_other': '{n} von {m} Standorten im Kartenausschnitt',
-    'count.all_one': '{m} Standort',
-    'count.all_other': '{m} Standorte',
-    'per_day': 'pro Tag',
-    'per_week': 'pro Woche',
-    'request': 'Anfrage',
-    'pin.from': 'ab {p}',
-
-    'map.aria': 'Karte mit Verleih-Standorten',
-    'map.label': 'Karte',
-    'map.locate': 'Zu meinem Standort springen',
-    'map.locate_title': 'Mein Standort',
-    'view.list': 'Liste anzeigen',
-    'view.map': 'Karte anzeigen',
-    'geo.unsupported': 'Dein Browser kann den Standort nicht bestimmen.',
-    'geo.denied': 'Standort nicht verfügbar. Erlaube den Zugriff im Browser oder such einen Ort.',
-
-    'detail.close': 'Schließen',
-    'detail.no_place': 'Ort nicht angegeben',
-    'detail.approx': 'Der Pin zeigt nur die ungefähre Gegend. Den genauen Treffpunkt klärt ihr im Chat.',
-    'detail.caption': 'Batterien und Preise',
-    'detail.website': 'Website',
-    'detail.hours_h': 'Öffnungszeiten',
-    'detail.website_open': 'Website öffnen',
-    'detail.th_bat': 'Batterie',
-    'detail.th_day': 'pro Tag',
-    'detail.th_week': 'pro Woche',
-    'detail.price_hint': '– heißt: Preis auf Anfrage.',
-    'detail.deposit_h': 'Kaution',
-    'detail.deposit_amount': 'Kaution: {amount}',
-    'detail.deposit_none': 'Keine Kaution',
-    'detail.deposit_ask': 'Kaution: nach Absprache',
-    'detail.id_check': 'Ausweis wird vorgezeigt',
-    'detail.notes_h': 'Hinweise vom Anbieter',
-    'detail.deal': 'Preis, Übergabe und Bezahlung klärt ihr direkt. Diese Seite vermittelt nur den Kontakt.',
-    'contact.mine': 'Das ist dein Angebot.',
-    'contact.edit': 'Angebot bearbeiten',
-    'contact.demo': 'Das ist ein Beispiel-Eintrag ohne Kontaktdaten.',
-    'contact.login_p': 'Die Kontaktdaten sehen nur angemeldete Mitglieder. Das hält Spam fern und schützt die Verleiher.',
-    'contact.login_btn': 'Anmelden oder registrieren',
-    'contact.wa': 'Per WhatsApp schreiben',
-    'contact.mail': 'Per E-Mail schreiben',
-    'contact.none': 'Hier sind keine Kontaktdaten hinterlegt.',
-    'msg.text': 'Hallo {name}, ich habe dein Angebot auf der Foil Assist Battery Rental Karte gesehen ({bats}). Ist deine Batterie bei meinem Aufenthalt frei? Ich bin vom [Datum] bis [Datum] vor Ort.',
-    'msg.subject': 'Anfrage: Foil-Assist-Batterie leihen',
-    'login.hint_contact': 'Melde dich an, um die Kontaktdaten zu sehen.',
-
-    'info.title': "So funktioniert's",
-    'info.lead': 'Foil-Assist-Batterien dürfen nicht mit ins Flugzeug. Also leihen sich Reisende eine vor Ort – bei Locals, Schulen und Rentals am Spot. Hier gibt es nur die Karte. Alles Weitere klärt ihr direkt miteinander.',
-    'flow.travel.h': 'Du reist',
-    'flow.travel.1h': 'Reiseziel suchen.',
-    'flow.travel.1p': 'Filtere nach Marke und Batteriemodell, die du brauchst.',
-    'flow.travel.2h': 'Anmelden und Kontakt aufnehmen.',
-    'flow.travel.2p': 'Die Kontaktdaten sehen angemeldete Mitglieder. Schreib per WhatsApp oder E-Mail.',
-    'flow.travel.3h': 'Preis, Übergabe und Kaution klären.',
-    'flow.travel.3p': 'Bezahlung und Deal laufen komplett außerhalb dieser Seite.',
-    'flow.local.h': 'Du hast Batterien zu verleihen',
-    'flow.local.1h': 'Konto anlegen.',
-    'flow.local.1p': 'Kostenlos, E-Mail und Passwort genügen.',
-    'flow.local.2h': 'Antrag stellen.',
-    'flow.local.2p': 'Wähle, ob du privat oder als Schule / Rental anbietest. Trag Batterien, Standort, Kontakt und Kaution ein. Privat gibst du dein Instagram- oder Facebook-Profil an, Schulen und Rentals ihre Website und Öffnungszeiten.',
-    'flow.local.3h': 'Freigabe abwarten.',
-    'flow.local.3p': 'Wir prüfen jeden Antrag kurz. Du bekommst eine Mail, danach erscheint dein Pin. Pausieren oder löschen geht jederzeit.',
-    'know.title': 'Gut zu wissen',
-    'know.verified.dt': 'Geprüfte Anbieter',
-    'know.verified.dd': 'Jeder Anbieter wird vor der Freigabe kurz geprüft: Profil-Link oder Website und optional eine Rechnung. Erst danach erscheint der Pin auf der Karte.',
-    'know.deposit.dt': 'Kaution und Übergabe',
-    'know.deposit.dd': 'Jeder Verleiher gibt seine Kaution an und ob er einen Ausweis sehen möchte. Vereinbart trotzdem vorher Abholort und Rückgabezeit und macht bei der Übergabe Fotos vom Zustand.',
-    'know.liability.dt': 'Haftung',
-    'know.liability.dd': 'Diese Seite vermittelt nur Kontakte. Verleih und Haftung laufen allein zwischen Verleiher und Leihendem. Klärt vorher, ob eure Versicherung greift.',
-    'know.privacy.dt': 'Datenschutz',
-    'know.privacy.dd': 'Der Pin erscheint auf Wunsch nur ungefähr. Kontaktdaten sehen nur angemeldete Mitglieder, Nachweise nur wir und nur zur Prüfung.',
-
-    'footer.tag': 'Ein Community-Projekt von Foil-Assist-Fahrern für Foil-Assist-Fahrer. Betrieben von Ola Vibes S.L.',
-    'footer.imprint': 'Impressum',
-    'footer.privacy': 'Datenschutz',
-    'footer.source': 'Quellcode',
-    'footer.report': 'Angebot melden',
-    'footer.lang': 'English',
-    'footer.dedication': 'Idea and inspired by Tom Earl ♥',
-    'footer.marks': 'Alle Marken- und Modellnamen gehören ihren jeweiligen Inhabern. Diese Seite ist unabhängig und nicht mit den Herstellern verbunden.',
-    'auth.close': 'Schließen',
-    'auth.seg_aria': 'Anmelden oder registrieren',
-    'auth.title.login': 'Anmelden',
-    'auth.title.signup': 'Konto anlegen',
-    'auth.title.recover': 'Neues Passwort',
-    'auth.title.forgot': 'Passwort zurücksetzen',
-    'auth.tab.login': 'Anmelden',
-    'auth.tab.signup': 'Registrieren',
-    'auth.email': 'E-Mail',
-    'auth.pw': 'Passwort',
-    'auth.pw_new': 'Neues Passwort',
-    'auth.pw_hint': 'Mindestens 8 Zeichen.',
-    'auth.forgot': 'Passwort vergessen?',
-    'auth.terms': 'Ich habe verstanden: Diese Seite vermittelt nur den Kontakt. Verleih, Bezahlung und Haftung laufen allein zwischen den Nutzern, Ola Vibes S.L. ist nicht beteiligt. Es gilt die <a href="datenschutz.html" target="_blank" rel="noopener">Datenschutzerklärung</a>.',
-    'auth.submit.login': 'Anmelden',
-    'auth.submit.signup': 'Konto anlegen',
-    'auth.submit.recover': 'Passwort speichern',
-    'auth.submit.forgot': 'Link zum Zurücksetzen senden',
-    'auth.busy': 'Einen Moment …',
-    'auth.err.email': 'Gib eine gültige E-Mail-Adresse ein.',
-    'auth.err.pw_login': 'Gib dein Passwort ein.',
-    'auth.err.pw_short': 'Das Passwort braucht mindestens 8 Zeichen.',
-    'auth.err.terms': 'Bitte bestätige den Hinweis, um ein Konto anzulegen.',
-    'auth.ok.login': 'Angemeldet.',
-    'auth.ok.signup': 'Konto angelegt. Willkommen!',
-    'auth.confirm_sent': 'Fast geschafft: Wir haben dir eine E-Mail geschickt. Klick auf den Link darin, dann bist du dabei. Schau auch im Spam-Ordner nach.',
-    'auth.reset_sent': 'Wenn es zu dieser Adresse ein Konto gibt, kommt gleich eine E-Mail mit einem Link zum Zurücksetzen.',
-    'auth.pw_changed': 'Passwort geändert.',
-    'auth.logout_ok': 'Abgemeldet.',
-    'auth.intro.offer': 'Lege ein kostenloses Konto an, um deine Batterien anzubieten. Hast du schon eins, wechsle auf „Anmelden“.',
-
-    'offer.title.new': 'Batterien anbieten',
-    'offer.title.edit': 'Dein Angebot',
-    'offer.status.pending': 'Dein Antrag wird geprüft. Du bekommst eine E-Mail, sobald er freigegeben ist. Dein Pin erscheint erst danach auf der Karte.',
-    'offer.status.approved': 'Freigegeben. Dein Angebot ist auf der Karte sichtbar.',
-    'offer.status.approved_paused': 'Freigegeben, aber pausiert. Dein Angebot ist nicht auf der Karte zu sehen.',
-    'offer.status.rejected': 'Dein Antrag wurde nicht freigegeben.',
-    'offer.status.reason': 'Grund: {reason}',
-    'offer.status.rejected_hint': 'Passe dein Angebot an und sende es neu.',
-    'offer.kind.h': 'Wer verleiht?',
-    'offer.kind.private': 'Privat',
-    'offer.kind.private_hint': 'Ich verleihe meine eigenen Batterien.',
-    'offer.kind.pro': 'Schule / Verleih',
-    'offer.kind.pro_hint': 'Ich betreibe eine Foil-Schule oder einen Verleih.',
-    'offer.bat.h': 'Welche Batterien verleihst du?',
-    'offer.bat.hint': 'Wähle Marke und Modell. Preise sind optional, ohne Preis steht „Anfrage“ auf der Karte.',
-    'offer.bat.brand': 'Marke',
-    'offer.bat.model': 'Modell',
-    'offer.bat.other_name': 'Name der Batterie',
-    'offer.bat.other_name_brand': 'Marke und Modell',
-    'offer.bat.other_ph': 'z. B. Fliteboard FoilAssist 2 kWh',
-    'offer.bat.add': 'Weitere Batterie hinzufügen',
-    'offer.bat.remove': 'Entfernen',
-    'offer.bat.pick_brand': 'Marke wählen …',
-    'offer.bat.pick_model': 'Modell wählen …',
-    'offer.currency': 'Währung',
-    'offer.ph.day': 'Tag',
-    'offer.ph.week': 'Woche',
-    'offer.unit.day': '{c} / Tag',
-    'offer.unit.week': '{c} / Woche',
-    'offer.aria.day': '{m}: Preis pro Tag',
-    'offer.aria.week': '{m}: Preis pro Woche',
-    'offer.err.bat_none': 'Wähle bei mindestens einer Batterie Marke und Modell aus.',
-    'offer.err.bat_pick': 'Wähle bei jeder Batterie Marke und Modell aus oder entferne die Zeile.',
-    'offer.err.bat_other': 'Gib bei „Anderes Modell“ bzw. „Andere Marke“ den Namen der Batterie an (2 bis 60 Zeichen).',
-    'offer.err.bat_dup': '{m} ist doppelt eingetragen. Bitte nur eine Zeile pro Modell.',
-    'offer.pro.h': 'Dein Betrieb',
-    'offer.pro.hint': 'Diese Angaben sehen alle Besucher.',
-    'offer.pro.website': 'Website',
-    'offer.pro.hours': 'Öffnungszeiten',
-    'offer.pro.hours_ph': 'z. B. Mo–Sa 9–18 Uhr, im Winter nach Absprache',
-    'offer.err.website': 'Gib die Adresse deiner Website an, beginnend mit https://.',
-    'offer.err.hours': 'Gib deine Öffnungszeiten an (2 bis 300 Zeichen).',
-    'offer.err.bat_price': '{m}: Gib den Preis als Zahl ein, z. B. 45 oder 45,50.',
-    'offer.dep.h': 'Kaution',
-    'offer.dep.hint': 'Leer lassen = nach Absprache. 0 = keine Kaution.',
-    'offer.dep.amount': 'Höhe der Kaution',
-    'offer.dep.id': 'Ausweis wird vorgezeigt',
-    'offer.dep.id_hint': 'Der Leihende zeigt bei der Übergabe seinen Ausweis. Du behältst ihn nicht ein.',
-    'offer.err.dep': 'Gib die Kaution als Zahl zwischen 0 und 99999 ein.',
-    'offer.loc.h': 'Wo steht sie?',
-    'offer.loc.hint': 'Suche einen Ort oder tippe auf die Karte. Setz den Pin nicht auf deine Haustür, die Gegend reicht.',
-    'offer.loc.search_label': 'Ort oder Adresse suchen',
-    'offer.loc.search_btn': 'Suchen',
-    'offer.loc.locate': 'Mein Standort',
-    'offer.loc.map_aria': 'Karte zum Setzen des Pins',
-    'offer.loc.empty': 'Gib einen Ort oder eine Adresse ein.',
-    'offer.loc.notfound': 'Ort nicht gefunden. Versuch es mit Stadt und Land oder tippe direkt auf die Karte.',
-    'offer.loc.search_fail': 'Die Ortssuche ist gerade nicht erreichbar. Tippe direkt auf die Karte, um den Pin zu setzen.',
-    'offer.err.loc': 'Setze deinen Pin: Ort suchen oder auf die Karte tippen.',
-    'offer.pin_label': 'Dein Pin',
-    'offer.pin_title': 'Dein Pin, ziehbar',
-    'offer.place.label': 'Anzeigename des Ortes',
-    'offer.place.ph': 'z. B. Tarifa, Spanien',
-    'offer.err.place': 'Der Ortsname darf höchstens 120 Zeichen haben.',
-    'offer.approx.label': 'Ungefähren Standort anzeigen',
-    'offer.approx.hint': 'Der Pin wird beim Speichern zufällig um 200 bis 600 m versetzt. Den genauen Treffpunkt nennst du erst im Chat.',
-    'offer.contact.h': 'Wie erreicht man dich?',
-    'offer.contact.hint': 'Mindestens eins von beidem. Nur angemeldete Mitglieder sehen deine Kontaktdaten.',
-    'offer.wa.label': 'WhatsApp-Nummer',
-    'offer.err.wa': 'Bitte mit Ländervorwahl eingeben, z. B. +49 170 1234567.',
-    'offer.mail.label': 'E-Mail',
-    'offer.err.mail': 'Das ist keine gültige E-Mail-Adresse.',
-    'offer.err.contact': 'Gib mindestens WhatsApp oder E-Mail an, sonst kann dich niemand erreichen.',
-    'offer.proof.h': 'Verifizierung',
-    'offer.proof.hint': 'Damit wir sehen, dass ihr wirklich Foil-Assist-Batterien habt. Nur wir sehen diese Angaben, nie andere Nutzer.',
-    'offer.proof.hint_pro': 'Schulen und Rentals: Eure Website genügt. Ein Instagram- oder Facebook-Profil und eine Rechnung helfen uns bei der Prüfung.',
-    'offer.proof.url.label': 'Instagram- oder Facebook-Profil',
-    'offer.proof.url.hint': 'Am besten ein Profil, auf dem du mit deiner Batterie zu sehen bist.',
-    'offer.err.proof': 'Gib einen Link zu deinem Instagram- oder Facebook-Profil an, beginnend mit https://.',
-    'offer.err.proof_pro': 'Das ist kein gültiger Link. Er muss mit https:// beginnen.',
-    'offer.proof.file.label': 'Rechnung vom Hersteller oder deinem Händler',
-    'offer.opt': '(optional)',
-    'offer.proof.file.hint': 'PDF, JPG oder PNG, höchstens 5 MB. Dein Name muss darauf stehen. Wir löschen die Datei nach der Prüfung.',
-    'offer.proof.file.current': 'Hochgeladen: {name}',
-    'offer.err.file_type': 'Bitte eine PDF-, JPG- oder PNG-Datei wählen.',
-    'offer.err.file_size': 'Die Datei ist größer als 5 MB.',
-    'offer.err.upload': 'Die Rechnung konnte nicht hochgeladen werden. Versuch es noch einmal oder lass sie weg.',
-    'offer.info.h': 'Was sollen Leihende wissen?',
-    'offer.name.label': 'Name für die Anzeige',
-    'offer.name.label_pro': 'Name der Schule / des Verleihs',
-    'offer.name.ph': 'z. B. Lukas',
-    'offer.name.ph_pro': 'z. B. Foil School Tarifa',
-    'offer.err.name': 'Gib einen Namen mit 2 bis 60 Zeichen ein.',
-    'offer.notes.label': 'Hinweise',
-    'offer.notes.ph': 'Abholung oder Lieferung, Zeiten, Ladegerät, Sprachen …',
-    'offer.err.notes': 'Die Hinweise dürfen höchstens 600 Zeichen haben.',
-    'offer.active.label': 'Angebot ist sichtbar',
-    'offer.active.hint': 'Ausschalten, wenn die Batterien gerade nicht verfügbar sind.',
-    'offer.delete': 'Angebot löschen',
-    'offer.delete_confirm': 'Wirklich löschen? Nochmal klicken',
-    'offer.cancel': 'Abbrechen',
-    'offer.save.new': 'Antrag senden',
-    'offer.save.edit': 'Speichern',
-    'offer.saving': 'Speichert …',
-    'offer.err.save': 'Das Angebot konnte nicht gespeichert werden.',
-    'toast.sent': 'Antrag gesendet. Du bekommst eine E-Mail, sobald er geprüft ist.',
-    'toast.saved': 'Angebot gespeichert.',
-    'toast.saved_paused': 'Angebot gespeichert, aber pausiert: Es ist nicht auf der Karte zu sehen.',
-    'toast.resubmitted': 'Angebot erneut gesendet. Es wird geprüft.',
-    'toast.deleted': 'Angebot gelöscht.',
-
-    'err.invalid_login': 'E-Mail oder Passwort stimmt nicht.',
-    'err.email_unconfirmed': 'Bitte bestätige zuerst deine E-Mail-Adresse. Den Link findest du in der Mail, die wir dir geschickt haben.',
-    'err.already_registered': 'Zu dieser E-Mail gibt es schon ein Konto. Melde dich stattdessen an.',
-    'err.weak_password': 'Das Passwort ist zu kurz oder zu einfach. Nimm mindestens 8 Zeichen.',
-    'err.rate_limit': 'Zu viele Versuche in kurzer Zeit. Warte ein paar Minuten und versuch es noch einmal.',
-    'err.network': 'Keine Verbindung zum Server. Prüfe dein Internet und versuch es noch einmal.',
-    'err.rls': 'Das Angebot konnte nicht gespeichert werden. Prüfe deine Eingaben und melde dich ggf. neu an.',
-    'err.generic': 'Das hat nicht geklappt ({m}).',
-    'err.not_authenticated': 'Bitte melde dich zuerst an.'
-  };
-
-  /* ======================= English ======================= */
   DICT.en = {
-    'meta.title': 'Foil Assist Battery Rental – borrow a battery on site',
+    'meta.title': 'Foil Battery Rental – borrow a foil assist battery at your destination',
     'meta.desc': 'Foil assist batteries can\'t go on a plane. Find verified owners, schools and rentals on this map who lend a battery at your holiday spot – Foil Drive, Manta, RIIFT, Duotone, Flite, Waydoo and more.',
     'skip': 'Skip to map',
 
-    'brand.aria': 'Foil Assist Battery Rental, home',
-    'brand.sub': 'Foil Assist Community',
+    'brand.aria': 'Foil Battery Rental, home',
+    'brand.sub': 'A Community Project ♥',
     'nav.aria': 'Main navigation',
     'nav.how': 'How it works',
     'nav.offer': 'Offer a battery',
@@ -321,8 +28,6 @@
     'nav.mine_s': 'Listing',
     'nav.login': 'Log in',
     'nav.logout': 'Log out',
-    'nav.lang_to': 'DE',
-    'nav.lang_aria': 'Auf Deutsch wechseln',
 
     'demo.banner': '<strong>Demo mode.</strong> The locations are made up and your entries stay in this browser only. For live use, add Supabase to <code>assets/js/config.js</code>.',
     'demo.hide': 'Hide',
@@ -401,7 +106,7 @@
     'contact.wa': 'Message on WhatsApp',
     'contact.mail': 'Send an email',
     'contact.none': 'No contact details on file.',
-    'msg.text': 'Hi {name}, I found your listing on the Foil Assist Battery Rental map ({bats}). Is your battery free while I am there? I will be around from [date] to [date].',
+    'msg.text': 'Hi {name}, I found your listing on the Foil Battery Rental map ({bats}). Is your battery free while I am there? I will be around from [date] to [date].',
     'msg.subject': 'Request: borrowing a foil assist battery',
     'login.hint_contact': 'Log in to see the contact details.',
 
@@ -428,17 +133,23 @@
     'know.deposit.dd': 'Each lender states a deposit and whether they want to see an ID. Still agree on the pick-up place and return time beforehand and take photos of the condition at handover.',
     'know.liability.dt': 'Liability',
     'know.liability.dd': 'This site only connects contacts. Lending and liability are solely between lender and borrower. Check beforehand whether your insurance applies.',
+    'know.partner.dt': 'Partner badge',
+    'know.partner.dd': 'Partners support this community project by linking to foilbattery.com on their website or social media. As a thank you they get the blue Partner badge, a slightly larger pin and are listed first. Want to become a partner? Add a link and send it to <a href="mailto:mail@foilbattery.com">mail@foilbattery.com</a>.',
+    'partner.badge': 'Partner',
+    'partner.title': 'Partner: supports this community project',
+    'partner.detail': 'Supports this community project with a link.',
+    'partner.more': 'What is a partner?',
+    'partner.list_note': 'Partners are listed first.',
     'know.privacy.dt': 'Privacy',
     'know.privacy.dd': 'The pin can be shown roughly only. Contact details are visible to logged-in members only, and proofs only to us, only for the review.',
 
     'footer.tag': 'A community project by foil assist riders for foil assist riders. Operated by Ola Vibes S.L.',
     'footer.imprint': 'Legal notice',
     'footer.privacy': 'Privacy',
-    'footer.source': 'Source code',
+    'footer.terms': 'Terms of use',
     'footer.report': 'Report a listing',
-    'footer.lang': 'Deutsch',
     'footer.dedication': 'Idea and inspired by Tom Earl ♥',
-    'footer.marks': 'All brand and model names belong to their respective owners. This site is independent and not affiliated with the manufacturers.',
+    'footer.marks': 'Unofficial community project. Not affiliated with, endorsed or operated by any foil or battery manufacturer. All brand and model names belong to their respective owners.',
     'auth.close': 'Close',
     'auth.seg_aria': 'Log in or sign up',
     'auth.title.login': 'Log in',
@@ -452,7 +163,7 @@
     'auth.pw_new': 'New password',
     'auth.pw_hint': 'At least 8 characters.',
     'auth.forgot': 'Forgot password?',
-    'auth.terms': 'I understand: this site only connects contacts. Lending, payment and liability are solely between users, Ola Vibes S.L. is not involved. The <a href="datenschutz.html" target="_blank" rel="noopener">privacy policy</a> applies.',
+    'auth.terms': 'I understand: this site only connects contacts. Lending, payment and liability are solely between users, Ola Vibes S.L. is not involved. I accept the <a href="terms.html" target="_blank" rel="noopener">terms of use</a> and the <a href="datenschutz.html" target="_blank" rel="noopener">privacy policy</a>.',
     'auth.submit.login': 'Log in',
     'auth.submit.signup': 'Create account',
     'auth.submit.recover': 'Save password',
@@ -461,7 +172,7 @@
     'auth.err.email': 'Enter a valid email address.',
     'auth.err.pw_login': 'Enter your password.',
     'auth.err.pw_short': 'The password needs at least 8 characters.',
-    'auth.err.terms': 'Please confirm the notice to create an account.',
+    'auth.err.terms': 'Please accept the terms of use to create an account.',
     'auth.ok.login': 'Logged in.',
     'auth.ok.signup': 'Account created. Welcome!',
     'auth.confirm_sent': 'Almost done: we sent you an email. Click the link in it and you are in. Check your spam folder too.',
@@ -595,23 +306,10 @@
   /* ======================= Mechanik ======================= */
 
   var listeners = [];
-  var lang = detect();
-
-  function detect() {
-    var fromUrl = null;
-    try { fromUrl = new URLSearchParams(window.location.search).get('lang'); } catch (e) { /* ignorieren */ }
-    if (fromUrl && SUPPORTED.indexOf(fromUrl) > -1) return fromUrl;
-    try {
-      var saved = window.localStorage.getItem(STORE_KEY);
-      if (saved && SUPPORTED.indexOf(saved) > -1) return saved;
-    } catch (e) { /* Speicher gesperrt */ }
-    var nav = (navigator.languages && navigator.languages[0]) || navigator.language || 'en';
-    return String(nav).toLowerCase().indexOf('de') === 0 ? 'de' : 'en';
-  }
+  var lang = 'en';
 
   function t(key, params) {
-    var s = (DICT[lang] && DICT[lang][key]);
-    if (s == null) s = DICT.en[key];
+    var s = DICT.en[key];
     if (s == null) return key;
     if (params) {
       s = s.replace(/\{(\w+)\}/g, function (m, k) { return params[k] != null ? params[k] : m; });
@@ -641,23 +339,12 @@
     }
   }
 
-  function setLang(l) {
-    if (SUPPORTED.indexOf(l) < 0 || l === lang) return;
-    lang = l;
-    try { window.localStorage.setItem(STORE_KEY, l); } catch (e) { /* ignorieren */ }
-    document.documentElement.lang = l;
-    apply(document);
-    listeners.forEach(function (fn) { fn(l); });
-  }
-
   window.I18N = {
     t: t,
     t2: t2,
     apply: apply,
-    setLang: setLang,
     lang: function () { return lang; },
-    other: function () { return lang === 'de' ? 'en' : 'de'; },
-    locale: function () { return lang === 'de' ? 'de-DE' : 'en-GB'; },
+    locale: function () { return 'en-GB'; },
     onChange: function (fn) { listeners.push(fn); }
   };
 

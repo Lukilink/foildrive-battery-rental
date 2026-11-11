@@ -1,4 +1,4 @@
-/* Foil Assist Battery Rental – App-Logik */
+/* Foil Battery Rental – App-Logik */
 (function () {
   'use strict';
 
@@ -8,6 +8,7 @@
 
   /* Marken und Modelle stehen in assets/js/catalog.js */
   var CAT = window.BATTERY_CATALOG;
+  var PARTNERS = CFG.partnerProgram === true;   // Partner-Programm an/aus (config.js)
   function bName(b) { return CAT.fullName(b); }
   var MAX_BAT_ROWS = 20;
   var CURRENCIES = ['EUR', 'CHF', 'GBP', 'USD', 'NOK', 'SEK', 'DKK', 'PLN'];
@@ -29,6 +30,7 @@
     mail: '<svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/></g></svg>',
     list: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01"/></svg>',
     school: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3 2.5 11H5v9h5.5v-6h3v6H19v-9h2.5z"/></svg>',
+    partner: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M23 12l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 12l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69z"/><path fill="#fff" d="M10.09 16.72l-3.8-3.81 1.48-1.48 2.32 2.33 5.85-5.87 1.48 1.48z"/></svg>',
     map: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M3 6.5 9 4l6 2.5L21 4v13.5L15 20l-6-2.5L3 20zM9 4v13.5M15 6.5V20"/></svg>'
   };
 
@@ -156,6 +158,14 @@
   function visibleListings() { return state.listings.filter(matchesFilter); }
 
   /* Günstigster Preis unter den (ggf. gefilterten) Batterien; field = 'priceDay' | 'priceWeek' */
+  function isPartner(l) { return PARTNERS && l.partner === true; }
+
+  /* Blauer Haken mit Text für Screenreader */
+  function partnerBadge(withText) {
+    return h('span', { class: 'partner-badge' + (withText ? ' with-text' : ''), title: t('partner.title'), html: ICON.partner },
+      h('span', { class: withText ? null : 'sr-only', text: t('partner.badge') }));
+  }
+
   function lowest(l, field) {
     var prices = l.batteries
       .filter(batteryMatches)
@@ -170,11 +180,13 @@
     var p = lowest(l, 'priceDay');
     var label = p == null ? t('request') : t('pin.from', { p: money(p, l.currency) });
     var pro = l.kind === 'pro';
+    var partner = isPartner(l);
     return L.divIcon({
       className: 'pin-icon',
       iconSize: [0, 0],
       iconAnchor: [0, 0],
-      html: '<div class="pin' + (pro ? ' is-pro' : '') + (selected ? ' is-selected' : '') + '"><span class="pin-bolt">' + (pro ? ICON.school : ICON.bolt) + '</span><span>' + esc(label) + '</span></div>'
+      html: '<div class="pin' + (pro ? ' is-pro' : '') + (partner ? ' is-partner' : '') + (selected ? ' is-selected' : '') + '"><span class="pin-bolt">' + (pro ? ICON.school : ICON.bolt) + '</span><span>' + esc(label) + '</span>' +
+        (partner ? '<span class="pin-check" title="' + esc(t('partner.title')) + '">' + ICON.partner + '</span>' : '') + '</div>'
     });
   }
 
@@ -210,7 +222,8 @@
     var layers = visibleListings().map(function (l) {
       var m = L.marker([l.lat, l.lng], {
         icon: pinIcon(l, l.id === state.selectedId),
-        title: l.name + (l.placeLabel ? ', ' + l.placeLabel : ''),
+        title: l.name + (l.placeLabel ? ', ' + l.placeLabel : '') + (isPartner(l) ? ' (' + t('partner.badge') + ')' : ''),
+        zIndexOffset: isPartner(l) ? 500 : 0,
         riseOnHover: true
       });
       m.on('click', function (e) { if (e.originalEvent) L.DomEvent.stopPropagation(e); selectListing(l.id); });
@@ -336,7 +349,8 @@
     }
     var c = state.anchor || map.getCenter();
     shown = shown.map(function (l) { return { l: l, d: distKm(c.lat, c.lng, l.lat, l.lng) }; })
-      .sort(function (a, b2) { return a.d - b2.d; });
+      // Partner zuerst (wenn das Programm an ist), sonst nach Entfernung
+      .sort(function (a, b2) { return (isPartner(b2.l) - isPartner(a.l)) || (a.d - b2.d); });
 
     list.innerHTML = '';
     setStatus(null);
@@ -385,7 +399,7 @@
         onclick: function () { if (isMobile()) setView('map'); selectListing(l.id); }
       },
         h('span', { class: 'row-main' },
-          h('span', { class: 'row-name' }, l.name, l.kind === 'pro' ? h('span', { class: 'kind-badge', text: t('kind.pro') }) : null),
+          h('span', { class: 'row-name' }, l.name, isPartner(l) ? partnerBadge(false) : null, l.kind === 'pro' ? h('span', { class: 'kind-badge', text: t('kind.pro') }) : null),
           h('span', { class: 'row-place', text: place }),
           tags),
         priceBox);
@@ -535,7 +549,10 @@
 
     var body = h('div', { class: 'detail-body' },
       h('h2', { id: 'detail-title', tabindex: '-1', text: l.name }),
-      l.kind === 'pro' ? h('p', { class: 'detail-kind' }, h('span', { class: 'kind-badge', text: t('kind.pro') })) : null,
+      (l.kind === 'pro' || isPartner(l)) ? h('p', { class: 'detail-kind' },
+        l.kind === 'pro' ? h('span', { class: 'kind-badge', text: t('kind.pro') }) : null,
+        isPartner(l) ? partnerBadge(true) : null) : null,
+      isPartner(l) ? h('p', { class: 'detail-partner muted' }, t('partner.detail'), ' ', h('a', { href: '#know-partner', text: t('partner.more'), onclick: closeDetail })) : null,
       h('p', { class: 'detail-place', html: ICON.pin }, l.placeLabel || t('detail.no_place')),
       l.kind === 'pro' && safeHttps(l.website) ? h('p', { class: 'detail-web' },
         h('a', { href: l.website, target: '_blank', rel: 'noopener noreferrer nofollow', text: hostOf(l.website), 'aria-label': t('detail.website_open') + ': ' + hostOf(l.website) })) : null,
@@ -608,8 +625,6 @@
     document.title = t('meta.title');
     var d = document.querySelector('meta[name="description"]');
     if (d) d.setAttribute('content', t('meta.desc'));
-    var other = I18N.other();
-    ['#btn-lang', '#footer-lang'].forEach(function (s) { var b = $(s); if (b) b.setAttribute('lang', other); });
   }
 
   function onLangChange() {
@@ -888,7 +903,7 @@
   function fmtNum(n) {
     if (!isNum(n)) return '';
     var s = String(n);
-    return I18N.lang() === 'de' ? s.replace('.', ',') : s;
+    return s;
   }
 
   function fileLabel(path) { return String(path || '').split('/').pop().replace(/^\d{10,}-/, ''); }
@@ -1274,9 +1289,6 @@
         store.signOut().then(function () { toast(t('auth.logout_ok')); }).catch(function (e) { toast(e.message); });
       } else openAuth('login');
     });
-    ['#btn-lang', '#footer-lang'].forEach(function (s) {
-      $(s).addEventListener('click', function () { I18N.setLang(I18N.other()); });
-    });
 
     $$('input[name="auth-mode"]').forEach(function (r) { r.addEventListener('change', function () { if (r.checked) setAuthMode(r.value); }); });
     $('#auth-forgot').addEventListener('click', function () { setAuthMode('forgot'); });
@@ -1329,7 +1341,13 @@
 
     if (CFG.contactEmail) {
       $('#report-li').hidden = false;
-      $('#report-link').href = 'mailto:' + CFG.contactEmail + '?subject=' + encodeURIComponent('Foil Assist Battery Rental: report a listing');
+      $('#report-link').href = 'mailto:' + CFG.contactEmail + '?subject=' + encodeURIComponent('Foil Battery Rental: report a listing');
+    }
+
+    if (PARTNERS) {
+      $('#know-partner').hidden = false;
+      $('#partner-note').hidden = false;
+      $('#partner-note-icon').innerHTML = ICON.partner;
     }
 
     I18N.onChange(onLangChange);

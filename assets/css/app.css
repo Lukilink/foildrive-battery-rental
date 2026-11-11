@@ -13,6 +13,7 @@
   --buoy: #ff5b1f;
   --pro: #5b2fc9;          /* Schule / Verleih */
   --pro-hover: #7648de;
+  --partner: #1877f2;       /* Partner-Badge (blauer Haken) */
   --buoy-hover: #ff7440;
   --line: #cfdedb;
   --danger: #b3261e;
@@ -113,6 +114,7 @@ a { color: var(--kelp); }
 .brand { display: flex; align-items: center; gap: 10px; color: #fff; text-decoration: none; min-width: 0; }
 .brand img { border-radius: 9px; }
 .brand-name { font: 800 1.4rem/1 var(--f-display); font-stretch: 80%; white-space: nowrap; }
+.brand-text { display: flex; align-items: center; min-width: 0; }
 .brand-sub {
   margin-left: 4px; padding-left: 12px; border-left: 1px solid rgba(255, 255, 255, .3);
   color: #a9c6d4; font-size: .9rem; white-space: nowrap;
@@ -122,7 +124,6 @@ a { color: var(--kelp); }
 .nav-link:hover { color: #fff; background: rgba(255, 255, 255, .08); }
 .who { color: #a9c6d4; font-size: .85rem; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .btn .short { display: none; }
-.btn-lang { min-height: 36px; padding: 0 10px; font-size: .85rem; letter-spacing: .02em; }
 
 .demo-banner {
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
@@ -189,6 +190,18 @@ textarea.input { resize: vertical; min-height: 96px; }
 .kind-badge { display: inline-block; margin-left: 8px; padding: 2px 8px; border-radius: 6px; background: var(--pro); color: #fff; font: 700 .72rem/1.3 var(--f-body); letter-spacing: .01em; vertical-align: 2px; white-space: nowrap; }
 .detail-kind { margin-top: 8px; }
 .detail-kind .kind-badge { margin-left: 0; }
+.detail-kind { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+
+/* Partner-Programm */
+.partner-badge { display: inline-flex; align-items: center; gap: 4px; margin-left: 6px; color: var(--partner); vertical-align: -3px; }
+.partner-badge svg { width: 18px; height: 18px; flex: none; }
+.partner-badge.with-text { margin-left: 0; font: 700 .85rem/1 var(--f-body); }
+.detail-partner { margin-top: 6px; font-size: .9rem; }
+.partner-note { display: flex; align-items: center; gap: 2px; flex-wrap: wrap; margin: 0; padding: 0 24px 10px; font-size: .85rem; color: var(--ink-soft); }
+.partner-note[hidden] { display: none; }
+.partner-note .partner-badge { margin-left: 0; }
+.partner-note a { margin-left: 4px; color: var(--ink); }
+#know-partner[hidden] { display: none; }
 .detail-web { margin-top: 6px; word-break: break-word; }
 .chip { position: relative; display: inline-flex; }
 .chip input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
@@ -263,6 +276,11 @@ textarea.input { resize: vertical; min-height: 96px; }
 .pin-bolt svg { width: 12px; height: 12px; }
 .pin.is-pro { background: var(--pro); }
 .pin.is-pro .pin-bolt { background: #fff; color: var(--pro); }
+.pin.is-partner { padding: 6px 12px 6px 6px; font-size: 15px; gap: 7px; }
+.pin.is-partner .pin-bolt { width: 24px; height: 24px; }
+.pin.is-partner .pin-bolt svg { width: 14px; height: 14px; }
+.pin-check { position: absolute; top: -9px; right: -9px; width: 20px; height: 20px; color: var(--partner); filter: drop-shadow(0 0 1.5px #fff) drop-shadow(0 0 1px #fff); }
+.pin-check svg { width: 20px; height: 20px; display: block; }
 .pin.is-selected { background: var(--buoy); color: var(--ink); }
 .pin.is-selected .pin-bolt { background: var(--ink); color: var(--buoy); }
 .pin.is-pro.is-selected .pin-bolt { background: var(--pro); color: #fff; }
@@ -426,6 +444,15 @@ select.input { appearance: auto; }
 
 .info { background: var(--shallows-2); border-top: 1px solid var(--line); scroll-margin-top: var(--bar); }
 .know { background: var(--paper); }
+.faq { background: var(--shallows-2); border-top: 1px solid var(--line); }
+.faq h2 { font-size: clamp(2.2rem, 1.4rem + 2.4vw, 3.2rem); font-weight: 800; font-stretch: 75%; line-height: .95; }
+.faq-list { margin-top: 32px; max-width: 760px; border-top: 1px solid var(--line); }
+.faq details { border-bottom: 1px solid var(--line); }
+.faq summary { cursor: pointer; padding: 18px 0; font: 700 1.15rem/1.3 var(--f-display); font-stretch: 90%; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; font-size: 1.4rem; line-height: 1; }
+.faq details[open] summary::after { content: "–"; }
+.faq details p { margin: 0 0 18px; max-width: 65ch; }
 .info-inner { max-width: 1080px; margin: 0 auto; padding: 72px 24px; }
 .know .info-inner { padding-top: 64px; padding-bottom: 72px; }
 .info h2, .know h2 { font-size: clamp(2.2rem, 1.4rem + 2.4vw, 3.2rem); font-weight: 800; font-stretch: 75%; line-height: .95; }
@@ -456,10 +483,6 @@ select.input { appearance: auto; }
 .footer-links { display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 0; padding: 0; list-style: none; }
 .footer-dedication { font-weight: 600; color: #fff; }
 .footer-small { font-size: .85rem; color: #8fb0c2; }
-.footer-lang {
-  background: none; border: 0; padding: 0; color: #fff; font: inherit;
-  text-decoration: underline; text-underline-offset: 3px;
-}
 
 .toast {
   position: fixed; left: 50%; bottom: 24px; z-index: 5000; transform: translate(-50%, 20px);
@@ -500,6 +523,9 @@ select.input { appearance: auto; }
 .app-dl dd { margin: 0; overflow-wrap: anywhere; white-space: pre-line; }
 .app-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
 .reason { margin-top: 14px; display: grid; gap: 8px; }
+.partner-box { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); display: grid; gap: 8px; }
+.partner-box h3 { font-size: 1.05rem; }
+.partner-box .app-actions { margin-top: 0; }
 .btn-small { min-height: 36px; padding: 0 12px; font-size: .88rem; }
 @media (max-width: 520px) {
   .app-dl { grid-template-columns: 1fr; gap: 2px; }
@@ -521,7 +547,10 @@ html[lang="de"] .l-en, html[lang="en"] .l-de { display: none; }
 @media (max-width: 860px) {
   :root { --bar: 56px; }
   .topbar { padding: 0 12px; }
-  .brand-sub, .nav-link, .who { display: none; }
+  .nav-link, .who { display: none; }
+  .brand-text { display: grid; gap: 2px; min-width: 0; }
+  .brand-name, .brand-sub { overflow: hidden; text-overflow: ellipsis; }
+  .brand-sub { margin: 0; padding: 0; border: 0; font-size: .72rem; line-height: 1; }
   .btn .long { display: none; }
   .btn .short { display: inline; }
   .btn { padding: 0 12px; font-size: .9rem; }
@@ -564,7 +593,6 @@ html[lang="de"] .l-en, html[lang="en"] .l-de { display: none; }
 }
 
 @media (max-width: 520px) {
-  #btn-lang { display: none; }
 }
 
 @media (max-width: 640px) {
@@ -585,4 +613,13 @@ html[lang="de"] .l-en, html[lang="en"] .l-de { display: none; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}
+
+/* sehr schmale Handys (iPhone SE & Co.) */
+@media (max-width: 380px) {
+  .brand { gap: 8px; }
+  .brand img { width: 24px; height: 24px; }
+  .brand-name { font-size: 1.02rem; }
+  .brand-sub { font-size: .66rem; }
+  .nav .btn { padding: 0 10px; font-size: .85rem; }
 }

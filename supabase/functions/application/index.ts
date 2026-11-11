@@ -23,7 +23,6 @@ const cors = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
-type Lang = 'de' | 'en';
 type Mail = { to: string; subject: string; text: string };
 
 function json(body: unknown, status = 200): Response {
@@ -48,7 +47,7 @@ async function sendMail(mail: Mail): Promise<void> {
     auth: { user, pass },
     tls: { rejectUnauthorized: Deno.env.get('SMTP_INSECURE_TEST') !== '1' },
   });
-  const fromName = oneLine(Deno.env.get('FROM_NAME') ?? 'Foil Assist Battery Rental');
+  const fromName = oneLine(Deno.env.get('FROM_NAME') ?? 'Foil Battery Rental');
   await transport.sendMail({ from: `"${fromName}" <${user}>`, to: mail.to, subject: mail.subject, text: mail.text });
 }
 
@@ -82,27 +81,17 @@ function adminMail(d: Record<string, any>): Mail {
 }
 
 function decisionMail(d: Record<string, any>): Mail {
-  const lang: Lang = d.lang === 'de' ? 'de' : 'en';
   const site = (Deno.env.get('SITE_URL') ?? '').replace(/\/$/, '');
   const name = oneLine(d.name);
   const approved = d.status === 'approved';
   const reason = oneLine(d.reason);
 
-  if (lang === 'de') {
-    return {
-      to: d.applicant_email,
-      subject: approved ? 'Dein Angebot ist freigegeben' : 'Dein Angebot wurde nicht freigegeben',
-      text: approved
-        ? `Hallo ${name},\n\ndein Angebot wurde geprüft und ist jetzt auf der Karte sichtbar:\n${site}/\n\nViel Spaß beim Verleihen!\nFoil Assist Battery Rental`
-        : `Hallo ${name},\n\nleider konnten wir dein Angebot noch nicht freigeben.${reason ? `\n\nGrund: ${reason}` : ''}\n\nDu kannst dein Angebot jederzeit anpassen (z. B. einen besseren Profil-Link oder eine Rechnung hinzufügen) und neu absenden:\n${site}/\n\nFoil Assist Battery Rental`,
-    };
-  }
   return {
     to: d.applicant_email,
     subject: approved ? 'Your listing is approved' : 'Your listing was not approved',
     text: approved
-      ? `Hi ${name},\n\nyour listing has been reviewed and is now visible on the map:\n${site}/\n\nEnjoy lending!\nFoil Assist Battery Rental`
-      : `Hi ${name},\n\nunfortunately we could not approve your listing yet.${reason ? `\n\nReason: ${reason}` : ''}\n\nYou can edit your listing at any time (for example add a clearer profile link or an invoice) and submit it again:\n${site}/\n\nFoil Assist Battery Rental`,
+      ? `Hi ${name},\n\nyour listing has been reviewed and is now visible on the map:\n${site}/\n\nEnjoy lending!\nFoil Battery Rental`
+      : `Hi ${name},\n\nunfortunately we could not approve your listing yet.${reason ? `\n\nReason: ${reason}` : ''}\n\nYou can edit your listing at any time (for example add a clearer profile link or an invoice) and submit it again:\n${site}/\n\nFoil Battery Rental`,
   };
 }
 

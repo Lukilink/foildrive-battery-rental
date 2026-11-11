@@ -16,6 +16,10 @@ window.BATTERY_RENTAL_CONFIG = {
   // Optional: Adresse für "Angebot melden" im Footer (leer = Link wird nicht angezeigt)
   contactEmail: 'mail@foilbattery.com',
 
+  /* Partner-Programm: true = Partner-Badge, größerer Pin und Partner zuerst in der Liste.
+     Vor dem Einschalten muss supabase/schema.sql (Version 4) in Supabase gelaufen sein. */
+  partnerProgram: false,
+
   // Kartenkacheln. OpenStreetMap-Standard ist für kleine Community-Projekte okay
   // (https://operations.osmfoundation.org/policies/tiles/). Bei viel Traffic bitte
   // auf einen eigenen Kachel-Anbieter wechseln (MapTiler, Stadia, Thunderforest …).

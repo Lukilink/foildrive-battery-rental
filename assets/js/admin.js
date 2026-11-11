@@ -66,6 +66,41 @@
 
   function safeHttps(u) { return typeof u === 'string' && /^https:\/\//i.test(u); }
 
+  /* Partner-Programm: Badge setzen/entfernen, Link und interne Notiz (nur für freigegebene Angebote) */
+  function partnerBox(a) {
+    var on = a.is_partner === true;
+    var box = h('div', { class: 'partner-box' });
+    var info = h('p', { class: 'muted' });
+    var check = h('input', { type: 'checkbox', id: 'pp-' + a.id, checked: on ? true : null });
+    var link = h('input', { class: 'input', type: 'url', value: a.partner_link || '', placeholder: 'https://… (wo verlinkt wurde)', 'aria-label': 'Link, wo verlinkt wurde' });
+    var note = h('input', { class: 'input', type: 'text', maxlength: '500', value: a.partner_note || '', placeholder: 'Interne Notiz (optional)', 'aria-label': 'Interne Notiz' });
+    var res = h('p', { class: 'msg', role: 'status', hidden: true });
+    function refreshInfo(p, since) {
+      info.textContent = p ? 'Partner seit ' + date(since) + '.' : 'Kein Partner.';
+      if (!CFG.partnerProgram) info.textContent += ' Das Badge ist auf der Seite noch ausgeschaltet (config.js → partnerProgram).';
+    }
+    refreshInfo(on, a.partner_since);
+    var save = h('button', { type: 'button', class: 'btn btn-quiet btn-small', text: 'Partner speichern', onclick: function () {
+      var l = link.value.trim();
+      if (l && !/^https:\/\//i.test(l)) { msg(res, 'Der Link muss mit https:// beginnen.', true); return; }
+      save.disabled = true;
+      store.admin.setPartner(a.id, check.checked, l, note.value.trim()).then(function (r) {
+        refreshInfo(r.is_partner, r.partner_since);
+        msg(res, r.is_partner ? 'Gespeichert: ' + a.display_name + ' ist Partner.' : 'Gespeichert: kein Partner.');
+      }).catch(function (e) { msg(res, 'Das hat nicht geklappt: ' + e.message, true); })
+        .then(function () { save.disabled = false; });
+    } });
+    append(box, [
+      h('h3', { text: 'Partner-Programm' }),
+      info,
+      h('label', { class: 'check check-plain', for: 'pp-' + a.id }, check, h('span', { text: 'Partner (verlinkt oder teilt die Seite)' })),
+      link, note,
+      h('div', { class: 'app-actions' }, save),
+      res
+    ]);
+    return box;
+  }
+
   function card(a) {
     var result = h('p', { class: 'msg', role: 'status', hidden: true });
     var reasonBox = h('div', { class: 'reason', hidden: true });
@@ -138,6 +173,7 @@
         row('Rechnung', fileCell),
         a.notes ? row('Hinweise', a.notes) : null,
         a.reject_reason ? row('Grund', a.reject_reason) : null),
+      a.status === 'approved' && store.admin.setPartner ? partnerBox(a) : null,
       actions, reasonBox, result);
   }
 

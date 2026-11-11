@@ -10,6 +10,8 @@
 
   // Spalten, die auch ein nicht angemeldeter Besucher lesen darf (Kontaktdaten gehören nicht dazu).
   var PUBLIC_COLUMNS = 'id,kind,website,opening_hours,display_name,place_label,lat,lng,approximate,batteries,currency,deposit_amount,id_check,notes,active,updated_at';
+  // is_partner nur abfragen, wenn das Partner-Programm eingeschaltet ist (die Spalte gibt es ab schema.sql Version 4)
+  if ((window.BATTERY_RENTAL_CONFIG || {}).partnerProgram) PUBLIC_COLUMNS += ',is_partner';
   var MEMBER_COLUMNS = PUBLIC_COLUMNS + ',whatsapp,email';
 
   function t(key, params) { return window.I18N ? window.I18N.t(key, params) : key; }
@@ -35,6 +37,7 @@
     return {
       id: r.id,
       kind: r.kind === 'pro' ? 'pro' : 'private',
+      partner: r.is_partner === true,
       website: r.website || '',
       openingHours: r.opening_hours || '',
       name: r.display_name,
@@ -222,6 +225,12 @@
           return sb.rpc('admin_applications', { p_status: status }).then(function (r) {
             if (r.error) throw friendly(r.error);
             return r.data || [];
+          });
+        },
+        setPartner: function (id, partner, link, note) {
+          return sb.rpc('admin_set_partner', { p_id: id, p_partner: partner, p_link: link || null, p_note: note || null }).then(function (r) {
+            if (r.error) throw friendly(r.error);
+            return r.data;
           });
         },
         proofLink: function (path) {

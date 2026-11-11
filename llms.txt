@@ -1,0 +1,15 @@
+# Foil Battery Rental
+
+> Unofficial community map at https://foilbattery.com where foil assist and eFoil riders borrow a battery at their holiday destination from locals, foil schools and rentals. Foil assist batteries are lithium-ion packs that airlines do not allow on board, so riders travel without one and borrow on site.
+
+- Travellers search a destination, filter by brand (Foil Drive, Manta Foils, RIIFT, Duotone, Flow Customs, Flite, Waydoo and others) and battery model, log in and contact the lender via WhatsApp or email.
+- Lenders are private owners or schools / rentals. Every listing is reviewed by hand before it appears on the map.
+- Price, deposit, handover and payment are agreed directly between rider and lender. The site is free, takes no fees and handles no payments.
+- Operated by Ola Vibes S.L., El Médano, Tenerife, Spain. Contact: mail@foilbattery.com. Not affiliated with any manufacturer.
+
+## Pages
+
+- [Map and listings](https://foilbattery.com/): search, filters, listing details, FAQ
+- [Terms of use](https://foilbattery.com/terms.html)
+- [Privacy policy](https://foilbattery.com/datenschutz.html)
+- [Legal notice](https://foilbattery.com/impressum.html)

@@ -1,11 +1,22 @@
 <!doctype html>
-<html lang="de">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Foil Assist Battery Rental – Batterien vor Ort leihen</title>
-  <meta name="description" content="Foil-Assist-Batterien dürfen nicht ins Flugzeug. Auf dieser Karte findest du geprüfte Verleiher, Schulen und Rentals, die ihre Batterie am Urlaubsort verleihen – Foil Drive, Manta, RIIFT, Duotone, Flite, Waydoo und mehr.">
+  <title>Foil Battery Rental – borrow a foil assist battery at your destination</title>
+  <meta name="description" content="Foil assist batteries can&#x27;t go on a plane. Find verified owners, schools and rentals on this map who lend a battery at your holiday spot – Foil Drive, Manta, RIIFT, Duotone, Flite, Waydoo and more.">
   <meta name="theme-color" content="#0a2540">
+  <link rel="canonical" href="https://foilbattery.com/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Foil Battery Rental">
+  <meta property="og:url" content="https://foilbattery.com/">
+  <meta property="og:title" content="Foil Battery Rental – A Community Project">
+  <meta property="og:description" content="Foil assist batteries can't fly. Find locals, schools and rentals who lend a battery at your destination.">
+  <meta property="og:image" content="https://foilbattery.com/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">[{"@context": "https://schema.org", "@type": "WebSite", "name": "Foil Battery Rental", "alternateName": "Foil Battery Rental – A Community Project", "url": "https://foilbattery.com/", "description": "Community map to borrow foil assist and eFoil batteries from locals, schools and rentals at your holiday destination.", "inLanguage": "en", "publisher": {"@type": "Organization", "name": "Ola Vibes S.L.", "url": "https://foilbattery.com/", "email": "mail@foilbattery.com", "address": {"@type": "PostalAddress", "streetAddress": "Calle El Hierro 9", "postalCode": "38612", "addressLocality": "El Médano", "addressRegion": "Santa Cruz de Tenerife", "addressCountry": "ES"}}}, {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Can I take my foil assist battery on a plane?", "acceptedAnswer": {"@type": "Answer", "text": "Usually not. Foil assist batteries are lithium-ion packs far above what airlines allow (typically 100 Wh, or 160 Wh with airline approval). That is why riders borrow a battery at their destination instead."}}, {"@type": "Question", "name": "How does borrowing a battery work?", "acceptedAnswer": {"@type": "Answer", "text": "Search your destination on the map and filter by brand and battery model. Log in to see the lender's contact details, then message them via WhatsApp or email. Price, deposit and handover are agreed directly between you."}}, {"@type": "Question", "name": "Does it cost anything to use the site?", "acceptedAnswer": {"@type": "Answer", "text": "No. Searching, listing and contacting lenders is free. This site takes no fees and handles no payments."}}, {"@type": "Question", "name": "Which brands and batteries can I find?", "acceptedAnswer": {"@type": "Answer", "text": "Foil Drive, Manta Foils, RIIFT, Duotone, Flow Customs, Flite, Waydoo and other foil assist and eFoil batteries. Lenders can also add models that are not in the list."}}, {"@type": "Question", "name": "How do I list my battery, school or rental?", "acceptedAnswer": {"@type": "Answer", "text": "Create a free account, choose private or school / rental, and add your batteries, location and contact details. We review every listing by hand before it appears on the map."}}, {"@type": "Question", "name": "Who runs this site?", "acceptedAnswer": {"@type": "Answer", "text": "An unofficial community project by foil assist riders, operated by Ola Vibes S.L. in El Médano, Tenerife. It is not affiliated with any manufacturer."}}]}]</script>
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/vendor/leaflet/leaflet.css">
   <link rel="stylesheet" href="assets/vendor/markercluster/MarkerCluster.css">
@@ -13,68 +24,70 @@
   <link rel="stylesheet" href="assets/css/app.css">
 </head>
 <body>
-  <a class="skip" href="#map" data-i18n="skip">Zur Karte springen</a>
+  <a class="skip" href="#map" data-i18n="skip">Skip to map</a>
 
   <header class="topbar">
-    <a class="brand" href="#top" data-i18n-attr="aria-label:brand.aria" aria-label="Foil Assist Battery Rental, Startseite">
+    <a class="brand" href="#top" data-i18n-attr="aria-label:brand.aria" aria-label="Foil Battery Rental, home">
       <img src="assets/img/favicon.svg" alt="" width="32" height="32">
-      <span class="brand-name">Battery Rental</span>
-      <span class="brand-sub" data-i18n="brand.sub">Foil Assist Community</span>
+      <span class="brand-text">
+        <span class="brand-name">Foil Battery Rental</span>
+        <span class="brand-sub" data-i18n="brand.sub">A Community Project ♥</span>
+      </span>
     </a>
-    <nav class="nav" data-i18n-attr="aria-label:nav.aria" aria-label="Hauptnavigation">
-      <a class="nav-link" href="#so-gehts" data-i18n="nav.how">So funktioniert's</a>
+    <nav class="nav" data-i18n-attr="aria-label:nav.aria" aria-label="Main navigation">
+      <a class="nav-link" href="#so-gehts" data-i18n="nav.how">How it works</a>
       <span class="who" id="who" hidden></span>
-      <button type="button" class="btn btn-ghost btn-lang" id="btn-lang" lang="en" data-i18n-attr="aria-label:nav.lang_aria" aria-label="Switch to English"><span data-i18n="nav.lang_to">EN</span></button>
-      <button type="button" class="btn btn-accent" id="btn-offer"><span class="long" data-i18n="nav.offer">Batterie anbieten</span><span class="short" data-i18n="nav.offer_s">Anbieten</span></button>
-      <button type="button" class="btn btn-ghost" id="btn-account" data-i18n="nav.login">Anmelden</button>
+      <button type="button" class="btn btn-accent" id="btn-offer"><span class="long" data-i18n="nav.offer">Offer a battery</span><span class="short" data-i18n="nav.offer_s">Offer</span></button>
+      <button type="button" class="btn btn-ghost" id="btn-account" data-i18n="nav.login">Log in</button>
     </nav>
   </header>
 
   <div class="demo-banner" id="demo-banner" hidden>
-    <p data-i18n-html="demo.banner"><strong>Demo-Modus.</strong> Die Standorte sind erfunden und deine Eingaben bleiben nur in diesem Browser. Für den echten Betrieb trägst du Supabase in <code>assets/js/config.js</code> ein.</p>
-    <button type="button" class="link-btn" id="demo-close" data-i18n="demo.hide">Ausblenden</button>
+    <p data-i18n-html="demo.banner"><strong>Demo mode.</strong> The locations are made up and your entries stay in this browser only. For live use, add Supabase to <code>assets/js/config.js</code>.</p>
+    <button type="button" class="link-btn" id="demo-close" data-i18n="demo.hide">Hide</button>
   </div>
 
   <main class="shell" id="top" data-view="map">
-    <aside class="panel" id="panel" data-i18n-attr="aria-label:panel.aria" aria-label="Suche und Ergebnisse">
+    <aside class="panel" id="panel" data-i18n-attr="aria-label:panel.aria" aria-label="Search and results">
       <div class="panel-top">
         <div class="intro">
-          <h1 data-i18n="intro.h1">Der Akku darf nicht ins Flugzeug. Leih dir einen vor Ort.</h1>
-          <p data-i18n="intro.p">Reisende ohne Batterie finden hier Locals, Schulen und Rentals mit Foil-Assist-Batterien. Kontakt, Preis und Bezahlung klärt ihr direkt.</p>
+          <h1 data-i18n="intro.h1">Batteries can't fly. Borrow one when you get there.</h1>
+          <p data-i18n="intro.p">Travellers without a battery find locals, schools and rentals with foil assist batteries here. You arrange contact, price and payment directly.</p>
         </div>
 
         <form class="search" id="search" role="search" autocomplete="off">
-          <label class="sr-only" for="q" data-i18n="search.label">Reiseziel suchen</label>
-          <input class="input" id="q" name="q" type="search" data-i18n-attr="placeholder:search.ph" placeholder="Reiseziel suchen, z. B. Tarifa" enterkeyhint="search">
-          <button class="btn btn-primary" id="search-btn" type="submit" data-i18n="search.btn">Suchen</button>
+          <label class="sr-only" for="q" data-i18n="search.label">Search destination</label>
+          <input class="input" id="q" name="q" type="search" data-i18n-attr="placeholder:search.ph" placeholder="Search destination, e.g. Tarifa" enterkeyhint="search">
+          <button class="btn btn-primary" id="search-btn" type="submit" data-i18n="search.btn">Search</button>
         </form>
         <p class="search-msg" id="search-msg" role="status" hidden></p>
 
         <fieldset class="filters" id="filters">
-          <legend data-i18n="filters.legend">Welche Batterie brauchst du?</legend>
-          <div class="kind-seg" id="kind-seg" role="radiogroup" data-i18n-attr="aria-label:filters.kind" aria-label="Anbieter">
-            <label><input type="radio" name="kind-filter" value="" checked><span data-i18n="kind.all">Alle</span></label>
-            <label><input type="radio" name="kind-filter" value="private"><span><i class="dot dot-private"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M13.4 2 4.5 13.6H11L10 22l9.5-12H13z"/></svg></i><span data-i18n="kind.private">Privat</span></span></label>
-            <label><input type="radio" name="kind-filter" value="pro"><span><i class="dot dot-pro"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3 2.5 11H5v9h5.5v-6h3v6H19v-9h2.5z"/></svg></i><span data-i18n="kind.pro">Schule / Verleih</span></span></label>
+          <legend data-i18n="filters.legend">Which battery do you need?</legend>
+          <div class="kind-seg" id="kind-seg" role="radiogroup" data-i18n-attr="aria-label:filters.kind" aria-label="Lender type">
+            <label><input type="radio" name="kind-filter" value="" checked><span data-i18n="kind.all">All</span></label>
+            <label><input type="radio" name="kind-filter" value="private"><span><i class="dot dot-private"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M13.4 2 4.5 13.6H11L10 22l9.5-12H13z"/></svg></i><span data-i18n="kind.private">Private</span></span></label>
+            <label><input type="radio" name="kind-filter" value="pro"><span><i class="dot dot-pro"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3 2.5 11H5v9h5.5v-6h3v6H19v-9h2.5z"/></svg></i><span data-i18n="kind.pro">School / rental</span></span></label>
           </div>
-          <div class="chips" id="brand-chips" role="group" data-i18n-attr="aria-label:filters.brand" aria-label="Marke"></div>
-          <div class="chips chips-models" id="model-chips" role="group" data-i18n-attr="aria-label:filters.model" aria-label="Modell" hidden></div>
+          <div class="chips" id="brand-chips" role="group" data-i18n-attr="aria-label:filters.brand" aria-label="Brand"></div>
+          <div class="chips chips-models" id="model-chips" role="group" data-i18n-attr="aria-label:filters.model" aria-label="Model" hidden></div>
         </fieldset>
       </div>
 
       <div class="list-wrap" id="list-wrap">
         <div class="results-head">
           <p id="count" role="status">Lade Standorte …</p>
-          <button type="button" class="link-btn" id="reset-filters" data-i18n="filters.reset" hidden>Filter zurücksetzen</button>
+          <button type="button" class="link-btn" id="reset-filters" data-i18n="filters.reset" hidden>Reset filters</button>
         </div>
+        <p class="partner-note" id="partner-note" hidden><span class="partner-badge" id="partner-note-icon" aria-hidden="true"></span> <span data-i18n="partner.list_note">Partners are listed first.</span> <a href="#know-partner" data-i18n="partner.more">What is a partner?</a></p>
         <div class="list-status" id="list-status" hidden></div>
         <ol class="list" id="list"></ol>
       </div>
     </aside>
 
-    <section class="mapwrap" data-i18n-attr="aria-label:map.aria" aria-label="Karte mit Verleih-Standorten">
-      <div id="map" role="application" data-i18n-attr="aria-label:map.label" aria-label="Karte"></div>
-      <button type="button" class="map-btn" id="locate" data-i18n-attr="aria-label:map.locate;title:map.locate_title" aria-label="Zu meinem Standort springen" title="Mein Standort"></button>
+    <section class="mapwrap" data-i18n-attr="aria-label:map.aria" aria-label="Map of rental locations">
+      <div id="map" role="application" data-i18n-attr="aria-label:map.label" aria-label="Map"></div>
+      <button type="button" class="map-btn" id="locate" data-i18n-attr="aria-label:map.locate;title:map.locate_title" aria-label="Jump to my location" title="My location"></button>
     </section>
 
     <button type="button" class="view-toggle" id="view-toggle"></button>
@@ -84,24 +97,24 @@
 
   <section class="info" id="so-gehts" aria-labelledby="info-title">
     <div class="info-inner">
-      <h2 id="info-title" data-i18n="info.title">So funktioniert's</h2>
-      <p class="info-lead" data-i18n="info.lead">Foil-Assist-Batterien dürfen nicht mit ins Flugzeug. Also leihen sich Reisende eine vor Ort – bei Locals, Schulen und Rentals am Spot. Hier gibt es nur die Karte. Alles Weitere klärt ihr direkt miteinander.</p>
+      <h2 id="info-title" data-i18n="info.title">How it works</h2>
+      <p class="info-lead" data-i18n="info.lead">Foil assist batteries are not allowed on planes. So travellers borrow one on site, from locals, schools and rentals at the spot. This site is only the map. Everything else you arrange directly.</p>
 
       <div class="flows">
         <div class="flow">
-          <h3 data-i18n="flow.travel.h">Du reist</h3>
+          <h3 data-i18n="flow.travel.h">You are travelling</h3>
           <ol class="steps">
-            <li><strong data-i18n="flow.travel.1h">Reiseziel suchen.</strong> <span data-i18n="flow.travel.1p">Filtere nach Marke und Batteriemodell, die du brauchst.</span></li>
-            <li><strong data-i18n="flow.travel.2h">Anmelden und Kontakt aufnehmen.</strong> <span data-i18n="flow.travel.2p">Die Kontaktdaten sehen angemeldete Mitglieder. Schreib per WhatsApp oder E-Mail.</span></li>
-            <li><strong data-i18n="flow.travel.3h">Preis, Übergabe und Kaution klären.</strong> <span data-i18n="flow.travel.3p">Bezahlung und Deal laufen komplett außerhalb dieser Seite.</span></li>
+            <li><strong data-i18n="flow.travel.1h">Find your destination.</strong> <span data-i18n="flow.travel.1p">Filter by the brand and battery model you need.</span></li>
+            <li><strong data-i18n="flow.travel.2h">Log in and get in touch.</strong> <span data-i18n="flow.travel.2p">Logged-in members see the contact details. Write via WhatsApp or email.</span></li>
+            <li><strong data-i18n="flow.travel.3h">Agree price, handover and deposit.</strong> <span data-i18n="flow.travel.3p">Payment and the deal happen entirely outside this site.</span></li>
           </ol>
         </div>
         <div class="flow">
-          <h3 data-i18n="flow.local.h">Du hast Batterien zu verleihen</h3>
+          <h3 data-i18n="flow.local.h">You have batteries to lend</h3>
           <ol class="steps">
-            <li><strong data-i18n="flow.local.1h">Konto anlegen.</strong> <span data-i18n="flow.local.1p">Kostenlos, E-Mail und Passwort genügen.</span></li>
-            <li><strong data-i18n="flow.local.2h">Antrag stellen.</strong> <span data-i18n="flow.local.2p">Wähle, ob du privat oder als Schule / Rental anbietest. Trag Batterien, Standort, Kontakt und Kaution ein. Privat gibst du dein Instagram- oder Facebook-Profil an, Schulen und Rentals ihre Website und Öffnungszeiten.</span></li>
-            <li><strong data-i18n="flow.local.3h">Freigabe abwarten.</strong> <span data-i18n="flow.local.3p">Wir prüfen jeden Antrag kurz. Du bekommst eine Mail, danach erscheint dein Pin. Pausieren oder löschen geht jederzeit.</span></li>
+            <li><strong data-i18n="flow.local.1h">Create an account.</strong> <span data-i18n="flow.local.1p">Free. Email and password are enough.</span></li>
+            <li><strong data-i18n="flow.local.2h">Submit your listing.</strong> <span data-i18n="flow.local.2p">Choose whether you lend privately or as a school / rental. Enter your batteries, location, contact and deposit. Private lenders add their Instagram or Facebook profile, schools and rentals their website and opening hours.</span></li>
+            <li><strong data-i18n="flow.local.3h">Wait for approval.</strong> <span data-i18n="flow.local.3p">We review every listing briefly. You get an email, then your pin appears. You can pause or delete it any time.</span></li>
           </ol>
         </div>
       </div>
@@ -110,40 +123,75 @@
 
   <section class="know" aria-labelledby="know-title">
     <div class="info-inner">
-      <h2 id="know-title" data-i18n="know.title">Gut zu wissen</h2>
+      <h2 id="know-title" data-i18n="know.title">Good to know</h2>
       <dl class="know-grid">
         <div>
-          <dt data-i18n="know.verified.dt">Geprüfte Anbieter</dt>
-          <dd data-i18n="know.verified.dd">Jeder Anbieter wird vor der Freigabe kurz geprüft: Profil-Link oder Website und optional eine Rechnung. Erst danach erscheint der Pin auf der Karte.</dd>
+          <dt data-i18n="know.verified.dt">Verified lenders</dt>
+          <dd data-i18n="know.verified.dd">Every lender is checked briefly before approval: profile link or website and optionally an invoice. Only then does the pin appear on the map.</dd>
         </div>
         <div>
-          <dt data-i18n="know.deposit.dt">Kaution und Übergabe</dt>
-          <dd data-i18n="know.deposit.dd">Jeder Verleiher gibt seine Kaution an und ob er einen Ausweis sehen möchte. Vereinbart trotzdem vorher Abholort und Rückgabezeit und macht bei der Übergabe Fotos vom Zustand.</dd>
+          <dt data-i18n="know.deposit.dt">Deposit and handover</dt>
+          <dd data-i18n="know.deposit.dd">Each lender states a deposit and whether they want to see an ID. Still agree on the pick-up place and return time beforehand and take photos of the condition at handover.</dd>
         </div>
         <div>
-          <dt data-i18n="know.liability.dt">Haftung</dt>
-          <dd data-i18n="know.liability.dd">Diese Seite vermittelt nur Kontakte. Verleih und Haftung laufen allein zwischen Verleiher und Leihendem. Klärt vorher, ob eure Versicherung greift.</dd>
+          <dt data-i18n="know.liability.dt">Liability</dt>
+          <dd data-i18n="know.liability.dd">This site only connects contacts. Lending and liability are solely between lender and borrower. Check beforehand whether your insurance applies.</dd>
         </div>
         <div>
-          <dt data-i18n="know.privacy.dt">Datenschutz</dt>
-          <dd data-i18n="know.privacy.dd">Der Pin erscheint auf Wunsch nur ungefähr. Kontaktdaten sehen nur angemeldete Mitglieder, Nachweise nur wir und nur zur Prüfung.</dd>
+          <dt data-i18n="know.privacy.dt">Privacy</dt>
+          <dd data-i18n="know.privacy.dd">The pin can be shown roughly only. Contact details are visible to logged-in members only, and proofs only to us, only for the review.</dd>
+        </div>
+        <div id="know-partner" hidden>
+          <dt data-i18n="know.partner.dt">Partner badge</dt>
+          <dd data-i18n-html="know.partner.dd">Partners support this community project by linking to foilbattery.com on their website or social media. As a thank you they get the blue Partner badge, a slightly larger pin and are listed first. Want to become a partner? Add a link and send it to <a href="mailto:mail@foilbattery.com">mail@foilbattery.com</a>.</dd>
         </div>
       </dl>
     </div>
   </section>
 
+  <section class="faq" aria-labelledby="faq-title">
+    <div class="info-inner">
+      <h2 id="faq-title">Questions</h2>
+      <div class="faq-list">
+        <details>
+          <summary>Can I take my foil assist battery on a plane?</summary>
+          <p>Usually not. Foil assist batteries are lithium-ion packs far above what airlines allow (typically 100 Wh, or 160 Wh with airline approval). That is why riders borrow a battery at their destination instead.</p>
+        </details>
+        <details>
+          <summary>How does borrowing a battery work?</summary>
+          <p>Search your destination on the map and filter by brand and battery model. Log in to see the lender&#x27;s contact details, then message them via WhatsApp or email. Price, deposit and handover are agreed directly between you.</p>
+        </details>
+        <details>
+          <summary>Does it cost anything to use the site?</summary>
+          <p>No. Searching, listing and contacting lenders is free. This site takes no fees and handles no payments.</p>
+        </details>
+        <details>
+          <summary>Which brands and batteries can I find?</summary>
+          <p>Foil Drive, Manta Foils, RIIFT, Duotone, Flow Customs, Flite, Waydoo and other foil assist and eFoil batteries. Lenders can also add models that are not in the list.</p>
+        </details>
+        <details>
+          <summary>How do I list my battery, school or rental?</summary>
+          <p>Create a free account, choose private or school / rental, and add your batteries, location and contact details. We review every listing by hand before it appears on the map.</p>
+        </details>
+        <details>
+          <summary>Who runs this site?</summary>
+          <p>An unofficial community project by foil assist riders, operated by Ola Vibes S.L. in El Médano, Tenerife. It is not affiliated with any manufacturer.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
   <footer class="footer">
     <div class="info-inner footer-inner">
-      <p data-i18n="footer.tag">Ein Community-Projekt von Foil-Assist-Fahrern für Foil-Assist-Fahrer. Betrieben von Ola Vibes S.L.</p>
+      <p data-i18n="footer.tag">A community project by foil assist riders for foil assist riders. Operated by Ola Vibes S.L.</p>
       <ul class="footer-links">
-        <li><a href="impressum.html" data-i18n="footer.imprint">Impressum</a></li>
-        <li><a href="datenschutz.html" data-i18n="footer.privacy">Datenschutz</a></li>
-        <li><a href="https://github.com/Lukilink/foildrive-battery-rental" target="_blank" rel="noopener" data-i18n="footer.source">Quellcode</a></li>
-        <li id="report-li" hidden><a id="report-link" href="#" data-i18n="footer.report">Angebot melden</a></li>
-        <li><button type="button" class="footer-lang" id="footer-lang" lang="en" data-i18n="footer.lang">English</button></li>
+        <li><a href="impressum.html" data-i18n="footer.imprint">Legal notice</a></li>
+        <li><a href="datenschutz.html" data-i18n="footer.privacy">Privacy</a></li>
+        <li><a href="terms.html" data-i18n="footer.terms">Terms of use</a></li>
+        <li id="report-li" hidden><a id="report-link" href="#" data-i18n="footer.report">Report a listing</a></li>
       </ul>
       <p class="footer-dedication" data-i18n="footer.dedication">Idea and inspired by Tom Earl ♥</p>
-      <p class="footer-small" data-i18n="footer.marks">Alle Marken- und Modellnamen gehören ihren jeweiligen Inhabern. Diese Seite ist unabhängig und nicht mit den Herstellern verbunden.</p>
+      <p class="footer-small" data-i18n="footer.marks">Unofficial community project. Not affiliated with, endorsed or operated by any foil or battery manufacturer. All brand and model names belong to their respective owners.</p>
     </div>
   </footer>
 
@@ -151,38 +199,38 @@
   <dialog id="dlg-auth" aria-labelledby="auth-title">
     <form class="dlg" id="auth-form" novalidate>
       <div class="dlg-head">
-        <h2 id="auth-title">Anmelden</h2>
-        <button type="button" class="icon-btn" data-close data-i18n-attr="aria-label:auth.close" aria-label="Schließen"></button>
+        <h2 id="auth-title">Log in</h2>
+        <button type="button" class="icon-btn" data-close data-i18n-attr="aria-label:auth.close" aria-label="Close"></button>
       </div>
       <div class="dlg-body">
         <p class="muted" id="auth-intro" hidden></p>
-        <div class="seg" id="auth-seg" role="radiogroup" data-i18n-attr="aria-label:auth.seg_aria" aria-label="Anmelden oder registrieren">
-          <label><input type="radio" name="auth-mode" value="login" checked><span data-i18n="auth.tab.login">Anmelden</span></label>
-          <label><input type="radio" name="auth-mode" value="signup"><span data-i18n="auth.tab.signup">Registrieren</span></label>
+        <div class="seg" id="auth-seg" role="radiogroup" data-i18n-attr="aria-label:auth.seg_aria" aria-label="Log in or sign up">
+          <label><input type="radio" name="auth-mode" value="login" checked><span data-i18n="auth.tab.login">Log in</span></label>
+          <label><input type="radio" name="auth-mode" value="signup"><span data-i18n="auth.tab.signup">Sign up</span></label>
         </div>
         <div class="field" id="fld-email">
-          <label for="auth-email" data-i18n="auth.email">E-Mail</label>
+          <label for="auth-email" data-i18n="auth.email">Email</label>
           <input class="input" id="auth-email" type="email" autocomplete="email" inputmode="email" aria-describedby="err-auth-email">
           <p class="err" id="err-auth-email" hidden></p>
         </div>
         <div class="field" id="fld-pw">
-          <label for="auth-pw" id="auth-pw-label" data-i18n="auth.pw">Passwort</label>
+          <label for="auth-pw" id="auth-pw-label" data-i18n="auth.pw">Password</label>
           <input class="input" id="auth-pw" type="password" autocomplete="current-password" aria-describedby="hint-auth-pw err-auth-pw">
-          <p class="hint" id="hint-auth-pw" data-i18n="auth.pw_hint">Mindestens 8 Zeichen.</p>
+          <p class="hint" id="hint-auth-pw" data-i18n="auth.pw_hint">At least 8 characters.</p>
           <p class="err" id="err-auth-pw" hidden></p>
         </div>
         <div class="terms" id="fld-terms" hidden>
           <label class="check check-plain">
             <input type="checkbox" id="auth-terms" aria-describedby="err-auth-terms">
-            <span data-i18n-html="auth.terms">Ich habe verstanden: Diese Seite vermittelt nur den Kontakt. Verleih, Bezahlung und Haftung laufen allein zwischen den Nutzern, Ola Vibes S.L. ist nicht beteiligt. Es gilt die <a href="datenschutz.html" target="_blank" rel="noopener">Datenschutzerklärung</a>.</span>
+            <span data-i18n-html="auth.terms">I understand: this site only connects contacts. Lending, payment and liability are solely between users, Ola Vibes S.L. is not involved. I accept the <a href="terms.html" target="_blank" rel="noopener">terms of use</a> and the <a href="datenschutz.html" target="_blank" rel="noopener">privacy policy</a>.</span>
           </label>
           <p class="err" id="err-auth-terms" hidden></p>
         </div>
         <p class="msg" id="auth-msg" role="status" hidden></p>
-        <button type="button" class="link-btn" id="auth-forgot" data-i18n="auth.forgot">Passwort vergessen?</button>
+        <button type="button" class="link-btn" id="auth-forgot" data-i18n="auth.forgot">Forgot password?</button>
       </div>
       <div class="dlg-foot">
-        <button type="submit" class="btn btn-primary" id="auth-submit">Anmelden</button>
+        <button type="submit" class="btn btn-primary" id="auth-submit">Log in</button>
       </div>
     </form>
   </dialog>
@@ -191,46 +239,46 @@
   <dialog id="dlg-offer" aria-labelledby="offer-title">
     <form class="dlg" id="offer-form" novalidate>
       <div class="dlg-head">
-        <h2 id="offer-title">Dein Angebot</h2>
-        <button type="button" class="icon-btn" data-close data-i18n-attr="aria-label:auth.close" aria-label="Schließen"></button>
+        <h2 id="offer-title">Offer batteries</h2>
+        <button type="button" class="icon-btn" data-close data-i18n-attr="aria-label:auth.close" aria-label="Close"></button>
       </div>
 
       <div class="dlg-body">
         <div class="status-box" id="offer-status" role="status" hidden></div>
 
         <section class="sect" aria-labelledby="s-kind">
-          <h3 id="s-kind" data-i18n="offer.kind.h">Wer verleiht?</h3>
+          <h3 id="s-kind" data-i18n="offer.kind.h">Who is lending?</h3>
           <div class="kind-pick" id="kind-pick" role="radiogroup" aria-labelledby="s-kind">
             <label class="kind-opt">
               <input type="radio" name="offer-kind" value="private" checked>
-              <span><strong><i class="dot dot-private"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M13.4 2 4.5 13.6H11L10 22l9.5-12H13z"/></svg></i><span data-i18n="offer.kind.private">Privat</span></strong>
-                <small data-i18n="offer.kind.private_hint">Ich verleihe meine eigenen Batterien.</small></span>
+              <span><strong><i class="dot dot-private"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M13.4 2 4.5 13.6H11L10 22l9.5-12H13z"/></svg></i><span data-i18n="offer.kind.private">Private</span></strong>
+                <small data-i18n="offer.kind.private_hint">I lend my own batteries.</small></span>
             </label>
             <label class="kind-opt">
               <input type="radio" name="offer-kind" value="pro">
-              <span><strong><i class="dot dot-pro"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3 2.5 11H5v9h5.5v-6h3v6H19v-9h2.5z"/></svg></i><span data-i18n="offer.kind.pro">Schule / Verleih</span></strong>
-                <small data-i18n="offer.kind.pro_hint">Ich betreibe eine Foil-Schule oder einen Verleih.</small></span>
+              <span><strong><i class="dot dot-pro"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3 2.5 11H5v9h5.5v-6h3v6H19v-9h2.5z"/></svg></i><span data-i18n="offer.kind.pro">School / rental</span></strong>
+                <small data-i18n="offer.kind.pro_hint">I run a foil school or a rental.</small></span>
             </label>
           </div>
         </section>
 
         <section class="sect" aria-labelledby="s-bat">
-          <h3 id="s-bat" data-i18n="offer.bat.h">Welche Batterien verleihst du?</h3>
-          <p class="hint" data-i18n="offer.bat.hint">Wähle Marke und Modell. Preise sind optional, ohne Preis steht „Anfrage“ auf der Karte.</p>
+          <h3 id="s-bat" data-i18n="offer.bat.h">Which batteries do you lend?</h3>
+          <p class="hint" data-i18n="offer.bat.hint">Choose brand and model. Prices are optional; without a price the map shows “On request”.</p>
           <div class="field field-inline">
-            <label for="f-currency" data-i18n="offer.currency">Währung</label>
+            <label for="f-currency" data-i18n="offer.currency">Currency</label>
             <select class="input" id="f-currency"></select>
           </div>
           <div class="bat-rows" id="bat-rows"></div>
-          <button type="button" class="btn btn-quiet bat-add" id="bat-add" data-i18n="offer.bat.add">Weitere Batterie hinzufügen</button>
+          <button type="button" class="btn btn-quiet bat-add" id="bat-add" data-i18n="offer.bat.add">Add another battery</button>
           <p class="err" id="err-batteries" hidden></p>
         </section>
 
         <section class="sect" aria-labelledby="s-dep">
-          <h3 id="s-dep" data-i18n="offer.dep.h">Kaution</h3>
-          <p class="hint" data-i18n="offer.dep.hint">Leer lassen = nach Absprache. 0 = keine Kaution.</p>
+          <h3 id="s-dep" data-i18n="offer.dep.h">Deposit</h3>
+          <p class="hint" data-i18n="offer.dep.hint">Leave empty = by arrangement. 0 = no deposit.</p>
           <div class="field field-inline">
-            <label for="f-deposit" data-i18n="offer.dep.amount">Höhe der Kaution</label>
+            <label for="f-deposit" data-i18n="offer.dep.amount">Deposit amount</label>
             <div class="money money-wide">
               <input class="input" id="f-deposit" type="text" inputmode="decimal" autocomplete="off" aria-describedby="err-deposit">
               <span id="deposit-unit"></span>
@@ -239,48 +287,48 @@
           <p class="err" id="err-deposit" hidden></p>
           <label class="check">
             <input type="checkbox" id="f-idcheck">
-            <span><span data-i18n="offer.dep.id">Ausweis wird vorgezeigt</span>
-              <small data-i18n="offer.dep.id_hint">Der Leihende zeigt bei der Übergabe seinen Ausweis. Du behältst ihn nicht ein.</small>
+            <span><span data-i18n="offer.dep.id">ID is shown at handover</span>
+              <small data-i18n="offer.dep.id_hint">The borrower shows their ID at handover. You do not keep it.</small>
             </span>
           </label>
         </section>
 
         <section class="sect" aria-labelledby="s-loc">
-          <h3 id="s-loc" data-i18n="offer.loc.h">Wo steht sie?</h3>
-          <p class="hint" data-i18n="offer.loc.hint">Suche einen Ort oder tippe auf die Karte. Setz den Pin nicht auf deine Haustür, die Gegend reicht.</p>
+          <h3 id="s-loc" data-i18n="offer.loc.h">Where is it?</h3>
+          <p class="hint" data-i18n="offer.loc.hint">Search for a place or tap the map. Do not put the pin on your front door, the area is enough.</p>
           <div class="pick-search">
-            <label class="sr-only" for="f-search" data-i18n="offer.loc.search_label">Ort oder Adresse suchen</label>
-            <input class="input" id="f-search" type="search" data-i18n-attr="placeholder:offer.loc.search_label" placeholder="Ort oder Adresse suchen" autocomplete="off">
-            <button type="button" class="btn btn-quiet" id="btn-pick-search" data-i18n="offer.loc.search_btn">Suchen</button>
-            <button type="button" class="btn btn-quiet" id="btn-pick-locate" data-i18n="offer.loc.locate">Mein Standort</button>
+            <label class="sr-only" for="f-search" data-i18n="offer.loc.search_label">Search place or address</label>
+            <input class="input" id="f-search" type="search" data-i18n-attr="placeholder:offer.loc.search_label" placeholder="Search place or address" autocomplete="off">
+            <button type="button" class="btn btn-quiet" id="btn-pick-search" data-i18n="offer.loc.search_btn">Search</button>
+            <button type="button" class="btn btn-quiet" id="btn-pick-locate" data-i18n="offer.loc.locate">My location</button>
           </div>
           <p class="hint" id="pick-msg" role="status" hidden></p>
-          <div id="pick-map" data-i18n-attr="aria-label:offer.loc.map_aria" aria-label="Karte zum Setzen des Pins"></div>
+          <div id="pick-map" data-i18n-attr="aria-label:offer.loc.map_aria" aria-label="Map for placing the pin"></div>
           <p class="err" id="err-location" hidden></p>
 
           <div class="field">
-            <label for="f-place" data-i18n="offer.place.label">Anzeigename des Ortes</label>
-            <input class="input" id="f-place" type="text" maxlength="120" data-i18n-attr="placeholder:offer.place.ph" placeholder="z. B. Tarifa, Spanien" aria-describedby="err-place">
+            <label for="f-place" data-i18n="offer.place.label">Display name of the place</label>
+            <input class="input" id="f-place" type="text" maxlength="120" data-i18n-attr="placeholder:offer.place.ph" placeholder="e.g. Tarifa, Spain" aria-describedby="err-place">
             <p class="err" id="err-place" hidden></p>
           </div>
           <label class="check">
             <input type="checkbox" id="f-approx" checked>
-            <span><span data-i18n="offer.approx.label">Ungefähren Standort anzeigen</span>
-              <small data-i18n="offer.approx.hint">Der Pin wird beim Speichern zufällig um 200 bis 600 m versetzt. Den genauen Treffpunkt nennst du erst im Chat.</small>
+            <span><span data-i18n="offer.approx.label">Show approximate location</span>
+              <small data-i18n="offer.approx.hint">On saving, the pin is moved randomly by 200 to 600 m. You share the exact meeting point in chat.</small>
             </span>
           </label>
         </section>
 
         <section class="sect" aria-labelledby="s-contact">
-          <h3 id="s-contact" data-i18n="offer.contact.h">Wie erreicht man dich?</h3>
-          <p class="hint" data-i18n="offer.contact.hint">Mindestens eins von beidem. Nur angemeldete Mitglieder sehen deine Kontaktdaten.</p>
+          <h3 id="s-contact" data-i18n="offer.contact.h">How can people reach you?</h3>
+          <p class="hint" data-i18n="offer.contact.hint">At least one of the two. Only logged-in members see your contact details.</p>
           <div class="field">
-            <label for="f-wa" data-i18n="offer.wa.label">WhatsApp-Nummer</label>
+            <label for="f-wa" data-i18n="offer.wa.label">WhatsApp number</label>
             <input class="input" id="f-wa" type="tel" autocomplete="tel" placeholder="+49 170 1234567" aria-describedby="err-wa">
             <p class="err" id="err-wa" hidden></p>
           </div>
           <div class="field">
-            <label for="f-mail" data-i18n="offer.mail.label">E-Mail</label>
+            <label for="f-mail" data-i18n="offer.mail.label">Email</label>
             <input class="input" id="f-mail" type="email" autocomplete="email" inputmode="email" aria-describedby="err-mail">
             <p class="err" id="err-mail" hidden></p>
           </div>
@@ -288,54 +336,54 @@
         </section>
 
         <section class="sect" id="sect-pro" aria-labelledby="s-pro" hidden>
-          <h3 id="s-pro" data-i18n="offer.pro.h">Dein Betrieb</h3>
-          <p class="hint" data-i18n="offer.pro.hint">Diese Angaben sehen alle Besucher.</p>
+          <h3 id="s-pro" data-i18n="offer.pro.h">Your business</h3>
+          <p class="hint" data-i18n="offer.pro.hint">Everyone can see these details.</p>
           <div class="field">
             <label for="f-website" data-i18n="offer.pro.website">Website</label>
             <input class="input" id="f-website" type="url" inputmode="url" autocomplete="url" autocapitalize="off" spellcheck="false" placeholder="https://…" maxlength="300" aria-describedby="err-website">
             <p class="err" id="err-website" hidden></p>
           </div>
           <div class="field">
-            <label for="f-hours" data-i18n="offer.pro.hours">Öffnungszeiten</label>
-            <textarea class="input" id="f-hours" rows="2" maxlength="300" data-i18n-attr="placeholder:offer.pro.hours_ph" placeholder="z. B. Mo–Sa 9–18 Uhr, im Winter nach Absprache" aria-describedby="err-hours"></textarea>
+            <label for="f-hours" data-i18n="offer.pro.hours">Opening hours</label>
+            <textarea class="input" id="f-hours" rows="2" maxlength="300" data-i18n-attr="placeholder:offer.pro.hours_ph" placeholder="e.g. Mon–Sat 9 am – 6 pm, by arrangement in winter" aria-describedby="err-hours"></textarea>
             <p class="err" id="err-hours" hidden></p>
           </div>
         </section>
 
         <section class="sect" aria-labelledby="s-proof">
-          <h3 id="s-proof" data-i18n="offer.proof.h">Verifizierung</h3>
-          <p class="hint" id="proof-hint" data-i18n="offer.proof.hint">Damit wir sehen, dass ihr wirklich Foil-Assist-Batterien habt. Nur wir sehen diese Angaben, nie andere Nutzer.</p>
+          <h3 id="s-proof" data-i18n="offer.proof.h">Verification</h3>
+          <p class="hint" id="proof-hint" data-i18n="offer.proof.hint">So we can see that you really have foil assist batteries. Only we see this, never other users.</p>
           <div class="field">
-            <label for="f-proof"><span data-i18n="offer.proof.url.label">Instagram- oder Facebook-Profil</span> <span class="opt" id="proof-opt" data-i18n="offer.opt" hidden>(optional)</span></label>
+            <label for="f-proof"><span data-i18n="offer.proof.url.label">Instagram or Facebook profile</span> <span class="opt" id="proof-opt" data-i18n="offer.opt" hidden>(optional)</span></label>
             <input class="input" id="f-proof" type="url" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://instagram.com/…" aria-describedby="hint-proof err-proof">
-            <p class="hint" id="hint-proof" data-i18n="offer.proof.url.hint">Am besten ein Profil, auf dem du mit deiner Batterie zu sehen bist.</p>
+            <p class="hint" id="hint-proof" data-i18n="offer.proof.url.hint">Ideally a profile where you can be seen with your battery.</p>
             <p class="err" id="err-proof" hidden></p>
           </div>
           <div class="field">
-            <label for="f-file"><span data-i18n="offer.proof.file.label">Rechnung vom Hersteller oder deinem Händler</span> <span class="opt" data-i18n="offer.opt">(optional)</span></label>
+            <label for="f-file"><span data-i18n="offer.proof.file.label">Invoice from the manufacturer or your dealer</span> <span class="opt" data-i18n="offer.opt">(optional)</span></label>
             <input class="input input-file" id="f-file" type="file" accept="application/pdf,image/jpeg,image/png,.pdf,.jpg,.jpeg,.png" aria-describedby="hint-file err-file">
-            <p class="hint" id="hint-file" data-i18n="offer.proof.file.hint">PDF, JPG oder PNG, höchstens 5 MB. Dein Name muss darauf stehen. Wir löschen die Datei nach der Prüfung.</p>
+            <p class="hint" id="hint-file" data-i18n="offer.proof.file.hint">PDF, JPG or PNG, max. 5 MB. Your name must be on it. We delete the file after the review.</p>
             <p class="hint" id="file-current" hidden></p>
             <p class="err" id="err-file" hidden></p>
           </div>
         </section>
 
         <section class="sect" aria-labelledby="s-info">
-          <h3 id="s-info" data-i18n="offer.info.h">Was sollen Leihende wissen?</h3>
+          <h3 id="s-info" data-i18n="offer.info.h">What should borrowers know?</h3>
           <div class="field">
-            <label for="f-name" id="lbl-name" data-i18n="offer.name.label">Name für die Anzeige</label>
-            <input class="input" id="f-name" type="text" maxlength="60" autocomplete="nickname" data-i18n-attr="placeholder:offer.name.ph" placeholder="z. B. Lukas" aria-describedby="err-name">
+            <label for="f-name" id="lbl-name" data-i18n="offer.name.label">Display name</label>
+            <input class="input" id="f-name" type="text" maxlength="60" autocomplete="nickname" data-i18n-attr="placeholder:offer.name.ph" placeholder="e.g. Lukas" aria-describedby="err-name">
             <p class="err" id="err-name" hidden></p>
           </div>
           <div class="field">
-            <label for="f-notes"><span data-i18n="offer.notes.label">Hinweise</span> <span class="opt" data-i18n="offer.opt">(optional)</span></label>
-            <textarea class="input" id="f-notes" rows="4" maxlength="600" data-i18n-attr="placeholder:offer.notes.ph" placeholder="Abholung oder Lieferung, Zeiten, Ladegerät, Sprachen …" aria-describedby="err-notes"></textarea>
+            <label for="f-notes"><span data-i18n="offer.notes.label">Notes</span> <span class="opt" data-i18n="offer.opt">(optional)</span></label>
+            <textarea class="input" id="f-notes" rows="4" maxlength="600" data-i18n-attr="placeholder:offer.notes.ph" placeholder="Pick-up or delivery, times, charger, languages …" aria-describedby="err-notes"></textarea>
             <p class="err" id="err-notes" hidden></p>
           </div>
           <label class="check">
             <input type="checkbox" id="f-active" checked>
-            <span><span data-i18n="offer.active.label">Angebot ist sichtbar</span>
-              <small data-i18n="offer.active.hint">Ausschalten, wenn die Batterien gerade nicht verfügbar sind.</small>
+            <span><span data-i18n="offer.active.label">Listing is visible</span>
+              <small data-i18n="offer.active.hint">Switch off while your batteries are not available.</small>
             </span>
           </label>
         </section>
@@ -344,9 +392,9 @@
       </div>
 
       <div class="dlg-foot">
-        <button type="button" class="btn btn-danger" id="offer-delete" data-i18n="offer.delete" hidden>Angebot löschen</button>
+        <button type="button" class="btn btn-danger" id="offer-delete" data-i18n="offer.delete" hidden>Delete listing</button>
         <span class="spacer"></span>
-        <button type="button" class="btn btn-quiet" data-close data-i18n="offer.cancel">Abbrechen</button>
+        <button type="button" class="btn btn-quiet" data-close data-i18n="offer.cancel">Cancel</button>
         <button type="submit" class="btn btn-primary" id="offer-save">Antrag senden</button>
       </div>
     </form>
@@ -354,7 +402,7 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <noscript><p class="noscript">Diese Seite braucht JavaScript, um die Karte anzuzeigen. / This site needs JavaScript to show the map.</p></noscript>
+  <noscript><p class="noscript">This site needs JavaScript to show the map.</p></noscript>
 
   <script src="assets/vendor/leaflet/leaflet.js"></script>
   <script src="assets/vendor/markercluster/leaflet.markercluster.js"></script>

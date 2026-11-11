@@ -1,9 +1,9 @@
-# Foil Assist Battery Rental
+# Foil Battery Rental – A Community Project
 
 Community-Karte für Foil-Assist-Fahrer (Foil Drive, Manta, RIIFT, Duotone, Flite, Waydoo und andere): Die Batterien dürfen nicht ins Flugzeug, also leiht man sich im Urlaub eine bei einem Local, einer Foil-Schule oder einem Rental vor Ort.
 Die Seite bringt nur Reisende (ohne Batterie) und Anbieter (mit Batterie) zusammen. Kontakt, Preis und Bezahlung laufen außerhalb.
 
-- **Zweisprachig** (Deutsch / Englisch), Umschalter oben rechts und im Footer. Die Startsprache folgt dem Browser.
+- **Nur Englisch** (Seite, Fehlermeldungen, Mails an Anbieter, Rechtsseiten). Die Admin-Seite und die Admin-Mail sind Deutsch.
 - **Karte** mit allen freigegebenen Standorten (Leaflet + OpenStreetMap), Preis direkt am Pin
 - **Filter** nach Anbietertyp (Alle / Privat / Schule & Verleih), dann nach **Marke** und danach nach **Modell**
 - **Zwei Anbietertypen**: Privat (dunkelblaue Pins mit Blitz) und Schule / Verleih (violette Pins mit Haus-Symbol). Schulen und Rentals geben Website und Öffnungszeiten an, beides ist öffentlich sichtbar
@@ -13,6 +13,8 @@ Die Seite bringt nur Reisende (ohne Batterie) und Anbieter (mit Batterie) zusamm
 - **Freigabe von Hand**: Neue Angebote erscheinen erst, nachdem du sie freigegeben hast. Du bekommst eine Mail und gibst auf `admin.html` frei oder lehnst ab
 - **Verifizierung**: Privat: Profil-Link (Instagram oder Facebook) ist Pflicht. Schule / Verleih: Website und Öffnungszeiten sind Pflicht, ein Profil ist optional. Eine Rechnung ist für alle optional und wird nach der Prüfung gelöscht
 - **Kontaktdaten nur für angemeldete Mitglieder**, Pin auf Wunsch um 200–600 m versetzt
+- **Partner-Programm** (vorbereitet, Schalter `partnerProgram` in `config.js` aus): Anbieter, die die Seite verlinken, bekommen den blauen Partner-Haken, einen etwas größeren Pin und stehen in der Liste zuerst. Vergeben wird das Badge auf `admin.html`
+- **Auffindbarkeit**: Title/Description, Canonical, Open-Graph-Bild, JSON-LD (WebSite, FAQPage), FAQ-Abschnitt, `robots.txt`, `sitemap.xml`, `llms.txt`
 - Reines HTML/CSS/JS, kein Build-Schritt. Bibliotheken und Schriften liegen im Repo (`assets/vendor`, `assets/fonts`)
 
 **Live:** https://foilbattery.com (GitHub Pages aus `main`, Domain bei IONOS). Kontakt: mail@foilbattery.com. Betreiber: Ola Vibes S.L.
@@ -109,7 +111,9 @@ Geschrieben wird nur über Datenbank-Funktionen (`save_my_listing`, `admin_decid
 | --- | --- |
 | Marken und Batterie-Modelle | nur `assets/js/catalog.js` (siehe „Marken und Modelle ergänzen“) |
 | Währungen | `CURRENCIES` in `assets/js/app.js` und die `currency`-Prüfung in `schema.sql` |
-| Texte (Deutsch/Englisch) | `assets/js/i18n.js`. Eine weitere Sprache ergänzt man als Kopie des `en`-Blocks |
+| Texte der Seite | `assets/js/i18n.js` (Englisch). Die Texte stehen zusätzlich fest in `index.html` (für Suchmaschinen), bei Änderungen beide anpassen |
+| FAQ | Abschnitt `.faq` in `index.html` und der FAQPage-Block im JSON-LD im `<head>` (gleicher Text) |
+| Partner-Programm an/aus | `partnerProgram` in `assets/js/config.js` |
 | Farben, Schrift, Abstände | `:root` in `assets/css/app.css` |
 | Kartenstil / Kachel-Anbieter | `tileUrl` und `tileAttribution` in `assets/js/config.js` |
 | Radius des ungefähren Standorts | `fuzz()` und `HALO_METERS` in `assets/js/app.js` |
@@ -127,16 +131,17 @@ Geschrieben wird nur über Datenbank-Funktionen (`save_my_listing`, `admin_decid
 ```
 index.html              Karte, Dialoge, Infotexte
 admin.html              Anträge prüfen (nur für Admins, Deutsch)
-impressum.html          Impressum (DE/EN)
-datenschutz.html        Datenschutz (DE/EN)
+impressum.html          Legal notice (Englisch)
+datenschutz.html        Privacy policy (Englisch)
+terms.html              Terms of use (Englisch)
+robots.txt, sitemap.xml, llms.txt   für Suchmaschinen und KI-Assistenten
 assets/
   css/                  app.css (Design), fonts.css
   js/
     app.js              Oberfläche und Logik
-    i18n.js             Texte Deutsch/Englisch
+    i18n.js             Texte (Englisch)
     catalog.js          Marken und Batteriemodelle
     admin.js            Admin-Seite
-    legal.js            Sprachumschalter für Impressum/Datenschutz
     config.js           Einstellungen (Supabase-Zugang, Karte)
     store-demo.js       Demo-Speicher (Browser)
     store-supabase.js   Konten, Datenbank, Upload, Admin-Aufrufe
@@ -157,5 +162,13 @@ Die Auswahl steht in [`assets/js/catalog.js`](assets/js/catalog.js). Eine neue M
 
 ## Update einer älteren Version
 
-Hast du die Datenbank schon mit einer früheren Version von `schema.sql` angelegt, führst du die aktuelle Datei im SQL Editor einfach noch einmal aus. Sie ergänzt die neuen Spalten (Anbietertyp, Website, Öffnungszeiten), setzt bei bestehenden Batterien die Marke „Foil Drive“ und ändert nichts an vorhandenen Daten. Danach die Edge Function `application` mit dem aktuellen Code neu bereitstellen (Mail-Texte).
+Hast du die Datenbank schon mit einer früheren Version von `schema.sql` angelegt, führst du die aktuelle Datei im SQL Editor einfach noch einmal aus. Sie ergänzt fehlende Spalten und Funktionen (Version 3: Anbietertyp, Website, Öffnungszeiten; Version 4: Partner-Programm mit `listings.is_partner`, Tabelle `partners` und `admin_set_partner`) und ändert nichts an vorhandenen Daten. Danach die Edge Function `application` mit dem aktuellen Code neu bereitstellen (Mail-Texte).
+
+## Partner-Programm
+
+Wer die Seite auf seiner Website oder in Social Media verlinkt, wird Partner (kein Limit). Als Dankeschön: blauer Partner-Haken, etwas größerer Pin, in der Liste zuerst. Die normale Prüfung jedes Angebots bleibt davon unberührt.
+
+1. `schema.sql` (Version 4) im SQL Editor ausführen.
+2. Auf `admin.html` → „Freigegeben“ beim Angebot „Partner“ anhaken, optional Link und Notiz, „Partner speichern“. Link und Notiz sieht nur der Admin.
+3. Wenn genug Partner da sind: in `assets/js/config.js` `partnerProgram: true` setzen. Erst dann erscheinen Badge, großer Pin, Sortierung und die Erklärung auf der Seite.
 

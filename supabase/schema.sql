@@ -1,4 +1,4 @@
--- Foil Assist Battery Rental: Datenbank für Supabase (Postgres), Version 3
+-- Foil Battery Rental: Datenbank für Supabase (Postgres), Version 4 (Partner-Programm)
 --
 -- Ausführen: Supabase-Dashboard → SQL Editor → New query → alles einfügen → Run.
 -- Das Skript kann mehrfach laufen (idempotent).
@@ -8,7 +8,7 @@
 --   Mitglieder (angemeldet, E-Mail bestätigt): sehen zusätzlich WhatsApp/E-Mail der freigegebenen Angebote.
 --   Anbieter: Privatpersonen ('private') oder Schulen/Rentals ('pro'). Jeder stellt genau EIN Angebot ein (Antrag).
 --             Es ist erst nach Freigabe öffentlich.
---   Admin: prüft Anträge, gibt frei oder lehnt ab, sieht Nachweise.
+--   Admin: prüft Anträge, gibt frei oder lehnt ab, sieht Nachweise, vergibt das Partner-Badge.
 --
 -- Geschrieben wird NUR über die Funktionen weiter unten (save_my_listing, admin_decide …).
 -- So kann niemand seinen eigenen Status auf "approved" setzen.
@@ -67,6 +67,7 @@ create table if not exists public.listings (
   id_check       boolean not null default false,     -- "Ausweis wird vorgezeigt"
   notes          text not null default '' check (char_length(notes) <= 600),
   active         boolean not null default true,      -- Verleiher kann pausieren
+  is_partner     boolean not null default false,     -- Partner-Badge (nur der Admin setzt das, siehe admin_set_partner)
 
   -- nur für Mitglieder sichtbar
   whatsapp       text check (whatsapp ~ '^\+[1-9][0-9]{6,14}$'),
@@ -88,8 +89,9 @@ create table if not exists public.listings (
   constraint listings_batteries_valid  check (public.batteries_valid(batteries))
 );
 
--- Upgrade einer älteren Version (Version 2 → 3): fehlende Spalten und Regeln nachziehen.
+-- Upgrade einer älteren Version (2 → 3 → 4): fehlende Spalten und Regeln nachziehen.
 alter table public.listings add column if not exists kind text not null default 'private';
+alter table public.listings add column if not exists is_partner boolean not null default false;
 alter table public.listings add column if not exists website text;
 alter table public.listings add column if not exists opening_hours text not null default '';
 alter table public.listings drop constraint if exists listings_proof_url_check;
@@ -124,6 +126,16 @@ create table if not exists public.admins (
   user_id uuid primary key references auth.users (id) on delete cascade
 );
 
+-- Partner-Programm: Details nur für den Admin (wo verlinkt wurde, seit wann, interne Notiz).
+-- Öffentlich ist nur listings.is_partner. Wird das Angebot gelöscht, verschwindet der Eintrag mit.
+create table if not exists public.partners (
+  listing_id  uuid primary key references public.listings (id) on delete cascade,
+  since       timestamptz not null default now(),
+  link        text check (link is null or (char_length(link) <= 300 and link ~* '^https://.+')),
+  note        text not null default '' check (char_length(note) <= 500),
+  updated_at  timestamptz not null default now()
+);
+
 -- updated_at automatisch pflegen
 create or replace function public.set_updated_at()
 returns trigger
@@ -143,18 +155,20 @@ create trigger listings_set_updated_at
 -- 3. Rechte und Zeilenregeln ----------------------------------------------------
 alter table public.listings enable row level security;
 alter table public.admins   enable row level security;
+alter table public.partners enable row level security;
 
 revoke all on public.listings from anon, authenticated;
 revoke all on public.admins   from anon, authenticated;
+revoke all on public.partners from anon, authenticated;
 
 -- Besucher ohne Login: nur öffentliche Spalten
 grant select (id, kind, website, opening_hours, display_name, place_label, lat, lng, approximate, batteries, currency,
-              deposit_amount, id_check, notes, active, updated_at)
+              deposit_amount, id_check, notes, active, is_partner, updated_at)
   on public.listings to anon;
 
 -- Angemeldete Mitglieder: zusätzlich Kontaktdaten. Kein Schreibzugriff, kein Zugriff auf Status und Nachweise.
 grant select (id, kind, website, opening_hours, display_name, place_label, lat, lng, approximate, batteries, currency,
-              deposit_amount, id_check, notes, active, updated_at, whatsapp, email)
+              deposit_amount, id_check, notes, active, is_partner, updated_at, whatsapp, email)
   on public.listings to authenticated;
 
 drop policy if exists "Freigegebene Angebote lesen" on public.listings;
@@ -317,9 +331,11 @@ begin
              l.deposit_amount, l.id_check, l.whatsapp, l.email, l.notes, l.active, l.status,
              l.proof_url, l.proof_file, l.reject_reason, l.lang,
              l.created_at, l.updated_at, l.reviewed_at,
+             l.is_partner, p.since as partner_since, p.link as partner_link, p.note as partner_note,
              u.email as applicant_email
         from public.listings l
         join auth.users u on u.id = l.owner_id
+        left join public.partners p on p.listing_id = l.id
        where l.status = p_status
     ) x
   ), '[]'::jsonb);
@@ -367,6 +383,44 @@ end;
 $$;
 
 -- Nur angemeldete Nutzer dürfen die Funktionen aufrufen (nicht anonym, nicht "public")
+-- Admin: Partner-Badge setzen oder entfernen. Link und Notiz sind nur für den Admin sichtbar.
+create or replace function public.admin_set_partner(p_id uuid, p_partner boolean, p_link text default null, p_note text default null)
+returns jsonb
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_link text := nullif(trim(coalesce(p_link, '')), '');
+begin
+  if not public.is_admin() then
+    raise exception 'forbidden' using errcode = '42501';
+  end if;
+  if not exists (select 1 from public.listings where id = p_id) then
+    raise exception 'not found' using errcode = 'P0002';
+  end if;
+  if v_link is not null and v_link !~* '^https://.+' then
+    raise exception 'invalid link' using errcode = '22023';
+  end if;
+
+  if p_partner then
+    insert into public.partners as pa (listing_id, link, note)
+    values (p_id, v_link, left(coalesce(p_note, ''), 500))
+    on conflict (listing_id) do update
+      set link = excluded.link, note = excluded.note, updated_at = now();
+  else
+    delete from public.partners where listing_id = p_id;
+  end if;
+
+  update public.listings set is_partner = p_partner where id = p_id and is_partner is distinct from p_partner;
+
+  return (select jsonb_build_object('id', l.id, 'is_partner', l.is_partner,
+                                    'partner_since', p.since, 'partner_link', p.link, 'partner_note', p.note)
+            from public.listings l left join public.partners p on p.listing_id = l.id
+           where l.id = p_id);
+end;
+$$;
+
 revoke all on function public.is_admin()                           from public, anon;
 revoke all on function public.my_listing()                         from public, anon;
 revoke all on function public.save_my_listing(jsonb)               from public, anon;
@@ -374,6 +428,7 @@ revoke all on function public.delete_my_listing()                  from public, 
 revoke all on function public.claim_notification()                 from public, anon;
 revoke all on function public.admin_applications(text)             from public, anon;
 revoke all on function public.admin_decide(uuid, text, text)       from public, anon;
+revoke all on function public.admin_set_partner(uuid, boolean, text, text) from public, anon;
 
 grant execute on function public.is_admin()                        to authenticated;
 grant execute on function public.my_listing()                      to authenticated;
@@ -382,6 +437,7 @@ grant execute on function public.delete_my_listing()               to authentica
 grant execute on function public.claim_notification()              to authenticated;
 grant execute on function public.admin_applications(text)          to authenticated;
 grant execute on function public.admin_decide(uuid, text, text)    to authenticated;
+grant execute on function public.admin_set_partner(uuid, boolean, text, text) to authenticated;
 
 -- 5. Speicher für Nachweise (Rechnungen) -------------------------------------------
 -- Privater Bucket: nur der Besitzer (Ordner = seine User-ID) und der Admin kommen ran.

@@ -30,7 +30,7 @@
     { id: 'demo-sylt', name: 'Sylt', placeLabel: 'Sylt, Deutschland|Sylt, Germany', lat: 54.91, lng: 8.31,
       batteries: [{ model: 'max-sport', priceDay: 40, priceWeek: 220 }, { model: 'max-power', priceDay: 50, priceWeek: 280 }],
       depositAmount: 100, idCheck: false, notes: '' },
-    { id: 'demo-medano-school', name: 'El Médano Foil School', kind: 'pro', website: 'https://example.com',
+    { id: 'demo-medano-school', name: 'El Médano Foil School', kind: 'pro', partner: true, website: 'https://example.com',
       hours: 'Täglich 9–18 Uhr|Daily 9 am – 6 pm',
       placeLabel: 'El Médano, Teneriffa|El Médano, Tenerife', lat: 28.05, lng: -16.54,
       batteries: [{ brand: 'manta', model: 'takeoff-evo-endurance', label: 'Manta Foils TakeOff Evo Endurance', priceDay: 60, priceWeek: 330 },
@@ -79,7 +79,7 @@
     function seedListing(s) {
       var en = window.I18N && window.I18N.lang() === 'en';
       return {
-        id: s.id, kind: s.kind || 'private', website: s.website || '', openingHours: s.hours ? pickLang(s.hours) : '',
+        id: s.id, kind: s.kind || 'private', partner: !!s.partner, website: s.website || '', openingHours: s.hours ? pickLang(s.hours) : '',
         name: 'Demo ' + s.name, placeLabel: pickLang(s.placeLabel), lat: s.lat, lng: s.lng, approximate: true,
         batteries: s.batteries.map(function (b) { return Object.assign({ brand: 'foil-drive' }, b); }), currency: 'EUR', depositAmount: s.depositAmount, idCheck: s.idCheck,
         notes: pickLang(s.notes), active: true, whatsapp: '', email: '', status: 'approved', demo: true
