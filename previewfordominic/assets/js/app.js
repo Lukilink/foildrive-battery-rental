@@ -1354,8 +1354,9 @@
   }
 
   function measureBanner() {
-    var b = $('#demo-banner');
-    document.documentElement.style.setProperty('--banner', (b.hidden ? 0 : b.offsetHeight) + 'px');
+    var h = 0;
+    ['#preview-banner', '#demo-banner'].forEach(function (s) { var b = $(s); if (b && !b.hidden) h += b.offsetHeight; });
+    document.documentElement.style.setProperty('--banner', h + 'px');
   }
 
   function boot() {
@@ -1372,7 +1373,8 @@
     updateAuthUI();
     setView('map');
 
-    if (state.mode === 'demo') { $('#demo-banner').hidden = false; measureBanner(); setTimeout(function () { map.invalidateSize(); }, 0); }
+    if (state.mode === 'demo') $('#demo-banner').hidden = false;
+    measureBanner(); setTimeout(function () { map.invalidateSize(); }, 0);
 
     store.init().then(function () {
       state.user = store.getUser();

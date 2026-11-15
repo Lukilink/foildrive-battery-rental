@@ -125,6 +125,10 @@ a { color: var(--kelp); }
 .who { color: #a9c6d4; font-size: .85rem; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .btn .short { display: none; }
 
+.preview-banner {
+  background: var(--buoy); color: var(--ink);
+  padding: 8px 24px; font-size: .9rem; line-height: 1.35; text-align: center;
+}
 .demo-banner {
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
   padding: 8px 20px; background: var(--shallows); font-size: .875rem; line-height: 1.35;
