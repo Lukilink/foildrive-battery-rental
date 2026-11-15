@@ -1,5 +1,4 @@
+# Seite ist nicht öffentlich: Suchmaschinen dürfen die Seiten abrufen, damit sie das noindex sehen,
+# zeigen sie aber nicht in den Ergebnissen an.
 User-agent: *
 Allow: /
-Disallow: /admin.html
-
-Sitemap: https://foilbattery.com/sitemap.xml
