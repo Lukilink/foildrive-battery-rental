@@ -19,6 +19,8 @@ Die Seite bringt nur Reisende (ohne Batterie) und Anbieter (mit Batterie) zusamm
 
 **Live:** https://foilbattery.com (GitHub Pages aus `main`, Domain bei IONOS). Kontakt: mail@foilbattery.com. Betreiber: Ola Vibes S.L.
 
+> **Derzeit nicht öffentlich:** `foilbattery.com` zeigt nur eine Coming-soon-Seite (`index.html`, `404.html`). Die eigentliche Seite liegt im Ordner `previewfordominic/` und ist unter `https://foilbattery.com/previewfordominic/` erreichbar. Alle Seiten haben `noindex`. Zum Livegang den Inhalt von `previewfordominic/` wieder ins Hauptverzeichnis verschieben und das Secret `SITE_URL` zurücksetzen.
+
 ## Sofort ausprobieren (Demo-Modus)
 
 Ohne Einstellungen läuft die Seite im Demo-Modus: erfundene Beispiel-Standorte, Login nur simuliert, Eingaben bleiben im Browser, Anträge werden sofort „freigegeben“. Die Admin-Seite gibt es nur im Echtbetrieb.
